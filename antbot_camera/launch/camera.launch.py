@@ -32,6 +32,8 @@ def generate_launch_description():
         DeclareLaunchArgument('config_file', default_value=default_config),
         DeclareLaunchArgument('gemini336l_serial_number', default_value=''),
         DeclareLaunchArgument('gemini336l_usb_port', default_value=''),
+        DeclareLaunchArgument('sigterm_timeout', default_value='30'),
+        DeclareLaunchArgument('sigkill_timeout', default_value='60'),
 
         Node(
             package='antbot_camera',
