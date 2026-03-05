@@ -346,9 +346,7 @@ ros2 launch antbot_teleop teleop_joy.launch.py
 
 **조이스틱 버튼 바인딩** (DualSense):
 
-<div align="center">
-  <img src="docs/images/joystick_dualsense(kr).png" alt="DualSense 조이스틱 버튼 맵" width="600" />
-</div>
+<img src="docs/images/joystick_dualsense(kr).png" alt="DualSense 조이스틱 버튼 맵" width="600" />
 
 ### 수동 속도 명령
 

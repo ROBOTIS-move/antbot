@@ -347,9 +347,7 @@ ros2 launch antbot_teleop teleop_joy.launch.py
 
 **Joystick button bindings** (DualSense):
 
-<div align="center">
-  <img src="docs/images/joystick_dualsense(en).png" alt="DualSense Joystick Button Map" width="600" />
-</div>
+<img src="docs/images/joystick_dualsense(en).png" alt="DualSense Joystick Button Map" width="600" />
 
 ### Manual Velocity Commands
 

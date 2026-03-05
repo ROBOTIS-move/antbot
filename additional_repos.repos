@@ -1,17 +1,17 @@
 repositories:
   ublox:
     type: git
-    url: git@github.com:KumarRobotics/ublox.git
+    url: https://github.com/KumarRobotics/ublox.git
     version: ros2
   DynamixelSDK:
     type: git
-    url: git@github.com:ROBOTIS-GIT/DynamixelSDK.git
+    url: https://github.com/ROBOTIS-GIT/DynamixelSDK.git
     version: humble
   coin_d4_driver:
     type: git
-    url: git@github.com:ROBOTIS-GIT/coin_d4_driver.git
+    url: https://github.com/ROBOTIS-GIT/coin_d4_driver.git
     version: humble
   OrbbecSDK_ROS2:
     type: git
-    url: git@github.com:orbbec/OrbbecSDK_ROS2.git
+    url: https://github.com/orbbec/OrbbecSDK_ROS2.git
     version: v2-main
