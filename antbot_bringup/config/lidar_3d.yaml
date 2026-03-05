@@ -1,0 +1,48 @@
+# Vanjee WLR-722 3D LiDAR configuration for ANTBot.
+# Based on: vanjee_lidar_sdk/config/config_722.yaml
+# Changed: host_address, lidar_address, use_lidar_clock, ros_frame_id, ros_send_point_cloud_topic
+common:
+  msg_source: 1
+  send_point_cloud_ros: true
+  send_imu_packet_ros: true
+  send_device_ctrl_state_ros: false
+  recv_device_ctrl_cmd_ros: false
+lidar:
+  - driver:
+      lidar_type: vanjee_722
+      connect_type: 1
+      host_msop_port: 3001
+      lidar_msop_port: 3333
+      start_angle: 0
+      end_angle: 360
+      wait_for_difop: true
+      min_distance: 0.05
+      max_distance: 70
+      use_lidar_clock: false
+      pcap_path:
+      pcap_repeat: true
+      pcap_rate: 1
+      config_from_file: false
+      angle_path_ver:
+      angle_path_hor:
+      imu_param_path:
+      dense_points: false
+      ts_first_point: true
+      use_offset_timestamp: true
+      publish_mode: 0
+      group_address: 0.0.0.0
+      host_address: 192.168.6.2
+      lidar_address: 192.168.6.5
+      x: 0
+      y: 0
+      z: 0
+      roll: 0
+      pitch: 0
+      yaw: 0
+    use_vlan: false
+    ros:
+      ros_frame_id: lidar_3d_link
+      ros_send_point_cloud_topic: /lidar_3d_points
+      ros_send_imu_packet_topic: /vanjee_lidar_imu_packets
+      ros_send_device_ctrl_state_topic: /vanjee_lidar_device_ctrl_state
+      ros_recv_device_ctrl_cmd_topic: /vanjee_lidar_device_ctrl_cmd

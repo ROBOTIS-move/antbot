@@ -1,0 +1,24 @@
+board_hw_interface:
+  ros__parameters:
+    serial_port: "/dev/ttyUSB0"
+    board_id: 200
+    baud_rate: 4000000
+    protocol_version: 2.0
+
+    steering:
+      gear_ratio: 2.43
+      front_left_min_degree: -56.175
+      front_left_max_degree: 56.175
+      front_right_min_degree: -56.175
+      front_right_max_degree: 56.175
+      rear_left_min_degree: -56.175
+      rear_left_max_degree: 56.175
+      rear_right_min_degree: -56.175
+      rear_right_max_degree: 56.175
+
+    wheel:
+      accel: 200  # rev/min^2
+      min_rpm: -185
+      max_rpm: 185
+      min_velocity: -20.0
+      max_velocity: 20.0

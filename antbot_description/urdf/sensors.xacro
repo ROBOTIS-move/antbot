@@ -1,0 +1,37 @@
+<?xml version="1.0" ?>
+<!--
+  Sensor frame macros for ANTBot.
+  Provides fixed-joint sensor mounting utilities.
+-->
+<robot name="sensors" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="Sensors" params="name xyz rpy">
+    <joint name="${name}_joint" type="fixed">
+      <parent link="base_link"/>
+      <child link="${name}_link"/>
+      <origin xyz="${xyz}" rpy="${rpy}"/>
+    </joint>
+
+    <link name="${name}_link"/>
+  </xacro:macro>
+
+  <xacro:macro name="SensorsRel" params="parent child xyz rpy">
+    <joint name="${child}_joint" type="fixed">
+      <parent link="${parent}_link"/>
+      <child link="${child}_link"/>
+      <origin xyz="${xyz}" rpy="${rpy}"/>
+    </joint>
+
+    <link name="${child}_link"/>
+  </xacro:macro>
+
+  <xacro:macro name="OpticalFrame" params="name parent xyz:='0 0 0' rpy:='${radians(-90)} 0 ${radians(-90)}'">
+    <joint name="${name}_joint" type="fixed">
+      <parent link="${parent}_link"/>
+      <child link="${name}_link"/>
+      <origin xyz="${xyz}" rpy="${rpy}"/>
+    </joint>
+
+    <link name="${name}_link"/>
+  </xacro:macro>
+
+</robot>

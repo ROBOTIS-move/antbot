@@ -1,0 +1,9 @@
+<library path="antbot_swerve_controller">
+  <class name="antbot_swerve_controller/SwerveDriveController"
+         type="antbot::swerve_drive_controller::SwerveDriveController"
+        base_class_type="controller_interface::ControllerInterface">
+    <description>
+        Controller for a swerve drive robot based on Twist commands.
+    </description>
+  </class>
+</library>

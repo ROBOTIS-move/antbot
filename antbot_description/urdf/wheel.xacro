@@ -1,0 +1,139 @@
+<?xml version="1.0" ?>
+<!--
+  Swerve wheel module macros for ANTBot.
+  Each module has a steering joint (Z-axis) and a wheel joint (Y-axis).
+-->
+<robot name="wheel" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <!-- Swerve wheel module macro for left side wheels -->
+  <xacro:macro name="SwerveWheelLeft" params="position_name x_pos y_pos">
+    <!-- Steering link for vertical rotation axis -->
+    <link name="${position_name}_steering_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <cylinder radius="0.02" length="0.05"/>
+        </geometry>
+        <material name="gray"/>
+      </visual>
+      <inertial>
+        <mass value="0.5"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+      </inertial>
+    </link>
+
+    <!-- Steering joint: Z-axis rotation for wheel direction control -->
+    <joint name="steering_${position_name}_joint" type="revolute">
+      <parent link="base_link"/>
+      <child link="${position_name}_steering_link"/>
+      <origin xyz="${x_pos} ${y_pos} ${steering_height}" rpy="0 0 0"/>
+      <axis xyz="0 0 1"/>
+      <limit effort="1000" lower="-1.570796327" upper="1.570796327" velocity="6.5"/>
+      <dynamics damping="0.1" friction="0.01"/>
+    </joint>
+
+    <!-- Wheel link with STL mesh -->
+    <link name="${position_name}_wheel_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://antbot_description/meshes/inwheel_mdh150_2_1.stl" scale="0.0012 0.0012 0.0012"/>
+        </geometry>
+        <material name="black"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
+        <geometry>
+          <cylinder radius="${wheel_radius}" length="0.05"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="2.0"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
+      </inertial>
+    </link>
+
+    <!-- Wheel joint: Y-axis rotation for wheel drive -->
+    <joint name="wheel_${position_name}_joint" type="continuous">
+      <parent link="${position_name}_steering_link"/>
+      <child link="${position_name}_wheel_link"/>
+      <origin xyz="0 ${wheel_offset} 0" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+      <limit effort="200" velocity="50"/>
+      <dynamics damping="0.05" friction="0.02"/>
+    </joint>
+  </xacro:macro>
+
+  <!-- Swerve wheel module macro for right side wheels -->
+  <xacro:macro name="SwerveWheelRight" params="position_name x_pos y_pos">
+    <!-- Steering link for vertical rotation axis -->
+    <link name="${position_name}_steering_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <cylinder radius="0.02" length="0.05"/>
+        </geometry>
+        <material name="gray"/>
+      </visual>
+      <inertial>
+        <mass value="0.5"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+      </inertial>
+    </link>
+
+    <!-- Steering joint: Z-axis rotation for wheel direction control -->
+    <joint name="steering_${position_name}_joint" type="revolute">
+      <parent link="base_link"/>
+      <child link="${position_name}_steering_link"/>
+      <origin xyz="${x_pos} ${y_pos} ${steering_height}" rpy="0 0 0"/>
+      <axis xyz="0 0 1"/>
+      <limit effort="1000" lower="-1.570796327" upper="1.570796327" velocity="6.5"/>
+      <dynamics damping="0.1" friction="0.01"/>
+    </joint>
+
+    <!-- Wheel link with STL mesh -->
+    <link name="${position_name}_wheel_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="${pi} 0 0"/>
+        <geometry>
+          <mesh filename="package://antbot_description/meshes/inwheel_mdh150_2_1.stl" scale="0.0012 0.0012 0.0012"/>
+        </geometry>
+        <material name="black"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="${-pi/2} 0 0"/>
+        <geometry>
+          <cylinder radius="${wheel_radius}" length="0.05"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="2.0"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
+      </inertial>
+    </link>
+
+    <!-- Wheel joint: Y-axis rotation for wheel drive -->
+    <joint name="wheel_${position_name}_joint" type="continuous">
+      <parent link="${position_name}_steering_link"/>
+      <child link="${position_name}_wheel_link"/>
+      <origin xyz="0 ${-wheel_offset} 0" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+      <limit effort="200" velocity="50"/>
+      <dynamics damping="0.05" friction="0.02"/>
+    </joint>
+  </xacro:macro>
+
+  <!-- Material definitions -->
+  <material name="black">
+    <color rgba="0.2 0.2 0.2 1.0"/>
+  </material>
+
+  <material name="gray">
+    <color rgba="0.5 0.5 0.5 1.0"/>
+  </material>
+
+</robot>

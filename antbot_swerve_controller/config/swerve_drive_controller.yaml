@@ -1,0 +1,89 @@
+controller_manager:
+  ros__parameters:
+    use_sim_time: False
+    update_rate: 20  # Hz
+    antbot_swerve_controller:
+      type: antbot_swerve_controller/SwerveDriveController
+
+    # Joint State Broadcaster
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+
+antbot_swerve_controller:
+  ros__parameters:
+    # ======================================================================
+    # Robot-specific parameters (MUST be configured per robot)
+    # ======================================================================
+    steering_joint_names: ["steering_front_left_joint", "steering_front_right_joint", "steering_rear_left_joint", "steering_rear_right_joint"]
+    wheel_joint_names: ["wheel_front_left_joint", "wheel_front_right_joint", "wheel_rear_left_joint", "wheel_rear_right_joint"]
+
+    wheel_radius: 0.103 # [m]
+
+    module_x_offsets: [ 0.265,  0.265, -0.265, -0.265] # x-distance from base_link to steering joint [m]
+    module_y_offsets: [ 0.256, -0.256,  0.256, -0.256] # y-distance from base_link to steering joint [m]
+    module_angle_offsets: [ 0.0, 0.0, 0.0, 0.0] # angle offset between base_link and steering joint [rad]
+    module_steering_limit_lower: [ -1.047, -1.047, -1.047, -1.047 ] # minimum steering angle [rad]
+    module_steering_limit_upper: [  1.047,  1.047,  1.047,  1.047 ] # maximum steering angle [rad]
+
+    # Non-coaxial swerve drive parameters
+    steering_to_wheel_y_offsets: [ 0.0555, -0.0555, 0.0555, -0.0555 ] # Y-offset between steering axis and wheel contact [m]
+
+    # Wheel speed limits per module
+    module_wheel_speed_limit_lower: [ -50.0, -50.0, -50.0, -50.0 ] # [rad/s]
+    module_wheel_speed_limit_upper: [ 50.0, 50.0, 50.0, 50.0 ] # [rad/s]
+
+    # ======================================================================
+    # Steering / Wheel command interface (depends on hardware support)
+    # ======================================================================
+    steering:
+      use_velocity_command: true
+      use_acceleration_command: true
+      max_velocity: 5.0 # steering angular velocity [rad/s]
+      max_acceleration: 10.0 # steering angular acceleration [rad/s^2]
+
+    wheel:
+      use_acceleration_command: true
+
+    # ======================================================================
+    # Parameters below have sensible defaults. Uncomment only to override.
+    # See swerve_drive_controller_parameter.yaml for full parameter list.
+    # ======================================================================
+
+    # --- Motion control ---
+    # enable_steering_scrub_compensator: true
+    # steering_scrub_compensator_scale_factor: 1.0
+    # non_coaxial_ik_iterations: 0
+    # realigning_angle_threshold: 0.087266       # [rad] (~5 deg)
+    # discontinuous_motion_steering_tolerance: 1.0  # [rad]
+    # velocity_deadband: 0.01                    # [m/s, rad/s]
+    # trajectory_delay_time: 0.50                # [sec]
+
+    # --- Steering optimization ---
+    # enabled_steering_flip: true
+    # steering_alignment_angle_error_threshold: 6.29  # [rad]
+    # enabled_wheel_saturation_scaling: true
+
+    # --- Command interface ---
+    # cmd_vel_timeout: 0.50  # [sec]
+
+    # --- Odometry ---
+    # odom_solver_method: "svd"           # "pseudo_inverse", "qr", "svd"
+    # odom_integration_method: "rk4"      # "euler", "rk2", "rk4", "analytic_swerve"
+    # base_frame_id: "base_link"
+    # odom_frame_id: "odom"
+    # enable_odom_tf: true
+    # pose_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.001]
+    # twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.001]
+    # velocity_rolling_window_size: 1
+
+    # --- Direct joint command ---
+    # enable_direct_joint_commands: true
+    # direct_joint_command_timeout_sec: 5.0  # [sec]
+    # direct_joint_command_topic: "~/direct_joint_commands"
+
+
+# Joint State Broadcaster
+joint_state_broadcaster:
+  ros__parameters:
+    {}

@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<!--
+  ANTBot base link definition with body mesh.
+-->
+<robot name="base" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="Base">
+    <link name="base_link">
+      <inertial>
+        <mass value="50.0"/>
+        <inertia ixx="5.0" ixy="0" ixz="0" iyy="5.0" iyz="0" izz="8.0"/>
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="${pi/2} 0 ${pi/2}"/>
+        <geometry>
+          <mesh filename="package://antbot_description/meshes/p38f1_body_asm.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="white"/>
+      </visual>
+    </link>
+
+    <material name="white">
+      <color rgba="1.0 1.0 1.0 1.0"/>
+    </material>
+  </xacro:macro>
+</robot>

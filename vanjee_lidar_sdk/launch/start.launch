@@ -1,0 +1,8 @@
+<launch>
+  <node pkg="vanjee_lidar_sdk" name="vanjee_lidar_sdk_node" type="vanjee_lidar_sdk_node" output="screen">
+    <param name="config_path" value=""/>
+  </node>
+   <!-- rviz -->
+  <node pkg="rviz" name="rviz" type="rviz" args="-d $(find vanjee_lidar_sdk)/rviz/rviz.rviz" />
+
+</launch>

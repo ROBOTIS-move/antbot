@@ -1,0 +1,179 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="840" height="180" viewBox="0 0 840 180" fill="none">
+  <defs>
+    <!-- Primary gradient -->
+    <linearGradient id="main" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00E676"/>
+      <stop offset="40%" style="stop-color:#69F0AE"/>
+      <stop offset="60%" style="stop-color:#00E676"/>
+      <stop offset="100%" style="stop-color:#00C853"/>
+    </linearGradient>
+
+    <!-- Ambient glow gradient -->
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00E676;stop-opacity:0.08"/>
+      <stop offset="100%" style="stop-color:#69F0AE;stop-opacity:0"/>
+    </linearGradient>
+
+    <!-- Radial glow behind title -->
+    <radialGradient id="titleGlow" cx="50%" cy="45%" r="45%">
+      <stop offset="0%" style="stop-color:#00E676;stop-opacity:0.12"/>
+      <stop offset="100%" style="stop-color:#00E676;stop-opacity:0"/>
+    </radialGradient>
+
+    <!-- Line shimmer -->
+    <linearGradient id="shimmer" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00E676;stop-opacity:0">
+        <animate attributeName="offset" values="-0.3;1" dur="3s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="15%" style="stop-color:#69F0AE;stop-opacity:0.8">
+        <animate attributeName="offset" values="-0.15;1.15" dur="3s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="30%" style="stop-color:#00E676;stop-opacity:0">
+        <animate attributeName="offset" values="0;1.3" dur="3s" repeatCount="indefinite"/>
+      </stop>
+    </linearGradient>
+
+    <!-- Shooting star trail gradient (45deg) -->
+    <linearGradient id="starTrail" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#69F0AE;stop-opacity:0.7"/>
+      <stop offset="100%" style="stop-color:#69F0AE;stop-opacity:0"/>
+    </linearGradient>
+
+
+    <!-- Text glow filter -->
+    <filter id="textGlow">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- ======== BACKGROUND ELEMENTS ======== -->
+
+  <!-- Ambient glow center -->
+  <ellipse cx="420" cy="75" rx="280" ry="90" fill="url(#titleGlow)">
+    <animate attributeName="opacity" values="0.6;1;0.6" dur="6s" repeatCount="indefinite"/>
+  </ellipse>
+
+  <!-- ======== TOP SHIMMER LINE ======== -->
+  <line x1="80" y1="18" x2="760" y2="18" stroke="url(#shimmer)" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- ======== MAIN TITLE "antbot" (centered, large) ======== -->
+  <g filter="url(#textGlow)" opacity="0">
+    <animate attributeName="opacity" from="0" to="1" dur="0.8s" begin="0.2s" fill="freeze"/>
+    <text x="420" y="85" text-anchor="middle" font-family="Georgia, 'Playfair Display', 'Times New Roman', 'Noto Serif', serif" font-size="80" font-weight="700" font-style="italic" letter-spacing="1">
+      <tspan fill="url(#main)">ant</tspan><tspan fill="#c8d6e5" font-weight="400" stroke="#5a6577" stroke-width="0.8" paint-order="stroke">bot</tspan>
+    </text>
+  </g>
+
+  <!-- ======== TAGLINE (A.N.T. backronym) ======== -->
+  <g opacity="0">
+    <animate attributeName="opacity" from="0" to="1" dur="0.8s" begin="0.7s" fill="freeze"/>
+    <text x="420" y="110" text-anchor="middle" font-family="Georgia, 'Playfair Display', 'Times New Roman', 'Noto Serif', serif" font-size="15" font-style="italic" letter-spacing="3">
+      <tspan fill="#69F0AE" font-weight="600">A</tspan><tspan fill="#8b95a5" font-weight="300">utonomous </tspan><tspan fill="#69F0AE" font-weight="600">N</tspan><tspan fill="#8b95a5" font-weight="300">avigation </tspan><tspan fill="#69F0AE" font-weight="600">T</tspan><tspan fill="#8b95a5" font-weight="300">ransport robot</tspan>
+    </text>
+  </g>
+
+  <!-- ======== TECH BADGES ======== -->
+  <g opacity="0">
+    <animate attributeName="opacity" from="0" to="1" dur="0.6s" begin="1.1s" fill="freeze"/>
+
+    <!-- Calculate total width: 78+8+62+8+86+8+96+8+96+8+98 = 556, start x = (840-556)/2 = 142 -->
+
+    <!-- ROBOTIS badge -->
+    <rect x="142" y="146" width="78" height="24" rx="12" fill="#00E676" opacity="0.1"/>
+    <text x="181" y="162" text-anchor="middle" font-family="'SF Mono', 'Fira Code', 'Consolas', monospace" font-size="10" font-weight="600" fill="#69F0AE">ROBOTIS</text>
+
+    <!-- ROS 2 badge -->
+    <rect x="228" y="146" width="62" height="24" rx="12" fill="#00E676" opacity="0.1"/>
+    <text x="259" y="162" text-anchor="middle" font-family="'SF Mono', 'Fira Code', 'Consolas', monospace" font-size="10" font-weight="600" fill="#69F0AE">ROS 2</text>
+
+    <!-- Swerve badge -->
+    <rect x="298" y="146" width="86" height="24" rx="12" fill="#00E676" opacity="0.1"/>
+    <text x="341" y="162" text-anchor="middle" font-family="'SF Mono', 'Fira Code', 'Consolas', monospace" font-size="10" font-weight="600" fill="#69F0AE">swerve 4WD</text>
+
+    <!-- ros2_control badge -->
+    <rect x="392" y="146" width="96" height="24" rx="12" fill="#00E676" opacity="0.1"/>
+    <text x="440" y="162" text-anchor="middle" font-family="'SF Mono', 'Fira Code', 'Consolas', monospace" font-size="10" font-weight="600" fill="#69F0AE">ros2_control</text>
+
+    <!-- multi-sensor badge -->
+    <rect x="496" y="146" width="96" height="24" rx="12" fill="#00E676" opacity="0.1"/>
+    <text x="544" y="162" text-anchor="middle" font-family="'SF Mono', 'Fira Code', 'Consolas', monospace" font-size="10" font-weight="600" fill="#69F0AE">multi-sensor</text>
+
+    <!-- open-source badge -->
+    <rect x="600" y="146" width="98" height="24" rx="12" fill="#00E676" opacity="0.1"/>
+    <text x="649" y="162" text-anchor="middle" font-family="'SF Mono', 'Fira Code', 'Consolas', monospace" font-size="10" font-weight="600" fill="#69F0AE">open-source</text>
+  </g>
+
+  <!-- ======== BOTTOM SHIMMER LINE ======== -->
+  <line x1="80" y1="170" x2="760" y2="170" stroke="url(#shimmer)" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- ======== SHOOTING STARS (45° diagonal streaks) ======== -->
+
+  <!-- Shooting star 1: top-right area -->
+  <g opacity="0">
+    <line x1="0" y1="0" x2="50" y2="50" stroke="url(#starTrail)" stroke-width="1.2" stroke-linecap="round"/>
+    <circle cx="50" cy="50" r="1.3" fill="#b9f6ca"/>
+    <animateMotion path="M660,0 L740,80" dur="16s" begin="0s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;0;0.5;0.35;0;0" dur="16s" begin="0s" repeatCount="indefinite" keyTimes="0;0.06;0.1;0.16;0.2;1"/>
+  </g>
+
+  <!-- Shooting star 2: left area -->
+  <g opacity="0">
+    <line x1="0" y1="0" x2="40" y2="40" stroke="url(#starTrail)" stroke-width="1" stroke-linecap="round"/>
+    <circle cx="40" cy="40" r="1" fill="#69F0AE"/>
+    <animateMotion path="M100,10 L170,80" dur="18s" begin="4s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;0;0.4;0.25;0;0" dur="18s" begin="4s" repeatCount="indefinite" keyTimes="0;0.05;0.09;0.14;0.18;1"/>
+  </g>
+
+  <!-- Shooting star 3: center-right -->
+  <g opacity="0">
+    <line x1="0" y1="0" x2="55" y2="55" stroke="url(#starTrail)" stroke-width="0.8" stroke-linecap="round"/>
+    <circle cx="55" cy="55" r="0.9" fill="#b9f6ca"/>
+    <animateMotion path="M500,3 L590,93" dur="20s" begin="7s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;0;0.4;0.25;0;0" dur="20s" begin="7s" repeatCount="indefinite" keyTimes="0;0.04;0.07;0.11;0.14;1"/>
+  </g>
+
+  <!-- Shooting star 4: far right -->
+  <g opacity="0">
+    <line x1="0" y1="0" x2="45" y2="45" stroke="url(#starTrail)" stroke-width="1" stroke-linecap="round"/>
+    <circle cx="45" cy="45" r="1.1" fill="#69F0AE"/>
+    <animateMotion path="M740,5 L820,85" dur="17s" begin="2s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;0;0.35;0.2;0;0" dur="17s" begin="2s" repeatCount="indefinite" keyTimes="0;0.05;0.09;0.14;0.18;1"/>
+  </g>
+
+  <!-- Shooting star 5: left-center -->
+  <g opacity="0">
+    <line x1="0" y1="0" x2="35" y2="35" stroke="url(#starTrail)" stroke-width="0.8" stroke-linecap="round"/>
+    <circle cx="35" cy="35" r="0.8" fill="#b9f6ca"/>
+    <animateMotion path="M290,0 L360,70" dur="19s" begin="9s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;0;0.35;0.2;0;0" dur="19s" begin="9s" repeatCount="indefinite" keyTimes="0;0.04;0.08;0.12;0.15;1"/>
+  </g>
+
+  <!-- ======== FLOATING PARTICLES (gentle drift) ======== -->
+  <g>
+    <circle cx="180" cy="155" r="1.5" fill="#00E676" opacity="0">
+      <animate attributeName="cy" values="158;140;158" dur="3.5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;0.45;0" dur="3.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="660" cy="28" r="1.2" fill="#69F0AE" opacity="0">
+      <animate attributeName="cy" values="30;20;30" dur="4s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;0.35;0" dur="4s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="480" cy="162" r="1.3" fill="#00C853" opacity="0">
+      <animate attributeName="cy" values="163;148;163" dur="3.8s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;0.4;0" dur="3.8s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="780" cy="90" r="1" fill="#69F0AE" opacity="0">
+      <animate attributeName="cy" values="92;82;92" dur="4.5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;0.3;0" dur="4.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="60" cy="70" r="1.2" fill="#00E676" opacity="0">
+      <animate attributeName="cy" values="72;60;72" dur="4.2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;0.3;0" dur="4.2s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+
+</svg>

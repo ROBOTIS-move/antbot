@@ -1,0 +1,383 @@
+antbot:
+  antbot_swerve_controller:
+
+    enabled_speed_limits: {
+      type: bool,
+      default_value: false,
+      description: "Enable/disable limits on the commanded speed."
+    }
+
+    publish_limited_velocity: {
+      type: bool,
+      default_value: true,
+      description: "Enable/disable publishing of the limited velocity."
+    }
+
+    linear:
+      x:
+        has_velocity_limits: {
+          type: bool,
+          default_value: true,
+        }
+        has_acceleration_limits: {
+          type: bool,
+          default_value: true,
+        }
+        has_jerk_limits: {
+          type: bool,
+          default_value: false,
+        }
+        max_velocity: {
+          type: double,
+          default_value: 2.0,
+        }
+        min_velocity: {
+          type: double,
+          default_value: -2.0,
+        }
+        max_acceleration: {
+          type: double,
+          default_value: 1.0,
+        }
+        min_acceleration: {
+          type: double,
+          default_value: -2.0,
+        }
+        max_jerk: {
+          type: double,
+          default_value: .NAN,
+        }
+        min_jerk: {
+          type: double,
+          default_value: .NAN,
+        }
+      y:
+        has_velocity_limits: {
+          type: bool,
+          default_value: true,
+        }
+        has_acceleration_limits: {
+          type: bool,
+          default_value: false,
+        }
+        has_jerk_limits: {
+          type: bool,
+          default_value: false,
+        }
+        max_velocity: {
+          type: double,
+          default_value: 1.5,
+        }
+        min_velocity: {
+          type: double,
+          default_value: -1.5,
+        }
+        max_acceleration: {
+          type: double,
+          default_value: 1.0,
+        }
+        min_acceleration: {
+          type: double,
+          default_value: -1.0,
+        }
+        max_jerk: {
+          type: double,
+          default_value: .NAN,
+        }
+        min_jerk: {
+          type: double,
+          default_value: .NAN,
+        }
+    angular:
+      z:
+        has_velocity_limits: {
+          type: bool,
+          default_value: true,
+        }
+        has_acceleration_limits: {
+          type: bool,
+          default_value: true,
+        }
+        has_jerk_limits: {
+          type: bool,
+          default_value: false,
+        }
+        max_velocity: {
+          type: double,
+          default_value: 2.0,
+        }
+        min_velocity: {
+          type: double,
+          default_value: -2.0,
+        }
+        max_acceleration: {
+          type: double,
+          default_value: 1.0,
+        }
+        min_acceleration: {
+          type: double,
+          default_value: -2.0,
+        }
+        max_jerk: {
+          type: double,
+          default_value: .NAN,
+        }
+        min_jerk: {
+          type: double,
+          default_value: .NAN,
+        }
+
+
+    enabled_synchronized_setpoint: {
+      type: bool,
+      default_value: false,
+    }
+
+    steering:
+      use_velocity_command: {
+        type: bool,
+        default_value: true,
+        description: "Use steering velocity command interface (requires HW support)"
+      }
+      use_acceleration_command: {
+        type: bool,
+        default_value: true,
+        description: "Use steering acceleration command interface (requires HW support)"
+      }
+      has_velocity_limits: {
+        type: bool,
+        default_value: true,
+      }
+      max_velocity: {
+        type: double,
+        default_value: 5.0,
+      }
+      max_acceleration: {
+        type: double,
+        default_value: 10.0,
+      }
+
+    wheel:
+      use_acceleration_command: {
+        type: bool,
+        default_value: true,
+        description: "Use wheel acceleration command interface (requires HW support)"
+      }
+      max_acceleration: {
+        type: double,
+        default_value: 18.7254,
+        description: "Default wheel acceleration for normal driving [rad/s^2]"
+      }
+      emergency_stop_acceleration: {
+        type: double,
+        default_value: 0.0,
+        description: "Wheel acceleration for emergency stop (0 = immediate stop) [rad/s^2]"
+      }
+
+    # Runtime configurable parameters
+    cmd_vel_timeout: {
+      type: double,
+      default_value: 0.50,
+      description: "Timeout for cmd_vel messages in seconds"
+    }
+
+    enabled_steering_flip: {
+      type: bool,
+      default_value: true,
+      description: "Enable/disable steering direction flip optimization"
+    }
+
+    steering_alignment_angle_error_threshold: {
+      type: double,
+      default_value: 6.29,
+      description: "Steering alignment angle error threshold in radians"
+    }
+
+    enabled_wheel_saturation_scaling: {
+      type: bool,
+      default_value: true,
+      description: "Enable/disable wheel speed saturation scaling"
+    }
+
+    enable_direct_joint_commands: {
+      type: bool,
+      default_value: true,
+      description: "Enable/disable direct joint commands"
+    }
+
+    direct_joint_command_timeout_sec: {
+      type: double,
+      default_value: 5.0,
+      description: "Direct joint command timeout in seconds"
+    }
+
+    module_wheel_speed_limit_lower: {
+      type: double_array,
+      default_value: [-50.0, -50.0, -50.0, -50.0],
+      description: "Lower wheel speed limits for each module in rad/s"
+    }
+
+    module_wheel_speed_limit_upper: {
+      type: double_array,
+      default_value: [50.0, 50.0, 50.0, 50.0],
+      description: "Upper wheel speed limits for each module in rad/s"
+    }
+
+    realigning_angle_threshold: {
+      type: double,
+      default_value: 0.087266,
+      description: "Realigning angle threshold in radians"
+    }
+
+    discontinuous_motion_steering_tolerance: {
+      type: double,
+      default_value: 1.0,
+      description: "Discontinuous motion steering tolerance in radians"
+    }
+
+    velocity_deadband: {
+      type: double,
+      default_value: 0.01,
+      description: "Velocity deadband in m/s and rad/s"
+    }
+
+    enable_steering_scrub_compensator: {
+      type: bool,
+      default_value: true,
+      description: "Enable steering scrub compensator"
+    }
+
+    steering_scrub_compensator_scale_factor: {
+      type: double,
+      default_value: 1.0,
+      description: "Steering scrub compensator scale factor"
+    }
+
+    enable_odom_tf: {
+      type: bool,
+      default_value: true,
+      description: "Enable odometry TF publishing"
+    }
+
+    # Basic configuration parameters (non-runtime configurable)
+    steering_joint_names: {
+      type: string_array,
+      default_value: ["steering_front_left_joint", "steering_front_right_joint", "steering_rear_left_joint", "steering_rear_right_joint"],
+      description: "Names of the steering joints"
+    }
+
+    wheel_joint_names: {
+      type: string_array,
+      default_value: ["wheel_front_left_joint", "wheel_front_right_joint", "wheel_rear_left_joint", "wheel_rear_right_joint"],
+      description: "Names of the wheel joints"
+    }
+
+    wheel_radius: {
+      type: double,
+      default_value: 0.103,
+      description: "Radius of the wheels in meters"
+    }
+
+    module_x_offsets: {
+      type: double_array,
+      default_value: [0.265, 0.265, -0.265, -0.265],
+      description: "X-distance between base_link and steering angle joint in meters"
+    }
+
+    module_y_offsets: {
+      type: double_array,
+      default_value: [0.256, -0.256, 0.256, -0.256],
+      description: "Y-distance between base_link and steering angle joint in meters"
+    }
+
+    module_angle_offsets: {
+      type: double_array,
+      default_value: [0.0, 0.0, 0.0, 0.0],
+      description: "Initial angle difference between base_link and steering angle joint in radians"
+    }
+
+    module_steering_limit_lower: {
+      type: double_array,
+      default_value: [-1.047, -1.047, -1.047, -1.047],
+      description: "Minimum steering angle for each module in radians"
+    }
+
+    module_steering_limit_upper: {
+      type: double_array,
+      default_value: [1.047, 1.047, 1.047, 1.047],
+      description: "Maximum steering angle for each module in radians"
+    }
+
+    steering_to_wheel_y_offsets: {
+      type: double_array,
+      default_value: [0.0555, -0.0555, 0.0555, -0.0555],
+      description: "Offset between steering angle joint and wheel joint (Y-axis) in meters"
+    }
+
+    # Additional parameters for odometry and topics
+    twist_covariance_diagonal: {
+      type: double_array,
+      default_value: [0.001, 0.001, 0.001, 0.001, 0.001, 0.001],
+      description: "Diagonal values for twist covariance matrix"
+    }
+
+    velocity_rolling_window_size: {
+      type: int,
+      default_value: 1,
+      description: "Size of the rolling window for velocity estimation"
+    }
+
+    cmd_vel_topic: {
+      type: string,
+      default_value: "/cmd_vel",
+      description: "Topic name for velocity commands"
+    }
+
+    use_stamped_cmd_vel: {
+      type: bool,
+      default_value: false,
+      description: "Use stamped velocity commands"
+    }
+
+    non_coaxial_ik_iterations: {
+      type: int,
+      default_value: 0,
+      description: "Number of iterations for non-coaxial inverse kinematics calculation"
+    }
+
+    trajectory_delay_time: {
+      type: double,
+      default_value: 0.50,
+      description: "Trajectory delay time in seconds"
+    }
+
+    # Additional parameters that need manual declaration
+    odom_frame_id: {
+      type: string,
+      default_value: "odom",
+      description: "Odometry frame ID"
+    }
+
+    base_frame_id: {
+      type: string,
+      default_value: "base_link",
+      description: "Base frame ID"
+    }
+
+    pose_covariance_diagonal: {
+      type: double_array,
+      default_value: [0.001, 0.001, 0.001, 0.001, 0.001, 0.001],
+      description: "Diagonal values for pose covariance matrix"
+    }
+
+    odom_solver_method: {
+      type: string,
+      default_value: "svd",
+      description: "Odometry solver method: 'pseudo_inverse', 'qr', 'svd'"
+    }
+
+    odom_integration_method: {
+      type: string,
+      default_value: "rk4",
+      description: "Odometry integration method: 'euler', 'rk2', 'rk4', 'analytic_swerve'"
+    }

@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<Device Name="ANTBot-IMU" BootLoaderName="Dynamixel Boot Loader" ModelNumber="526" MinAddress="800" MaxAddress="822" AngleRange="360.0" Type="Dynamixel2">
+  <ControlItems>
+    <Item Address="6" Memory="1" Length="1" Name="ID" RW="1" Min="0" Max="255" Init="0" UI="2" Label="ID {0}"/>
+    <Item Address="800" Memory="2" Length="1" Name="IMU_Sensor_Connection" RW="1" Min="0" Max="255" Init="0" UI="2" Label="Disconnected:Connected"/>
+    <Item Address="801" Memory="2" Length="1" Name="IMU_Sensor_Temperature" RW="1" Min="-128" Max="127" Init="0" UI="4" Unit="°C" Scale="1"/>
+    <Item Address="802" Memory="2" Length="2" Name="IMU_Acc_Scale" RW="1" Min="-32768" Max="32767" Init="0" UI="4" Unit="LSB/g" Scale="1"/>
+    <Item Address="804" Memory="2" Length="2" Name="IMU_Gyro_Scale" RW="1" Min="-32768" Max="32767" Init="0" UI="4" Unit="LSB/dps" Scale="0.1"/>
+    <Item Address="806" Memory="2" Length="4" Name="IMU_Timestamp" RW="1" Min="0" Max="4294967295" Init="0" UI="4" Unit="μsec" Scale="1"/>
+    <Item Address="810" Memory="2" Length="2" Name="IMU_Acc_X" RW="1" Min="-32768" Max="32767" Init="0" UI="4" Unit="g" Scale="0.00006103515625"/>
+    <Item Address="812" Memory="2" Length="2" Name="IMU_Acc_Y" RW="1" Min="-32768" Max="32767" Init="0" UI="4" Unit="g" Scale="0.00006103515625"/>
+    <Item Address="814" Memory="2" Length="2" Name="IMU_Acc_Z" RW="1" Min="-32768" Max="32767" Init="0" UI="4" Unit="g" Scale="0.00006103515625"/>
+    <Item Address="816" Memory="2" Length="2" Name="IMU_Gyro_X" RW="1" Min="-32768" Max="32767" Init="0" UI="4" Unit="dps" Scale="16.4"/>
+    <Item Address="818" Memory="2" Length="2" Name="IMU_Gyro_Y" RW="1" Min="-32768" Max="32767" Init="0" UI="4" Unit="dps" Scale="16.4"/>
+    <Item Address="820" Memory="2" Length="2" Name="IMU_Gyro_Z" RW="1" Min="-32768" Max="32767" Init="0" UI="4" Unit="dps" Scale="16.4"/>
+  </ControlItems>
+  <ReleaseNotes MinimumVersion="0">
+    <Release Version="1" Date="10/14/2025" FileName="" Note="* First Released."/>
+  </ReleaseNotes>
+</Device>

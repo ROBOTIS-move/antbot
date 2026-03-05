@@ -1,0 +1,10 @@
+# Operation constants
+uint8 OPERATION_LOCK = 0
+uint8 OPERATION_UNLOCK = 1
+
+# Request
+uint8 operation
+---
+# Response
+bool success
+string message

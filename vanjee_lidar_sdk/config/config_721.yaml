@@ -1,0 +1,41 @@
+common:
+  msg_source: 1                                   # 0: not use lidar 
+                                                  # 1: 消息来源于在线雷达
+                                                  # 2: 消息来源于 pcap
+  send_point_cloud_ros: true                      # true: 将点云发送到ROS以便查看
+lidar:
+  - driver:
+      lidar_type: vanjee_721                        # LiDAR类型 (支持雷达型号参考 README_CN.md)
+      connect_type: 1                               # 连接方式 1-udp  2-tcp
+      host_msop_port: 3001                          # 接收点云数据的主机端口号
+      lidar_msop_port: 3333                         # 雷达端口号
+      start_angle: 0                                # 点云起始角度
+      end_angle: 360                                # 点云结束角度
+      wait_for_difop: true                          # 是否等角度标定表参数导入
+      min_distance: 0.3                             # 点云最小距离
+      max_distance: 45                              # 点云最大距离
+      use_lidar_clock: true                         # true: 使用雷达时间作为消息时间戳
+                                                    # false: 使用电脑主机时间作为消息时间戳
+      pcap_path:                                    # pcap文件绝对路径
+      pcap_repeat: true                             # 是否循环播放pcap
+      pcap_rate: 1                                  # pcap播放速度
+      config_from_file: false                       # 从配置文件内获取参数
+      angle_path_ver:                               # 垂直角度配置文件地址
+      angle_path_hor:                               # 水平角度配置文件地址
+      dense_points: false                           # 输出的点云中是否剔除标记为NAN的点
+      ts_first_point: true                          # 点云的时间戳是否第一个点的时间 true-第一个点的时间，false-最后一个点的时间
+      use_offset_timestamp: true                    # 使用相对时间戳 true-点云中每个点使用相对于话题的时间差，false-每个点使用utc时间
+      publish_mode: 0                               # 回波模式 0-发布第一重，1-发布第二重；2-发布两重；
+      group_address: 0.0.0.0                        # 组播地址
+      host_address: 192.168.2.88                    # 接收点云数据的主机IP地址
+      lidar_address: 192.168.2.86                   # 雷达IP地址
+      x: 0                                          # x方向偏移量 m
+      y: 0                                          # y方向偏移量 m
+      z: 0                                          # z方向偏移量 m
+      roll: 0                                       # 横滚角偏移量 °
+      pitch: 0                                      # 俯仰角偏移量 °
+      yaw: 0                                        # 航向角偏移量 °
+    use_vlan: false                                 # PCAP文件中的Packet是否包含VLAN层
+    ros:
+      ros_frame_id: vanjee_lidar                       # Frame id of packet message and point cloud message
+      ros_send_point_cloud_topic: /vanjee_points721    # Topic used to send point cloud through ROS
