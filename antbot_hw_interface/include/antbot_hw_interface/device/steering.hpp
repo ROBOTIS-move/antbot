@@ -38,6 +38,11 @@ public:
 
   void update(std::unordered_map<std::string, double> & state_map) override;
 
+  // Sync command_map position entries with current hardware state to prevent initial jump
+  void sync_commands_to_current_state(
+    const std::unordered_map<std::string, double> & state_map,
+    std::unordered_map<std::string, double> & command_map);
+
   void write_position(
     const double & cmd_front_left_pos,
     const double & cmd_front_right_pos,

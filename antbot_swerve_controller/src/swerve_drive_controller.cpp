@@ -1207,7 +1207,11 @@ controller_interface::return_type SwerveDriveController::update(
   current_steering_positions.reserve(num_modules_);
 
   if (previous_steering_commands_.empty()) {
-    previous_steering_commands_.resize(num_modules_, 0.0);
+    previous_steering_commands_.resize(num_modules_);
+    for (size_t i = 0; i < num_modules_; ++i) {
+      previous_steering_commands_[i] =
+        module_handles_[i].steering_state_pos.get().get_value();
+    }
   }
 
   // Use helper to read states

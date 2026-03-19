@@ -83,6 +83,18 @@ void device::Steering::update(std::unordered_map<std::string, double> & state_ma
   }
 }
 
+void device::Steering::sync_commands_to_current_state(
+  const std::unordered_map<std::string, double> & state_map,
+  std::unordered_map<std::string, double> & command_map)
+{
+  for (const auto & item : position_register_map_) {
+    auto it = state_map.find(item.second);
+    if (it != state_map.end()) {
+      command_map[item.second] = it->second;
+    }
+  }
+}
+
 void device::Steering::write_position(
   const double & cmd_front_left_pos,
   const double & cmd_front_right_pos,

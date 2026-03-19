@@ -133,6 +133,17 @@ hardware_interface::CallbackReturn BoardInterface::on_configure(
 hardware_interface::CallbackReturn BoardInterface::on_activate(
   const rclcpp_lifecycle::State &)
 {
+  if (!communicator_->read_control_table()) {
+    RCLCPP_ERROR(logger_, "Failed to read control table on activate");
+    return hardware_interface::CallbackReturn::ERROR;
+  }
+
+  // Initialize steering commands with current positions to prevent jump to zero
+  if (steering_device_ != nullptr) {
+    steering_device_->update(state_map_);
+    steering_device_->sync_commands_to_current_state(state_map_, command_map_);
+  }
+
   for (const auto & device : device_list_) {
     device->activate();
   }

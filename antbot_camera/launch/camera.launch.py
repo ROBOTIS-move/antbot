@@ -71,6 +71,7 @@ def generate_launch_description():
                         'depth_fps': '15',
                         'enable_point_cloud': 'false',
                         'enable_colored_point_cloud': 'false',
+                        'publish_tf': 'false',
                     }.items()
                 ),
             ]
