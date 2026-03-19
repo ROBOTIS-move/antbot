@@ -124,6 +124,7 @@ Built entirely on [ROS 2 Humble](https://docs.ros.org/en/humble/) and the [ros2_
 | [`antbot_swerve_controller`](antbot_swerve_controller/) | ros2_control swerve-drive controller with IK, motion profiling, and odometry |
 | [`antbot_hw_interface`](antbot_hw_interface/) | ros2_control `SystemInterface` plugin for the RCU board |
 | [`antbot_libs`](antbot_libs/) | Shared C++ library for Dynamixel Protocol 2.0 communication |
+| [`antbot_interfaces`](antbot_interfaces/) | Custom ROS 2 message and service definitions |
 | [`antbot_camera`](antbot_camera/) | Multi-driver camera package (V4L2 / USB / Orbbec Gemini 336L RGB-D) |
 | [`antbot_imu`](antbot_imu/) | IMU driver with complementary filter and auto-calibration |
 | [`antbot_teleop`](antbot_teleop/) | Keyboard/joystick teleoperation with holonomic velocity control |
@@ -453,9 +454,9 @@ ros2 topic pub /cmd_vel geometry_msgs/msg/Twist \
 
 | Service | Type | Description |
 |:--------|:-----|:------------|
-| `cargo/command` | `antbot_interfaces/CargoCommand` | Lock / unlock the cargo door |
-| `headlight/operation` | `std_srvs/SetBool` | Turn headlight on / off |
-| `wiper/operation` | `antbot_interfaces/WiperOperation` | Set wiper mode (OFF / ONCE / REPEAT) |
+| `/cargo/command` | [![antbot_interfaces](https://img.shields.io/badge/antbot__interfaces-CargoCommand-6610f2?style=flat-square)](antbot_interfaces/) | Lock / unlock the cargo door |
+| `/headlight/operation` | [![std_srvs](https://img.shields.io/badge/std__srvs-SetBool-198754?style=flat-square)](https://docs.ros2.org/latest/api/std_srvs/srv/SetBool.html) | Turn headlight on / off |
+| `/wiper/operation` | [![antbot_interfaces](https://img.shields.io/badge/antbot__interfaces-WiperOperation-6610f2?style=flat-square)](antbot_interfaces/) | Set wiper mode (OFF / ONCE / REPEAT) |
 
 ### Key Dependencies
 
@@ -502,7 +503,6 @@ Copyright 2026 ROBOTIS AI CO., LTD.
 **ROBOTIS AI CO., LTD.**
 
 - 🌐 Website: [www.robotis.com](https://www.robotis.com/)
-- 💌 Email: [jdu@robotis.com](mailto:jdu@robotis.com)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

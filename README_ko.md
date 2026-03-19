@@ -124,6 +124,7 @@
 | [`antbot_swerve_controller`](antbot_swerve_controller/) | ros2_control 기반 스워브 드라이브 컨트롤러 (IK, 오도메트리) |
 | [`antbot_hw_interface`](antbot_hw_interface/) | RCU 보드용 ros2_control `SystemInterface` 플러그인 |
 | [`antbot_libs`](antbot_libs/) | Dynamixel Protocol 2.0 통신 라이브러리 (C++) |
+| [`antbot_interfaces`](antbot_interfaces/) | 커스텀 ROS 2 메시지 및 서비스 정의 |
 | [`antbot_camera`](antbot_camera/) | 멀티 카메라 드라이버 (V4L2 / USB / Orbbec RGB-D) |
 | [`antbot_imu`](antbot_imu/) | IMU 드라이버 (상보 필터, 자동 캘리브레이션) |
 | [`antbot_teleop`](antbot_teleop/) | 키보드 원격 조종 (전방향 이동 지원) |
@@ -448,6 +449,14 @@ ros2 topic pub /cmd_vel geometry_msgs/msg/Twist \
 |:------|:-----|:----|
 | `/cmd_vel` | [![geometry_msgs](https://img.shields.io/badge/geometry__msgs-Twist-22314E?style=flat-square)](https://docs.ros2.org/latest/api/geometry_msgs/msg/Twist.html) | 속도 명령 (linear x/y + angular z) |
 
+### Services
+
+| Service | Type | 설명 |
+|:--------|:-----|:----|
+| `/cargo/command` | [![antbot_interfaces](https://img.shields.io/badge/antbot__interfaces-CargoCommand-6610f2?style=flat-square)](antbot_interfaces/) | 화물함 잠금 / 해제 |
+| `/headlight/operation` | [![std_srvs](https://img.shields.io/badge/std__srvs-SetBool-198754?style=flat-square)](https://docs.ros2.org/latest/api/std_srvs/srv/SetBool.html) | 전조등 켜기 / 끄기 |
+| `/wiper/operation` | [![antbot_interfaces](https://img.shields.io/badge/antbot__interfaces-WiperOperation-6610f2?style=flat-square)](antbot_interfaces/) | 와이퍼 모드 설정 (OFF / ONCE / REPEAT) |
+
 ### Key Dependencies
 
 | Package | 용도 |
@@ -493,7 +502,6 @@ Copyright 2026 ROBOTIS AI CO., LTD.
 **ROBOTIS AI CO., LTD.**
 
 - 🌐 Website: [www.robotis.com](https://www.robotis.com/)
-- 💌 Email: [jdu@robotis.com](mailto:jdu@robotis.com)
 
 <p align="right">(<a href="#readme-top">상단으로</a>)</p>
 
