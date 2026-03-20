@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <rect width="400" height="300" fill="#f0f4f8" rx="8"/>
+  <rect x="100" y="40" width="200" height="220" fill="#d1d5db" rx="8"/>
+  <rect x="130" y="70" width="50" height="20" fill="#3b82f6" rx="2"/>
+  <text x="155" y="85" text-anchor="middle" font-family="sans-serif" font-size="9" fill="white">HDMI</text>
+  <rect x="130" y="110" width="50" height="20" fill="#10b981" rx="2"/>
+  <text x="155" y="125" text-anchor="middle" font-family="sans-serif" font-size="9" fill="white">USB 1</text>
+  <rect x="130" y="150" width="50" height="20" fill="#10b981" rx="2"/>
+  <text x="155" y="165" text-anchor="middle" font-family="sans-serif" font-size="9" fill="white">USB 2</text>
+  <circle cx="155" cy="210" r="15" fill="#f59e0b"/>
+  <text x="155" y="215" text-anchor="middle" font-family="sans-serif" font-size="8" fill="white">CHG</text>
+  <text x="200" y="285" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#6b7280">HMI Panel (placeholder)</text>
+</svg>

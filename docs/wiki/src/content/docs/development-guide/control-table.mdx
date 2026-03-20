@@ -1,0 +1,145 @@
+---
+title: 5.1 컨트롤 테이블
+description: AntBot 컨트롤 테이블 아이템 목록
+sidebar:
+  order: 1
+---
+
+컨트롤 테이블은 장치의 현재 상태와 구동 및 제어에 필요한 다수의 데이터로 이루어져 있습니다.
+
+사용자는 **[다이나믹셀 프로토콜 2.0](https://emanual.robotis.com/docs/kr/dxl/protocol2/)** 을 사용해 컨트롤 테이블의 특정 데이터를 읽어서 장치의 상태를 파악할 수 있고, 데이터를 변경함으로써 장치를 제어할 수 있습니다.
+
+AntBot 내부에서는 컨트롤 테이블을 XML 파일로 관리하고 있습니다.
+
+### 컨트롤 아이템 기본정보
+
+- **크기 (`Length`)**
+
+  데이터의 크기는 **용도에 따라 1 ~ 4 byte**로 정해져 있으며, 컨트롤 테이블을 통해 해당 데이터의 크기를 확인하시기 바랍니다.
+
+  2 byte 이상의 연속된 데이터는 Little Endian 규칙에 의해 기록됩니다.
+
+- **접근권한 (`RW`)**
+
+  컨트롤 테이블의 데이터는 2가지 접근 속성을 갖습니다. **`RW`는 읽기와 쓰기 접근이 모두 가능**합니다. 반면 **`R`은 읽기 전용(Read Only) 속성**을 갖습니다.
+
+  읽기 전용 속성의 데이터는 해당 주소로 값을 쓰더라도 값이 변경되지 않습니다.
+
+- **기본값 (`Init`)**
+
+  컨트롤 테이블에 표기된 기본값은 **장치에 전원이 인가되었을 때 설정되는 값**입니다.
+
+  전원이 꺼지면 값이 보존되지 않습니다.
+
+- **열거형 데이터 (`Label`)**
+
+  일부 컨트롤 아이템은 열거형 라벨을 가지며, **정수값이 순서대로 라벨에 매핑**됩니다. 첫 번째 라벨이 `0`, 두 번째가 `1`, 세 번째가 `2` 순서입니다.
+
+  예를 들어 `Motor_State`의 라벨이 `IDLE:READY_ENTER:READY:...`인 경우, 값 `0` = `IDLE`, 값 `1` = `READY_ENTER`, 값 `2` = `READY`로 해석합니다.
+
+
+---
+
+## 5.1.1 RCU (Robot Control Unit)
+
+컨트롤 테이블은 [`control_table.xml`](https://github.com/ROBOTIS-move/antbot/blob/main/antbot_hw_interface/config/control_table.xml)에서 확인할 수 있습니다.
+
+- **시리얼 포트**: `/dev/ttyUSB0`
+- **통신 프로토콜**: Dynamixel Protocol 2.0
+- **Baud Rate**: 4,000,000 bps
+- **Scale**: raw 값 1 LSB당 물리 단위 변환 계수 (`physical_value = raw_value × scale`)
+
+### 시스템
+
+| 이름 | 단위 | 접근 | 설명 |
+| :--- | :--- | :--- | :--- |
+| RTC_Set_Date | YYMMDD | RW | 호스트 시간 동기화를 위한 날짜 설정 <br/> (예: 260225 → 2026-02-25) |
+| RTC_Set_Time | HHmmss | RW | 호스트 시간 동기화를 위한 시간 설정 <br/> (예: 143005 → 14:30:05) |
+
+### 모터
+
+| 이름 | 단위 (Scale) | 접근 | 설명 |
+| :--- | :--- | :--- | :--- |
+| Motor_State | - | R | 모터 상태 <br/> (`READY` 상태일 때 모터 구동 가능) |
+| Motor_Reboot_Check | - | RW | 모터 리부팅 확인 <br/> (플래그 발생 시 휠 모터 Present_Position 값이 0으로 초기화) |
+| Motor_Goal_Acceleration | rev/min² (×53.644) | RW | 휠 모터 목표 가속도 |
+| M1~M4_Goal_RPM | rev/min (×0.01) | RW | 휠 모터 목표 속도 |
+| M1~M4_Present_RPM | rev/min (×0.01) | R | 휠 모터 현재 속도 |
+| M1~M4_Present_Position | pulse | R | 휠 모터 현재 위치 (엔코더) |
+| M1~M4_Present_Current | mA | R | 휠 모터 전류 |
+| M1~M4_Motor_Temperature | °C | R | 휠 모터 온도 |
+| S1~S4_Goal_Position | pulse | RW | 스티어링 모터 목표 위치 |
+| S1~S4_Present_Position | pulse | R | 스티어링 모터 현재 위치 |
+| S1~S4_Profile_Acceleration | rev/min² (×214.577) | RW | 스티어링 가속도 프로파일 |
+| S1~S4_Profile_Velocity | rev/min (×0.229) | RW | 스티어링 속도 프로파일 |
+| S1~S4_Present_Current | mA | R | 스티어링 모터 전류 |
+
+### 배터리
+
+| 이름 | 단위 (Scale) | 접근 | 설명 |
+| :--- | :--- | :--- | :--- |
+| Battery_Current | mA (×10) | R | 배터리 전류 |
+| Battery_Voltage | V (×0.01) | R | 배터리 전압 |
+| Battery_Capacity | Ah (×0.01) | R | 배터리 용량 |
+| Battery_Percentage | % | R | 배터리 잔량 (SOC) |
+| BMS_Temperature | °C | R | BMS 온도 |
+| Battery_Is_Charging | - | R | 충전 상태 (Discharging, Charging) |
+
+### 비상정지
+
+| 이름 | 단위 | 접근 | 설명 |
+| :--- | :--- | :--- | :--- |
+| Estop_State | - | R | 비상정지 상태 |
+
+### 카고
+
+| 이름 | 단위 | 접근 | 설명 |
+| :--- | :--- | :--- | :--- |
+| Cargo_Command | - | RW | 카고 명령 |
+| Cargo_Door_State | - | R | 도어 상태 |
+| Cargo_Lock_State | - | R | 잠금 상태 |
+
+### 전조등
+
+| 이름 | 단위 | 접근 | 설명 |
+| :--- | :--- | :--- | :--- |
+| Headlight_State | - | RW | 전조등 제어 |
+
+### 와이퍼
+
+| 이름 | 단위 (Scale) | 접근 | 설명 |
+| :--- | :--- | :--- | :--- |
+| Wiper_Mode | - | RW | 와이퍼 모드 |
+| Wiper_INT_Time | sec (×0.1) | RW | 와이퍼 주기 |
+| Wiper_Hw_error_1~3 | - | R | 와이퍼 에러 코드 |
+
+### 초음파 센서
+
+| 이름 | 단위 | 접근 | 설명 |
+| :--- | :--- | :--- | :--- |
+| UltraSonic_1~2 | cm | R | 초음파 센서값 |
+
+---
+
+### 릴레이
+
+| 이름 | 단위 (Scale) | 접근 | 설명 |
+| :--- | :--- | :--- | :--- |
+| Relay_Control | bitmask | RW | 릴레이 제어 |
+| Relay_Timeout | sec (×0.1) | RW | 릴레이 자동 타임아웃 |
+
+---
+
+## 5.1.2 IMU
+
+RCU와 별도로 독립된 통신 채널을 통해 IMU 데이터를 읽습니다. 컨트롤 테이블은 [`control_table.xml`](https://github.com/ROBOTIS-move/antbot/blob/main/antbot_imu/config/control_table.xml)에서 확인할 수 있습니다.
+
+- **시리얼 포트**: `/dev/ttyUSB1`
+- **통신 프로토콜**: Dynamixel Protocol 2.0
+- **Baud Rate**: 4,000,000 bps
+- **Scale**: raw 값 1 LSB당 물리 단위 변환 계수 (`physical_value = raw_value × scale`)
+
+| 이름 | 단위 (Scale) | 접근 | 설명 |
+| :--- | :--- | :--- | :--- |
+| IMU_Acc_X/Y/Z | g (×0.0000610) | R | 3축 가속도 |
+| IMU_Gyro_X/Y/Z | dps (×16.4) | R | 3축 각속도 |

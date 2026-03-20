@@ -1,0 +1,72 @@
+---
+interface Props {
+  chart: string;
+}
+const { chart } = Astro.props;
+---
+
+<div class="not-content mermaid-container">
+  <div class="mermaid-diagram"></div>
+</div>
+
+<script define:vars={{ chart }}>
+  const container = document.currentScript.previousElementSibling;
+  const el = container.querySelector('.mermaid-diagram');
+  el.setAttribute('data-chart', chart);
+</script>
+
+<script>
+  import mermaid from 'mermaid';
+
+  const renderAll = async () => {
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'dark',
+      themeVariables: {
+        background: '#0f172a',
+        primaryColor: '#1e293b',
+        primaryBorderColor: '#22c55e',
+        primaryTextColor: '#e2e8f0',
+        secondaryColor: '#1e293b',
+        secondaryBorderColor: '#06b6d4',
+        tertiaryColor: '#0f172a',
+        lineColor: '#475569',
+        textColor: '#e2e8f0',
+        nodeTextColor: '#e2e8f0',
+        mainBkg: '#1e293b',
+        nodeBorder: '#22c55e',
+        clusterBkg: 'rgba(34,197,94,0.06)',
+        clusterBorder: '#22c55e',
+        edgeLabelBackground: '#0f172a',
+        fontSize: '13px',
+      },
+      flowchart: {
+        curve: 'basis',
+        padding: 16,
+        htmlLabels: true,
+      },
+    });
+
+    const elements = document.querySelectorAll('.mermaid-diagram[data-chart]');
+    for (let i = 0; i < elements.length; i++) {
+      const el = elements[i] as HTMLElement;
+      const chart = el.getAttribute('data-chart');
+      if (chart && !el.querySelector('svg')) {
+        try {
+          const { svg } = await mermaid.render(`mmd-${Date.now()}-${i}`, chart);
+          el.innerHTML = svg;
+        } catch (e: any) {
+          el.innerHTML = `<pre style="color:#ef4444;font-size:12px">${e.message}</pre>`;
+        }
+      }
+    }
+  };
+
+  renderAll();
+  document.addEventListener('astro:after-swap', renderAll);
+  document.addEventListener('click', (e) => {
+    if ((e.target as HTMLElement)?.closest('[role="tab"]')) {
+      setTimeout(renderAll, 100);
+    }
+  });
+</script>

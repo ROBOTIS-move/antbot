@@ -1,0 +1,58 @@
+---
+title: 6.1 Firmware Diagnostics
+description: RCU Board Firmware Diagnostics and Status Check
+sidebar:
+  order: 1
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+This describes how to check and diagnose the status of the RCU (Robot Control Unit) board.
+
+## Diagnostics via Dynamixel Wizard 2.0
+
+:::note
+This section is under preparation.
+:::
+
+When RCU board diagnostics are needed, use **Dynamixel Wizard 2.0**.
+
+### Diagnostic Procedure
+
+<Steps>
+
+1. SSH into the robot PC.
+
+2. Stop the AntBot service. (To prevent serial port conflicts)
+
+   ```bash
+   sudo systemctl stop antbot
+   ```
+
+3. Launch Dynamixel Wizard 2.0.
+
+4. Set port scan to `/dev/ttyUSB0`, baud rate to `4,000,000 bps`.
+
+5. Confirm detection of the RCU board (ID: 200).
+
+6. Diagnose by reading/writing control table items.
+
+</Steps>
+
+## Individual Control Item Check
+
+You can also diagnose directly through the ROS 2 interface without stopping the service.
+
+```bash
+# Check battery level
+ros2 service call /hw/direct_read antbot_interfaces/srv/DirectRead \
+  "{item_name: 'Battery_Percentage'}"
+
+# Check motor state
+ros2 service call /hw/direct_read antbot_interfaces/srv/DirectRead \
+  "{item_name: 'Motor_State'}"
+
+# Check emergency stop state
+ros2 service call /hw/direct_read antbot_interfaces/srv/DirectRead \
+  "{item_name: 'Estop_State'}"
+```

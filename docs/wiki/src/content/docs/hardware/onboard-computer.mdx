@@ -1,0 +1,40 @@
+---
+title: 2.6 온보드 컴퓨터 사양
+description: AntBot 온보드 컴퓨터 사양
+sidebar:
+  order: 6
+---
+
+AntBot에 탑재된 온보드 컴퓨터 사양입니다.
+
+---
+
+## 플랫폼 기본 정보
+
+| 항목 | 내용 |
+| :--- | :--- |
+| **ROS2 배포판** | Humble |
+| **DDS 미들웨어** | Default `RMW_IMPLEMENTATION` (FastDDS) |
+| **OS 및 커널** | Ubuntu 22.04 / 5.15.136-tegra |
+| **JetPack** | 6.0 (L4T R36.3.0) |
+| **부팅 시 자동 실행** | systemd 서비스명: `antbot` |
+
+---
+
+## 컴퓨팅 보드 사양
+
+| 항목 | 상세 내용 |
+| :--- | :--- |
+| **모델명** | NVIDIA Jetson AGX Orin 32GB |
+| **CPU** | 8-core NVIDIA Arm Cortex-A78AE |
+| **아키텍처** | v8.2 64-bit |
+| **GPU** | NVIDIA Ampere |
+| **캐시 메모리** | 2MB L2 + 4MB L3 |
+| **RAM** | 32GB LPDDR5 |
+| **인터페이스** | 256-bit |
+| **대역폭** | 204.8 GB/s |
+| **SSD** | 512 GB NVMe |
+
+:::note
+SSD 마운트 방법은 [4.5 SSD 마운트](/antbot_wiki/quick-start/ssd-mount/) 페이지를 참고하세요.
+:::

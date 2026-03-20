@@ -1,0 +1,74 @@
+---
+title: 4.4 Controller Usage
+description: Manual Control of AntBot Using PS5 DualSense Controller
+sidebar:
+  order: 4
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+You can manually control AntBot using a PS5 DualSense controller.
+
+![Controller Layout](../../../../assets/images/joystick_dualsense(en).png)
+
+## Connection Method
+
+<Steps>
+
+1. Connect the DualSense controller to **USB 1 (Blue)** via a wired connection.
+
+2. If the `antbot` service is running, the controller will be automatically recognized. (Takes approximately 2-3 seconds)
+
+3. When the controller LED lights up, it is ready to use.
+
+</Steps>
+
+## Control Method
+
+### Movement Control
+
+| Input | Action | Notes |
+| :--- | :--- | :--- |
+| **Left Stick Y-axis** | Forward / Reverse | Max 1.0 m/s |
+| **Left Stick X-axis** | Curve driving | Only works while moving forward/reverse |
+| **L2 Trigger** | In-place rotation left | Only works while stationary |
+| **R2 Trigger** | In-place rotation right | Only works while stationary |
+
+### Function Buttons
+
+| Button | Function |
+| :--- | :--- |
+| **Triangle** | Speed level UP (1~9) |
+| **Cross** | Speed level DOWN (1~9) |
+| **Square** | Cargo Lock |
+| **Circle** | Cargo Unlock |
+| **L1** | Headlight toggle (ON/OFF) |
+| **R1** | Wiper toggle (ON/OFF) |
+
+### Speed Levels
+
+Speed levels can be adjusted from 1 to 9, with a default of **3**.
+
+| Level | Max Linear Velocity | Max Angular Velocity |
+| :---: | :---: | :---: |
+| 1 | 0.11 m/s | 0.11 rad/s |
+| 3 (Default) | 0.33 m/s | 0.33 rad/s |
+| 5 | 0.56 m/s | 0.56 rad/s |
+| 9 (Max) | 1.0 m/s | 1.0 rad/s |
+
+## Keyboard Teleoperation
+
+If a controller is not available, you can also control the robot via keyboard after SSH connection.
+
+```bash
+ros2 run antbot_teleop teleop_keyboard
+```
+
+| Key | Action |
+| :---: | :--- |
+| `W` / `X` | Forward / Reverse |
+| `A` / `D` | Left / Right movement (Strafe) |
+| `Q` / `E` | Counter-clockwise / Clockwise rotation |
+| `S` | Stop |
+| `1` ~ `9` | Speed level |
+| `ESC` | Exit |

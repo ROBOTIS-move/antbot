@@ -1,0 +1,62 @@
+---
+title: AntBot Wiki
+description: ROBOTIS AI AntBot - 4WD Independent Steering Swerve Drive Outdoor Autonomous Delivery Robot
+template: splash
+hero:
+  tagline: |
+    4WD Independent Steering Swerve Drive Platform
+    — ROBOTIS AI's Open-Source Outdoor Autonomous Delivery Robot
+  image:
+    file: ../../../assets/images/antbot_front.png
+  actions:
+    - text: Quick Start Guide
+      link: /antbot_wiki/en/introduction/
+      icon: right-arrow
+      variant: primary
+    - text: GitHub Repository
+      link: https://github.com/ROBOTIS-move/antbot
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
+import LatestRelease from '../../../components/LatestRelease.astro';
+
+---
+
+## Key Features
+
+<CardGrid stagger>
+  <Card title="4WD Independent Swerve Drive" icon="setting">
+    4-wheel independent steering — omnidirectional movement, in-place rotation
+  </Card>
+  <Card title="ROS 2 Humble + ros2_control" icon="puzzle">
+    Modular package architecture
+  </Card>
+  <Card title="Various Sensors" icon="magnifier">
+    3D/2D LiDAR, RGB-D Camera, IMU, GNSS
+  </Card>
+  <Card title="Fully Open Source" icon="github">
+    **Apache License 2.0**<br/>
+    Including commercial use — freely extensible
+  </Card>
+</CardGrid>
+
+---
+
+## Documentation Structure
+
+<CardGrid>
+  <LinkCard title="Introduction" description="Product overview, basic package components" href="/antbot_wiki/en/introduction/" />
+  <LinkCard title="Hardware" description="Exterior structure, sensor coordinates, onboard computer, full specifications" href="/antbot_wiki/en/hardware/exterior/" />
+  <LinkCard title="Software" description="In-house developed packages, development environment setup" href="/antbot_wiki/en/software/repository/" />
+  <LinkCard title="Quick Start" description="From powering on to first drive — step-by-step getting started guide" href="/antbot_wiki/en/quick-start/powering-up/" />
+  <LinkCard title="Development Guide" description="Control table, ROS topic/service specifications" href="/antbot_wiki/en/development-guide/control-table/" />
+  <LinkCard title="Maintenance" description="Firmware diagnostics, error code interpretation, motor troubleshooting" href="/antbot_wiki/en/maintenance/firmware-diagnostics/" />
+</CardGrid>
+
+---
+
+## Release Notes
+
+<LatestRelease />

@@ -1,0 +1,40 @@
+---
+title: 2.6 Onboard Computer Specifications
+description: AntBot Onboard Computer Specifications
+sidebar:
+  order: 6
+---
+
+These are the specifications of the onboard computer installed in AntBot.
+
+---
+
+## Platform Basic Information
+
+| Item | Details |
+| :--- | :--- |
+| **ROS 2 Distribution** | Humble |
+| **DDS Middleware** | Default `RMW_IMPLEMENTATION` (FastDDS) |
+| **OS and Kernel** | Ubuntu 22.04 / 5.15.136-tegra |
+| **JetPack** | 6.0 (L4T R36.3.0) |
+| **Auto-start on Boot** | systemd service name: `antbot` |
+
+---
+
+## Computing Board Specifications
+
+| Item | Details |
+| :--- | :--- |
+| **Model** | NVIDIA Jetson AGX Orin 32GB |
+| **CPU** | 8-core NVIDIA Arm Cortex-A78AE |
+| **Architecture** | v8.2 64-bit |
+| **GPU** | NVIDIA Ampere |
+| **Cache Memory** | 2MB L2 + 4MB L3 |
+| **RAM** | 32GB LPDDR5 |
+| **Interface** | 256-bit |
+| **Bandwidth** | 204.8 GB/s |
+| **SSD** | 512 GB NVMe |
+
+:::note
+For SSD mounting instructions, see the [4.5 SSD Mount](/antbot_wiki/en/quick-start/ssd-mount/) page.
+:::

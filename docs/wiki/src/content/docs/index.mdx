@@ -1,0 +1,62 @@
+---
+title: AntBot Wiki
+description: ROBOTIS AI AntBot - 4WD 독립 조향 스워브 드라이브 실외 자율주행 배송 로봇
+template: splash
+hero:
+  tagline: |
+    4WD 독립 조향 스워브 드라이브 플랫폼
+    — ROBOTIS AI의 오픈소스 실외 자율주행 배송 로봇
+  image:
+    file: ../../assets/images/antbot_front.png
+  actions:
+    - text: 빠른 시작 가이드
+      link: /antbot_wiki/introduction/
+      icon: right-arrow
+      variant: primary
+    - text: GitHub Repository
+      link: https://github.com/ROBOTIS-move/antbot
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
+import LatestRelease from '../../components/LatestRelease.astro';
+
+---
+
+## 주요 특징
+
+<CardGrid stagger>
+  <Card title="4WD 독립 스워브 드라이브" icon="setting">
+    4륜 독립 조향 — 전방향 이동, 제자리 회전
+  </Card>
+  <Card title="ROS 2 Humble + ros2_control" icon="puzzle">
+    모듈형 패키지 아키텍처
+  </Card>
+  <Card title="다양한 센서" icon="magnifier">
+    3D/2D LiDAR, RGB-D Camera, IMU, GNSS
+  </Card>
+  <Card title="완전한 오픈소스" icon="github">
+    **Apache License 2.0**<br/>
+    상업적 이용 포함 — 자유로운 확장
+  </Card>
+</CardGrid>
+
+---
+
+## 문서 구성
+
+<CardGrid>
+  <LinkCard title="소개" description="제품 개요, 기본 패키지 구성품" href="/antbot_wiki/introduction/" />
+  <LinkCard title="하드웨어" description="외관 구조, 센서 좌표, 온보드 컴퓨터, 전체 사양표" href="/antbot_wiki/hardware/exterior/" />
+  <LinkCard title="소프트웨어" description="자체 개발 패키지, 개발 환경 구축" href="/antbot_wiki/software/repository/" />
+  <LinkCard title="빠른 시작" description="전원 켜기부터 첫 주행까지 — 단계별 시작 가이드" href="/antbot_wiki/quick-start/powering-up/" />
+  <LinkCard title="개발 가이드" description="컨트롤 테이블, ROS 토픽/서비스 명세" href="/antbot_wiki/development-guide/control-table/" />
+  <LinkCard title="유지보수" description="펌웨어 진단, 에러코드 해석, 모터 트러블슈팅" href="/antbot_wiki/maintenance/firmware-diagnostics/" />
+</CardGrid>
+
+---
+
+## 릴리즈 노트
+
+<LatestRelease />

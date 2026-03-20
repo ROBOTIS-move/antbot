@@ -1,0 +1,145 @@
+---
+title: 5.1 Control Table
+description: AntBot Control Table Item List
+sidebar:
+  order: 1
+---
+
+The control table consists of data representing the current state of the device as well as numerous data items required for drive and control operations.
+
+Users can read specific data from the control table using the **[Dynamixel Protocol 2.0](https://emanual.robotis.com/docs/en/dxl/protocol2/)** to check the device status, and control the device by modifying the data.
+
+Internally, AntBot manages the control table as an XML file.
+
+### Control Item Basic Information
+
+- **Size (`Length`)**
+
+  Data sizes are fixed at **1 to 4 bytes depending on the purpose**. Please check the control table for the size of each data item.
+
+  Consecutive data of 2 bytes or more is recorded according to the Little Endian convention.
+
+- **Access Permission (`RW`)**
+
+  Control table data has 2 types of access properties. **`RW` allows both read and write access**. On the other hand, **`R` has a Read Only property**.
+
+  Data with the read-only property will not change even if a value is written to that address.
+
+- **Default Value (`Init`)**
+
+  The default values shown in the control table are **the values set when power is applied to the device**.
+
+  Values are not preserved when power is turned off.
+
+- **Enumerated Data (`Label`)**
+
+  Some control items have enumerated labels, where **integer values are mapped to labels in order**. The first label is `0`, the second is `1`, the third is `2`, and so on.
+
+  For example, if `Motor_State` has labels `IDLE:READY_ENTER:READY:...`, then value `0` = `IDLE`, value `1` = `READY_ENTER`, value `2` = `READY`.
+
+
+---
+
+## 5.1.1 RCU (Robot Control Unit)
+
+The control table can be found in [`control_table.xml`](https://github.com/ROBOTIS-move/antbot/blob/main/antbot_hw_interface/config/control_table.xml).
+
+- **Serial Port**: `/dev/ttyUSB0`
+- **Communication Protocol**: Dynamixel Protocol 2.0
+- **Baud Rate**: 4,000,000 bps
+- **Scale**: Physical unit conversion factor per 1 LSB of raw value (`physical_value = raw_value x scale`)
+
+### System
+
+| Name | Unit | Access | Description |
+| :--- | :--- | :--- | :--- |
+| RTC_Set_Date | YYMMDD | RW | Date setting for host time synchronization <br/> (e.g., 260225 → 2026-02-25) |
+| RTC_Set_Time | HHmmss | RW | Time setting for host time synchronization <br/> (e.g., 143005 → 14:30:05) |
+
+### Motor
+
+| Name | Unit (Scale) | Access | Description |
+| :--- | :--- | :--- | :--- |
+| Motor_State | - | R | Motor state <br/> (Motor can be driven when in `READY` state) |
+| Motor_Reboot_Check | - | RW | Motor reboot confirmation <br/> (When flag is raised, wheel motor Present_Position value resets to 0) |
+| Motor_Goal_Acceleration | rev/min² (x53.644) | RW | Wheel motor target acceleration |
+| M1~M4_Goal_RPM | rev/min (x0.01) | RW | Wheel motor target velocity |
+| M1~M4_Present_RPM | rev/min (x0.01) | R | Wheel motor current velocity |
+| M1~M4_Present_Position | pulse | R | Wheel motor current position (encoder) |
+| M1~M4_Present_Current | mA | R | Wheel motor current |
+| M1~M4_Motor_Temperature | °C | R | Wheel motor temperature |
+| S1~S4_Goal_Position | pulse | RW | Steering motor target position |
+| S1~S4_Present_Position | pulse | R | Steering motor current position |
+| S1~S4_Profile_Acceleration | rev/min² (x214.577) | RW | Steering acceleration profile |
+| S1~S4_Profile_Velocity | rev/min (x0.229) | RW | Steering velocity profile |
+| S1~S4_Present_Current | mA | R | Steering motor current |
+
+### Battery
+
+| Name | Unit (Scale) | Access | Description |
+| :--- | :--- | :--- | :--- |
+| Battery_Current | mA (x10) | R | Battery current |
+| Battery_Voltage | V (x0.01) | R | Battery voltage |
+| Battery_Capacity | Ah (x0.01) | R | Battery capacity |
+| Battery_Percentage | % | R | Battery remaining charge (SOC) |
+| BMS_Temperature | °C | R | BMS temperature |
+| Battery_Is_Charging | - | R | Charging state (Discharging, Charging) |
+
+### Emergency Stop
+
+| Name | Unit | Access | Description |
+| :--- | :--- | :--- | :--- |
+| Estop_State | - | R | Emergency stop state |
+
+### Cargo
+
+| Name | Unit | Access | Description |
+| :--- | :--- | :--- | :--- |
+| Cargo_Command | - | RW | Cargo command |
+| Cargo_Door_State | - | R | Door state |
+| Cargo_Lock_State | - | R | Lock state |
+
+### Headlight
+
+| Name | Unit | Access | Description |
+| :--- | :--- | :--- | :--- |
+| Headlight_State | - | RW | Headlight control |
+
+### Wiper
+
+| Name | Unit (Scale) | Access | Description |
+| :--- | :--- | :--- | :--- |
+| Wiper_Mode | - | RW | Wiper mode |
+| Wiper_INT_Time | sec (x0.1) | RW | Wiper interval |
+| Wiper_Hw_error_1~3 | - | R | Wiper error codes |
+
+### Ultrasonic Sensor
+
+| Name | Unit | Access | Description |
+| :--- | :--- | :--- | :--- |
+| UltraSonic_1~2 | cm | R | Ultrasonic sensor values |
+
+---
+
+### Relay
+
+| Name | Unit (Scale) | Access | Description |
+| :--- | :--- | :--- | :--- |
+| Relay_Control | bitmask | RW | Relay control |
+| Relay_Timeout | sec (x0.1) | RW | Relay auto timeout |
+
+---
+
+## 5.1.2 IMU
+
+IMU data is read through an independent communication channel separate from the RCU. The control table can be found in [`control_table.xml`](https://github.com/ROBOTIS-move/antbot/blob/main/antbot_imu/config/control_table.xml).
+
+- **Serial Port**: `/dev/ttyUSB1`
+- **Communication Protocol**: Dynamixel Protocol 2.0
+- **Baud Rate**: 4,000,000 bps
+- **Scale**: Physical unit conversion factor per 1 LSB of raw value (`physical_value = raw_value x scale`)
+
+| Name | Unit (Scale) | Access | Description |
+| :--- | :--- | :--- | :--- |
+| IMU_Acc_X/Y/Z | g (x0.0000610) | R | 3-axis acceleration |
+| IMU_Gyro_X/Y/Z | dps (x16.4) | R | 3-axis angular velocity |

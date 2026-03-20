@@ -1,0 +1,119 @@
+---
+/**
+ * 빌드 타임에 GitHub API를 호출하여 최신 릴리즈 정보를 표시합니다.
+ * 릴리즈가 없거나 API 호출 실패 시 fallback 메시지를 표시합니다.
+ */
+const REPO = 'ROBOTIS-move/antbot';
+
+interface Release {
+	tag_name: string;
+	published_at: string;
+	html_url: string;
+	body: string;
+}
+
+let release: Release | null = null;
+
+try {
+	const res = await fetch(
+		`https://api.github.com/repos/${REPO}/releases/latest`,
+		{ headers: { Accept: 'application/vnd.github.v3+json' } },
+	);
+	if (res.ok) {
+		release = await res.json();
+	}
+} catch {
+	// API 실패 시 fallback 표시
+}
+
+function formatDate(iso: string): string {
+	return iso.slice(0, 10);
+}
+
+function summarizeBody(body: string): string {
+	return body
+		.split('\n')
+		.filter((line) => line.trim().length > 0)
+		.slice(0, 6)
+		.join('\n');
+}
+---
+
+{
+	release ? (
+		<div class="release-card">
+			<div class="release-header">
+				<a href={release.html_url} target="_blank" rel="noopener" class="release-tag">
+					{release.tag_name}
+				</a>
+				<time datetime={release.published_at}>{formatDate(release.published_at)}</time>
+			</div>
+			{release.body && (
+				<div class="release-body" set:html={summarizeBody(release.body)} />
+			)}
+		</div>
+	) : (
+		<p class="release-empty">
+			아직 등록된 릴리즈가 없습니다.{' '}
+			<a href={`https://github.com/${REPO}/releases`} target="_blank" rel="noopener">
+				GitHub Releases →
+			</a>
+		</p>
+	)
+}
+
+<style>
+	.release-card {
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: var(--ant-radius, 0.75rem);
+		padding: 1rem 1.25rem;
+		background: var(--ant-gradient-subtle, transparent);
+	}
+
+	.release-header {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+	}
+
+	.release-tag {
+		display: inline-block;
+		padding: 0.15rem 0.5rem;
+		border-radius: 0.375rem;
+		font-family: var(--__sl-font-mono);
+		font-size: var(--sl-text-sm);
+		font-weight: 600;
+		background: var(--sl-color-accent-low);
+		border: 1px solid var(--sl-color-accent);
+		color: var(--sl-color-accent-high);
+		text-decoration: none;
+	}
+
+	.release-tag:hover {
+		background: var(--sl-color-accent);
+		color: var(--sl-color-black);
+	}
+
+	.release-header time {
+		font-size: var(--sl-text-sm);
+		color: var(--sl-color-gray-3);
+	}
+
+	.release-body {
+		margin-top: 0.625rem;
+		font-size: var(--sl-text-sm);
+		color: var(--sl-color-gray-2);
+		line-height: 1.6;
+		white-space: pre-line;
+	}
+
+	.release-empty {
+		color: var(--sl-color-gray-3);
+		font-size: var(--sl-text-sm);
+		font-style: italic;
+	}
+
+	.release-empty a {
+		color: var(--sl-color-accent);
+	}
+</style>

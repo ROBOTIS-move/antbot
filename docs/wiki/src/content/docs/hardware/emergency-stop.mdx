@@ -1,0 +1,40 @@
+---
+title: 2.3 비상정지 버튼
+description: AntBot 비상정지 버튼 사용법
+sidebar:
+  order: 3
+---
+
+import { Badge, Steps } from '@astrojs/starlight/components';
+
+비상정지 버튼은 긴급 상황 시 로봇을 즉시 정지시키는 안전 장치입니다.
+
+![비상정지 버튼](../../../assets/images/antbot_estop.png)
+
+---
+
+## 동작 방식
+
+비상정지 버튼이 눌리면,
+
+<Steps>
+
+1. **모든 구동 모터가 즉시 정지**합니다.
+
+2. **토크가 유지**되어 로봇이 경사면에서 미끄러지지 않습니다.
+
+3. RCU 보드의 `Estop_State`가 <Badge text="ON" variant="danger" />으로 변경됩니다.
+
+</Steps>
+
+---
+
+## 비상정지 해제
+
+비상정지를 해제하려면 버튼을 **시계 방향으로 돌려서 팝업**시킵니다.
+
+:::caution
+비상정지 해제 후에도 모터가 즉시 동작하지 않습니다.
+모터 상태가 `IDLE` → `READY_ENTER` → `READY` 순서로 전환된 후에야 주행이 가능합니다.
+
+:::

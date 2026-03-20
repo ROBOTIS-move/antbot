@@ -1,0 +1,59 @@
+---
+title: 2.5 Sensor Specifications
+description: AntBot Sensor Configuration and Coordinate Reference — 6DoF Position Based on base_link Origin
+sidebar:
+  order: 5
+---
+
+List of sensors installed on AntBot and their coordinates relative to `base_link`.
+
+## Sensor Configuration
+
+| Sensor | Qty | Connection | Notes |
+| :--- | :---: | :--- | :--- |
+| 3D LiDAR | 1 | Ethernet | |
+| 2D LiDAR | 2 | USB | Front + Rear obstacle detection |
+| RGB-D Camera | 1 | USB | Color + Depth |
+| Mono Camera | 3 | V4L2 | |
+| Rear Camera | 1 | V4L2 | 15 FPS |
+| Cargo Interior Camera | 1 | USB | Cargo status monitoring |
+| IMU | 1 | USB | |
+| GNSS | 1 | USB | GPS receiver |
+| Ultrasonic | 2 | USB connection to RCU board | Close-range obstacle detection |
+
+---
+
+## Sensor Coordinates
+- Position: `mm`
+- Angle: `degree`
+
+![Robot Coordinate System](../../../../assets/images/antbot_coordinates.png)
+
+### Camera
+
+| Sensor | Position | X | Y | Z | Roll | Pitch | Yaw |
+| :--- | :--- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Mono Camera | LEFT | 260.0 | 258.95 | 584.5 | 0 | 0 | -90 |
+| Mono Camera | CENTER | 362.25 | 0 | 584.5 | 0 | 0 | 0 |
+| Mono Camera | RIGHT | 260.0 | -258.95 | 584.5 | 0 | 0 | 90 |
+| Mono Camera | BACK | -373.5 | 0 | 296.0 | 0 | 180 | 0 |
+| RGB-D Camera | CENTER | 348.563 | 0 | 526.2 | 0 | 30 | 0 |
+
+### LiDAR
+
+| Sensor | Position | X | Y | Z | Roll | Pitch | Yaw |
+| :--- | :--- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 2D LiDAR | FRONT | 320.0 | 0 | 252.0 | 180 | 0 | 0 |
+| 2D LiDAR | BACK | -320.0 | 0 | 252.0 | 0 | 180 | 0 |
+| 3D LiDAR | FRONT | 225.233 | 0 | 721.313 | 0 | 10 | -90 |
+
+### Other Sensors
+
+| Sensor | X | Y | Z | Roll | Pitch | Yaw |
+| :--- | ---: | ---: | ---: | ---: | ---: | ---: |
+| IMU | 240.0 | 0 | 379.2 | 0 | 0 | 180 |
+| GNSS | 202.6 | -128.0 | 657.0 | 0 | 0 | 180 |
+
+:::note
+To check these coordinates in the URDF, refer to [`antbot_description/urdf/antbot.xacro`](https://github.com/ROBOTIS-move/antbot/blob/main/antbot_description/urdf/antbot.xacro).
+:::

@@ -1,0 +1,54 @@
+---
+title: 5.2 Key ROS Topics/Services
+description: AntBot Key ROS Topics, Services, and Interface Specifications
+sidebar:
+  order: 2
+---
+
+This is the complete ROS 2 topic and service specification used by AntBot.
+
+---
+
+## Topics
+
+### Published
+
+| Topic | Type | Description |
+| :--- | :--- | :--- |
+| `/imu_node/imu/accel_gyro` | `sensor_msgs/Imu` | Quaternion + angular velocity + linear acceleration |
+| `/sensor/lidar_3d/point_cloud` | `sensor_msgs/PointCloud2` | 3D point cloud |
+| `/sensor/lidar_2d_front/scan` | `sensor_msgs/LaserScan` | Front 2D laser scan |
+| `/sensor/lidar_2d_back/scan` | `sensor_msgs/LaserScan` | Rear 2D laser scan |
+| `/sensor/camera/v4l2/left/image_raw` | `sensor_msgs/Image` | Left mono camera |
+| `/sensor/camera/v4l2/front/image_raw` | `sensor_msgs/Image` | Front mono camera |
+| `/sensor/camera/v4l2/right/image_raw` | `sensor_msgs/Image` | Right mono camera |
+| `/sensor/camera/v4l2/rear/image_raw` | `sensor_msgs/Image` | Rear camera |
+| `/sensor/camera/usb/cargo/image_raw` | `sensor_msgs/Image` | Cargo camera |
+| `/sensor/camera/*/camera_info` | `sensor_msgs/CameraInfo` | Camera calibration for each camera |
+| `/battery` | `sensor_msgs/BatteryState` | Voltage, current, SoC, temperature |
+| `/sensor/ultrasound` | `std_msgs/Float64MultiArray` | Ultrasonic sensor distance (cm) |
+| `/odom` | `nav_msgs/Odometry` | Odometry (position, velocity) |
+| `/tf` | `tf2_msgs/TFMessage` | odom → base_link transform |
+| `/cargo/status` | `antbot_interfaces/CargoStatus` | Cargo door/lock status |
+
+:::note
+The RGB-D camera is published on separate topics through the Orbbec SDK.
+:::
+
+### Subscribed
+
+| Topic | Type | Description |
+| :--- | :--- | :--- |
+| `/cmd_vel` | `geometry_msgs/Twist` | Velocity command (linear x/y + angular z) |
+
+---
+
+## Services
+
+| Service | Type | Description |
+| :--- | :--- | :--- |
+| `/cargo/command` | `antbot_interfaces/CargoCommand` | Cargo lock/unlock |
+| `/headlight/operation` | `std_srvs/SetBool` | Headlight ON/OFF |
+| `/wiper/operation` | `antbot_interfaces/WiperOperation` | Wiper control |
+| `/hw/direct_read` | `antbot_interfaces/DirectRead` | Control table read |
+| `/hw/direct_write` | `antbot_interfaces/DirectWrite` | Control table write |
