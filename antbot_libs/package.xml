@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>antbot_libs</name>
-  <version>0.1.0</version>
+  <version>1.0.0</version>
   <description>Shared libraries for ANTBot delivery robot (Dynamixel Protocol 2.0 communication and control table parsing)</description>
   <maintainer email="jdu@robotis.com">Daun Jeong</maintainer>
   <license>Apache-2.0</license>

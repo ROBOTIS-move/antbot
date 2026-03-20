@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>antbot_camera</name>
-  <version>0.1.0</version>
+  <version>1.0.0</version>
   <description>Antbot camera driver package supporting V4L2 and USB cameras</description>
   <maintainer email="jaehun@robotis.com">Jaehun Park</maintainer>
   <license>Apache-2.0</license>
