@@ -34,40 +34,40 @@
                           x_pos="${-wheelbase_length/2}" y_pos="${-steering_width/2}"/>
 
   <!-- Stereo cameras -->
-  <xacro:Sensors name="camera_stereo_front_depth" xyz="0.348563 0.0 0.5262" rpy="0.0 ${radians(30)} 0.0"/>
+  <xacro:Sensors name="camera_stereo_front_depth" xyz="0.348162 0.0475 0.526484" rpy="0.0 ${radians(30)} 0.0"/>
   <xacro:OpticalFrame name="camera_stereo_front_depth_optical" parent="camera_stereo_front_depth"/>
 
   <xacro:SensorsRel parent="camera_stereo_front_depth" child="camera_stereo_front_rgb" xyz="0.0 -0.124 0.0" rpy="0.0 0.0 0.0"/>
   <xacro:OpticalFrame name="camera_stereo_front_rgb_optical" parent="camera_stereo_front_rgb"/>
 
   <!-- Mono cameras -->
-  <xacro:Sensors name="camera_mono_left" xyz="0.260 0.25895 0.5845" rpy="0.0 0.0 ${radians(90)}"/>
+  <xacro:Sensors name="camera_mono_left" xyz="0.260 0.25477 0.5875" rpy="0.0 0.0 ${radians(90)}"/>
   <xacro:OpticalFrame name="camera_mono_left_optical" parent="camera_mono_left"/>
 
-  <xacro:Sensors name="camera_mono_front" xyz="0.36225 0.0 0.5845" rpy="0.0 0.0 0.0"/>
+  <xacro:Sensors name="camera_mono_front" xyz="0.35807 0.0 0.5875" rpy="0.0 0.0 0.0"/>
   <xacro:OpticalFrame name="camera_mono_front_optical" parent="camera_mono_front"/>
 
-  <xacro:Sensors name="camera_mono_right" xyz="0.260 -0.25895  0.5845" rpy="0.0 0.0 ${radians(-90)}"/>
+  <xacro:Sensors name="camera_mono_right" xyz="0.260 -0.25477 0.5875" rpy="0.0 0.0 ${radians(-90)}"/>
   <xacro:OpticalFrame name="camera_mono_right_optical" parent="camera_mono_right"/>
 
-  <xacro:Sensors name="camera_mono_back" xyz="-0.3735 0.0 0.296" rpy="0.0 0.0 ${radians(180)}"/>
+  <xacro:Sensors name="camera_mono_back" xyz="-0.37669 0.0 0.299" rpy="0.0 0.0 ${radians(180)}"/>
   <xacro:OpticalFrame name="camera_mono_back_optical" parent="camera_mono_back"/>
 
   <!-- IMU / GNSS / Magnetometer -->
-  <xacro:Sensors name="imu" xyz="0.240 0.0 0.3792" rpy="0.0 0.0 ${radians(180)}"/>
-  <xacro:Sensors name="gnss" xyz="0.2026 -0.128 0.657" rpy="0.0 0.0 ${radians(180)}"/>
-  <xacro:Sensors name="magnetometer" xyz="0.240 -0.011 0.3792" rpy="0.0 0.0 0.0"/>
+  <xacro:Sensors name="imu" xyz="0.240 0.00675 0.3902" rpy="0.0 0.0 ${radians(180)}"/>
+  <xacro:Sensors name="gnss" xyz="0.2026 -0.128 0.660" rpy="0.0 0.0 ${radians(180)}"/>
+  <xacro:Sensors name="magnetometer" xyz="0.240 -0.00425 0.3902" rpy="0.0 0.0 0.0"/>
 
   <!-- 2D LiDARs -->
-  <xacro:Sensors name="lidar_2d_front" xyz="0.320 0.0 0.252" rpy="0.0 0.0 ${radians(180)}"/>
-  <xacro:Sensors name="lidar_2d_back" xyz="-0.320 0.0 0.252" rpy="0.0 0.0 0.0"/>
+  <xacro:Sensors name="lidar_2d_front" xyz="0.325 0.0 0.255" rpy="0.0 0.0 ${radians(180)}"/>
+  <xacro:Sensors name="lidar_2d_back" xyz="-0.325 0.0 0.255" rpy="0.0 0.0 0.0"/>
 
   <!-- 3D LiDAR -->
-  <xacro:Sensors name="lidar_3d" xyz="0.225233 0.0 0.721313" rpy="0.0 ${radians(10)} ${radians(-1.5)}"/>
+  <xacro:Sensors name="lidar_3d" xyz="0.225332 0.0 0.724904" rpy="0.0 ${radians(10)} 0.0"/>
   <xacro:SensorsRel parent="lidar_3d" child="lidar_3d_imu" xyz="-0.00559 -0.00571 -0.02668" rpy="0.0 0.0 0.0"/>
 
   <!-- Charging coil -->
-  <xacro:Sensors name="robot_charging_coil" xyz="-0.299 0.0 0.170627" rpy="0.0 0.0 0.0"/>
+  <xacro:Sensors name="robot_charging_coil" xyz="-0.299119 0.0 0.170631" rpy="0.0 0.0 0.0"/>
 
   <!-- ros2_control hardware interface -->
   <xacro:antbot_ros2_control/>
