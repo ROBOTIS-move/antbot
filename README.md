@@ -91,7 +91,7 @@
 <!-- ABOUT -->
 ## 🤖 About
 
-**AntBot** is a production-ready, open-source ROS 2 robot stack designed for the ROBOTIS AI AntBot autonomous delivery robot — a **4-wheel independent swerve-drive platform** built for last-mile delivery.
+**AntBot** is a production-ready, open-source software stack for the ROBOTIS AI AntBot autonomous delivery robot, a **4-wheel independent swerve-drive platform** built for last-mile delivery.
 
 <div align="center">
 
@@ -111,7 +111,6 @@ This repository provides a complete, modular software stack to operate the robot
 - 🤖 **Complete URDF model** with sensor frames and visual meshes
 - 🚀 **One-command bringup** to launch the entire robot system
 
-Built entirely on [ROS 2 Humble](https://docs.ros.org/en/humble/) and the [ros2_control](https://control.ros.org/) framework.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

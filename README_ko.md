@@ -91,7 +91,7 @@
 <!-- ABOUT -->
 ## 🤖 소개
 
-**AntBot**은 ROBOTIS AI에서 개발한 자율 배송 로봇용 오픈소스 ROS 2 소프트웨어입니다. 4바퀴가 각각 독립적으로 조향하는 **스워브 드라이브 방식**으로, 실제 배송 현장에서 바로 사용할 수 있는 수준의 코드를 제공합니다.
+**AntBot**은 ROBOTIS AI에서 개발한 자율주행 배송 로봇용 오픈소스 소프트웨어입니다. 4바퀴가 각각 독립적으로 조향하는 **스워브 드라이브 방식**으로, 실제 배송 현장에서 바로 사용할 수 있는 수준의 코드를 제공합니다.
 
 <div align="center">
 
@@ -111,7 +111,6 @@
 - 🤖 **Complete URDF model** — 센서 프레임, 메시까지 포함된 전체 로봇 모델
 - 🚀 **One-command bringup** — 명령어 하나로 전체 시스템 한 번에 실행
 
-[ROS 2 Humble](https://docs.ros.org/en/humble/) + [ros2_control](https://control.ros.org/) 기반입니다.
 
 <p align="right">(<a href="#readme-top">상단으로</a>)</p>
 
