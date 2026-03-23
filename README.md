@@ -37,16 +37,18 @@
   <p>
     <em>Every road. Every delivery.</em>
     <br />
-    <strong>4-Wheel Independent Swerve-Drive Platform</strong> by <a href="https://www.robotis.com/">ROBOTIS AI</a>
+    <strong>4-Wheel Independent Swerve Drive Platform</strong> by <a href="https://www.robotis.com/">ROBOTIS AI</a>
     <br />
     <br />
+    <a href="https://robotis-move.github.io/antbot/en/">
+      <img src="https://img.shields.io/badge/📖_Wiki_Documentation-Visit_Now-2ea44f?style=for-the-badge" alt="Wiki Documentation" />
+    </a>
+    <br /><br />
     <a href="#-getting-started"><strong>Get Started »</strong></a>
     &ensp;·&ensp;
     <a href="#-packages"><strong>Packages »</strong></a>
     &ensp;·&ensp;
     <a href="#-architecture"><strong>Architecture »</strong></a>
-    &ensp;·&ensp;
-    <a href="https://robotis-move.github.io/antbot/en/"><strong>Wiki »</strong></a>
   </p>
 </div>
 
@@ -91,7 +93,7 @@
 <!-- ABOUT -->
 ## 🤖 About
 
-**AntBot** is a production-ready, open-source software stack for the ROBOTIS AI AntBot autonomous delivery robot, a **4-wheel independent swerve-drive platform** built for last-mile delivery.
+**AntBot** is a production-ready, open-source software stack for the ROBOTIS AI AntBot autonomous delivery robot, a **4-Wheel Independent Swerve Drive** platform built for last-mile delivery.
 
 <div align="center">
 
@@ -382,7 +384,7 @@ ros2 topic pub /cmd_vel geometry_msgs/msg/Twist \
   </tr>
   <tr>
     <td><strong>Drive Type</strong></td>
-    <td>4-wheel independent swerve drive</td>
+    <td>4-Wheel Independent Swerve Drive</td>
   </tr>
   <tr>
     <td><strong>Control Board</strong></td>

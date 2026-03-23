@@ -37,16 +37,18 @@
   <p>
     <em>모든 길 위의 자율주행 배송 로봇</em>
     <br />
-    <strong>4WD 독립 조향 스워브 드라이브 로봇</strong> by <a href="https://www.robotis.com/">ROBOTIS AI</a>
+    <strong>4륜 독립 조향 스워브 드라이브 로봇</strong> by <a href="https://www.robotis.com/">ROBOTIS AI</a>
     <br />
     <br />
+    <a href="https://robotis-move.github.io/antbot/">
+      <img src="https://img.shields.io/badge/📖_Wiki_문서-방문하기-2ea44f?style=for-the-badge" alt="Wiki Documentation" />
+    </a>
+    <br /><br />
     <a href="#-시작하기"><strong>시작하기 »</strong></a>
     &ensp;·&ensp;
     <a href="#-패키지"><strong>패키지 »</strong></a>
     &ensp;·&ensp;
     <a href="#️-아키텍처"><strong>아키텍처 »</strong></a>
-    &ensp;·&ensp;
-    <a href="https://robotis-move.github.io/antbot/"><strong>Wiki »</strong></a>
   </p>
 </div>
 
@@ -96,7 +98,7 @@
 <div align="center">
 
 ![](https://img.shields.io/badge/9-ROS_2_Packages-22314E?style=for-the-badge&logo=ros&logoColor=white)
-![](https://img.shields.io/badge/4WD-Independent_Swerve-6610f2?style=for-the-badge&logo=probot&logoColor=white)
+![](https://img.shields.io/badge/4륜-독립_조향_스워브_드라이브-6610f2?style=for-the-badge&logo=probot&logoColor=white)
 ![](https://img.shields.io/badge/5-Camera_Streams-5C3EE8?style=for-the-badge&logo=opencv&logoColor=white)
 ![](https://img.shields.io/badge/3-LiDAR_Sensors-20c997?style=for-the-badge&logo=lidar&logoColor=white)
 
@@ -381,7 +383,7 @@ ros2 topic pub /cmd_vel geometry_msgs/msg/Twist \
   </tr>
   <tr>
     <td><strong>Drive Type</strong></td>
-    <td>4WD 독립 조향 스워브 드라이브</td>
+    <td>4륜 독립 조향 스워브 드라이브</td>
   </tr>
   <tr>
     <td><strong>Control Board</strong></td>
