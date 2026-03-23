@@ -4,8 +4,8 @@ description: ROBOTIS AI AntBot - 4WD Independent Steering Swerve Drive Outdoor A
 template: splash
 hero:
   tagline: |
-    4WD Independent Steering Swerve Drive Platform
-    — ROBOTIS AI's Open-Source Outdoor Autonomous Delivery Robot
+    Every road. Every delivery. AntBot
+    — 4WD Independent Steering · Open Source · ROBOTIS AI
   image:
     file: ../../../assets/images/antbot_front.png
   actions:
@@ -28,17 +28,17 @@ import LatestRelease from '../../../components/LatestRelease.astro';
 
 <CardGrid stagger>
   <Card title="4WD Independent Swerve Drive" icon="setting">
-    4-wheel independent steering — omnidirectional movement, in-place rotation
+    Any direction, any angle — even spin in place
   </Card>
   <Card title="ROS 2 Humble + ros2_control" icon="puzzle">
-    Modular package architecture
+    Pick what you need — modular by design
   </Card>
-  <Card title="Various Sensors" icon="magnifier">
-    3D/2D LiDAR, RGB-D Camera, IMU, GNSS
+  <Card title="Rich Sensor Suite" icon="magnifier">
+    From LiDAR to GNSS — fully equipped to see and sense
   </Card>
   <Card title="Fully Open Source" icon="github">
     **Apache License 2.0**<br/>
-    Including commercial use — freely extensible
+    Use it, change it, make it yours
   </Card>
 </CardGrid>
 
@@ -47,12 +47,13 @@ import LatestRelease from '../../../components/LatestRelease.astro';
 ## Documentation Structure
 
 <CardGrid>
-  <LinkCard title="Introduction" description="Product overview, basic package components" href="/antbot/en/introduction/" />
-  <LinkCard title="Hardware" description="Exterior structure, sensor coordinates, onboard computer, full specifications" href="/antbot/en/hardware/exterior/" />
-  <LinkCard title="Software" description="Custom packages, development environment setup" href="/antbot/en/software/repository/" />
-  <LinkCard title="Quick Start" description="From powering on to first drive — step-by-step getting started guide" href="/antbot/en/quick-start/powering-up/" />
-  <LinkCard title="Development Guide" description="Control table, ROS topic/service specifications" href="/antbot/en/development-guide/control-table/" />
-  <LinkCard title="Maintenance" description="Firmware diagnostics, error code interpretation, motor troubleshooting" href="/antbot/en/maintenance/firmware-diagnostics/" />
+  <LinkCard title="Introduction" description="New to AntBot? Start here" href="/antbot/en/introduction/" />
+  <LinkCard title="Hardware" description="From structure to sensors — hardware specs at a glance" href="/antbot/en/hardware/exterior/" />
+  <LinkCard title="Software" description="Package structure and dev environment at a glance" href="/antbot/en/software/repository/" />
+  <LinkCard title="Quick Start" description="From unboxing to first drive, step by step" href="/antbot/en/quick-start/powering-up/" />
+  <LinkCard title="Development Guide" description="Control table, ROS topics — a developer's reference" href="/antbot/en/development-guide/control-table/" />
+  <LinkCard title="Maintenance" description="Something wrong? Check here first" href="/antbot/en/maintenance/firmware-diagnostics/" />
+  <LinkCard title="License & Support" description="License details and where to get help" href="/antbot/en/license/" />
 </CardGrid>
 
 ---
@@ -60,3 +61,9 @@ import LatestRelease from '../../../components/LatestRelease.astro';
 ## Release Notes
 
 <LatestRelease />
+
+<div class="doc-credits">
+  <p class="credits-label">Written by</p>
+  <p class="credits-org">ROBOTIS AI</p>
+  <p class="credits-authors">dujeong · robotdory</p>
+</div>

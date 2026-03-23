@@ -35,6 +35,8 @@
 <!-- TAGLINE -->
 <div align="center">
   <p>
+    <em>Every road. Every delivery.</em>
+    <br />
     <strong>4-Wheel Independent Swerve-Drive Platform</strong> by <a href="https://www.robotis.com/">ROBOTIS AI</a>
     <br />
     <br />
@@ -43,6 +45,8 @@
     <a href="#-packages"><strong>Packages »</strong></a>
     &ensp;·&ensp;
     <a href="#-architecture"><strong>Architecture »</strong></a>
+    &ensp;·&ensp;
+    <a href="https://robotis-move.github.io/antbot/en/"><strong>Wiki »</strong></a>
   </p>
 </div>
 

@@ -43,6 +43,10 @@
 }
 
 /* ── Hero section ───────────────────────────────────────── */
+.hero .tagline {
+	white-space: pre-line;
+}
+
 .hero {
 	padding-block: 2.5rem;
 }
@@ -76,9 +80,9 @@
 }
 
 .card:hover {
-	border-color: var(--sl-color-accent);
-	box-shadow: 0 0 24px var(--ant-glow);
-	transform: translateY(-3px);
+	border-color: var(--sl-color-gray-5);
+	box-shadow: none;
+	transform: none;
 }
 
 /* card stagger animation */

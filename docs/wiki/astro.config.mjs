@@ -8,7 +8,7 @@ export default defineConfig({
 	base: '/antbot',
 	integrations: [
 		starlight({
-			title: 'AntBot Wiki',
+			title: 'AntBot',
 			components: {
 				Footer: './src/components/Footer.astro',
 			},
