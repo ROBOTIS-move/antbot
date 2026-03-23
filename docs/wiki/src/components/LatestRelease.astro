@@ -3,6 +3,8 @@
  * 빌드 타임에 GitHub API를 호출하여 최신 릴리즈 정보를 표시합니다.
  * 릴리즈가 없거나 API 호출 실패 시 fallback 메시지를 표시합니다.
  */
+import { marked } from 'marked';
+
 const REPO = 'ROBOTIS-move/antbot';
 
 interface Release {
@@ -31,11 +33,12 @@ function formatDate(iso: string): string {
 }
 
 function summarizeBody(body: string): string {
-	return body
+	const summary = body
 		.split('\n')
 		.filter((line) => line.trim().length > 0)
 		.slice(0, 6)
 		.join('\n');
+	return marked.parse(summary) as string;
 }
 
 const isEn = Astro.url.pathname.includes('/en/');
