@@ -385,6 +385,34 @@ kbd {
 	height: auto;
 }
 
+/* ── Document credits signature ────────────────────────── */
+.doc-credits {
+	margin-top: 3rem;
+	padding-top: 1.5rem;
+	border-top: 1px solid rgba(128, 128, 128, 0.3);
+	text-align: center;
+}
+
+.doc-credits .credits-label {
+	opacity: 0.4;
+	font-size: 0.8em;
+	letter-spacing: 0.15em;
+	text-transform: uppercase;
+	margin: 0;
+}
+
+.doc-credits .credits-org {
+	font-size: 1.1em;
+	font-weight: 600;
+	margin: 0.3rem 0 0;
+}
+
+.doc-credits .credits-authors {
+	opacity: 0.5;
+	font-size: 0.85em;
+	margin: 0.2rem 0 0;
+}
+
 /* ── Smooth page transitions ────────────────────────────── */
 main {
 	animation: pageIn 0.3s ease-out;
