@@ -10,7 +10,7 @@ The ROS 2 drivers and control packages for operating AntBot are open-sourced und
 ## GitHub Repository
 
 - **Repository:** [github.com/ROBOTIS-move/antbot](https://github.com/ROBOTIS-move/antbot)
-- **License:** Apache License 2.0 (Commercial use permitted)
+- **License:** Apache License 2.0
 - **Tech Stack:** ROS 2 Humble, C++17, Python 3, Ubuntu 22.04
 
 ## Repository Structure

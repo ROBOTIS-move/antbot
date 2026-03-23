@@ -37,6 +37,11 @@ function summarizeBody(body: string): string {
 		.slice(0, 6)
 		.join('\n');
 }
+
+const isEn = Astro.url.pathname.includes('/en/');
+const emptyText = isEn
+	? 'No releases have been published yet.'
+	: '아직 등록된 릴리즈가 없습니다.';
 ---
 
 {
@@ -54,7 +59,7 @@ function summarizeBody(body: string): string {
 		</div>
 	) : (
 		<p class="release-empty">
-			아직 등록된 릴리즈가 없습니다.{' '}
+			{emptyText}{' '}
 			<a href={`https://github.com/${REPO}/releases`} target="_blank" rel="noopener">
 				GitHub Releases →
 			</a>

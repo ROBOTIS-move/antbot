@@ -10,7 +10,7 @@ AntBot의 구동을 위한 ROS 2 드라이버 및 제어 패키지는 **Apache L
 ## GitHub 저장소
 
 - **Repository:** [github.com/ROBOTIS-move/antbot](https://github.com/ROBOTIS-move/antbot)
-- **라이선스:** Apache License 2.0 (상업적 이용 가능)
+- **라이선스:** Apache License 2.0
 - **기술 스택:** ROS 2 Humble, C++17, Python 3, Ubuntu 22.04
 
 ## 저장소 구성

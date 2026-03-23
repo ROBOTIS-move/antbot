@@ -38,7 +38,6 @@ sidebar:
 | `0x03020020` | Motor | Bus watchdog timeout |
 | `0x03020021` | Motor | Motor over speed |
 | `0x03020022` | Motor | Undefined motor error |
-
 | `0x040E0002` | Sensor | Ultrasonic sensor connection failed |
 | `0x040F0001` | Sensor | Pressure sensor failure |
 | `0x07020001` | Cargo | Cargo is locked |

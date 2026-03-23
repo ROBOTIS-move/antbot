@@ -6,5 +6,5 @@ sidebar:
 ---
 
 :::note
-A Gazebo-based physics simulation environment will be released in the future.
+A physics simulation environment will be released in the future.
 :::
