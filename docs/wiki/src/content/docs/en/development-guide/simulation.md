@@ -1,8 +1,8 @@
 ---
-title: 5.3 Simulation Environment Setup
+title: 5.4 Simulation Environment Setup
 description: AntBot Simulation Environment (URDF Visualization)
 sidebar:
-  order: 3
+  order: 4
 ---
 
 :::note
