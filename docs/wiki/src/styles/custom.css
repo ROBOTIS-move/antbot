@@ -413,6 +413,11 @@ kbd {
 	margin: 0.2rem 0 0;
 }
 
+/* ── Hide TOC "Overview" label ──────────────────────────── */
+starlight-toc > nav > ul > li:first-child > a[href="#_top"] {
+	display: none;
+}
+
 /* ── Smooth page transitions ────────────────────────────── */
 main {
 	animation: pageIn 0.3s ease-out;
