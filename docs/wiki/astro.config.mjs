@@ -9,6 +9,9 @@ export default defineConfig({
 	integrations: [
 		starlight({
 			title: 'AntBot Wiki',
+			components: {
+				Footer: './src/components/Footer.astro',
+			},
 			favicon: '/favicon.png',
 			defaultLocale: 'root',
 			locales: {
