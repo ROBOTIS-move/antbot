@@ -4,8 +4,8 @@ import starlight from '@astrojs/starlight';
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://dujeong.github.io',
-	base: '/antbot_wiki',
+	site: 'https://ROBOTIS-move.github.io',
+	base: '/antbot',
 	integrations: [
 		starlight({
 			title: 'AntBot Wiki',
