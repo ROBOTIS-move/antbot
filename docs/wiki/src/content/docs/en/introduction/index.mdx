@@ -23,17 +23,11 @@ What a robot needs to survive here boils down to one thing. Anywhere. Any direct
 
 ## Swerve Drive
 
-Each of AntBot's four wheels steers on its own. That gives the robot omnidirectional movement, zero-radius turns, and sideways travel. Where a differential-drive robot would need a three-point turn to get out, a swerve drive slips through in one move.
-
-Last-mile throws endless exceptions. Dead ends, surprise obstacles, tight elevator lobbies. Rather than patching them one by one, a single drivetrain absorbs them all.
+Each of AntBot's four wheels steers on its own. Omnidirectional movement, zero-radius turns, sideways travel. Where a differential-drive robot needs a three-point turn, a swerve drive slips through in one move.
 
 ## Sensor Architecture
 
-Going anywhere means seeing everything. AntBot's sensor layout is built to leave no gap.
-
-A roof-mounted 3D LiDAR sweeps 360 degrees and maps the space. Two 2D LiDARs at the front and rear catch what sits close to the ground: curbs, planters, low posts. An RGB-D camera reads depth so the robot knows how far and what shape. Four mono cameras cover the rest, eliminating blind spots.
-
-Each sensor picks up where another falls short. Cameras supply texture that LiDAR cannot. LiDAR's active pulses see through darkness that cameras cannot. This is not a stack of parts. It is one perceptual system.
+A 360-degree 3D LiDAR maps the space. Two 2D LiDARs catch ground-level obstacles. An RGB-D camera reads depth. Four mono cameras eliminate blind spots. Not a stack of parts, but one perceptual system.
 
 ![AntBot - Cargo Open](../../../../assets/images/antbot_views_open.png)
 
@@ -41,8 +35,6 @@ Each sensor picks up where another falls short. Cameras supply texture that LiDA
 
 Technology left closed is technology left unfinished. AntBot ships its full software stack: controllers, sensor drivers, navigation and all.
 
-Outdoor autonomy generates edge cases without end. Wet manhole covers, drainage grates, headlights glaring at night. Answers to problems like these don't come from a conference room. They come from the field, from the people who run the robot day after day.
+Outdoor autonomy generates edge cases without end. Wet manhole covers, drainage grates, headlights glaring at night. The answers come from the field, not from a conference room. Opening the code is our commitment to join that field, and our invitation to yours.
 
-We trust a community's experience over any single team's ability. Opening the code is our commitment to that experience, and our invitation to yours.
-
-This document walks through AntBot's hardware, software architecture, and the reasoning behind each design choice. Specs and implementation details follow in the sections ahead.
+This documentation covers AntBot's hardware configuration, software architecture, and the rationale behind each design decision. We hope it serves as the first page of that journey. Thank you.
