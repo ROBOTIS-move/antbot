@@ -104,12 +104,12 @@
 
 이 저장소 하나로 로봇 구동에 필요한 모든 것을 갖출 수 있습니다:
 
-- 🛞 **Swerve-drive controller** — 역기구학 기반 4륜 독립 조향 제어, 오도메트리 출력
-- 🔌 **Hardware interface** — Dynamixel Protocol 2.0으로 ANT-RCU 보드와 통신
-- 📷 **Multi-camera driver** — V4L2, USB, Orbbec Gemini 336L RGB-D 카메라 동시 지원
-- 📡 **Sensor integration** — 2D/3D LiDAR, IMU, GNSS 센서 통합 관리
-- 🤖 **Complete URDF model** — 센서 프레임, 메시까지 포함된 전체 로봇 모델
-- 🚀 **One-command bringup** — 명령어 하나로 전체 시스템 한 번에 실행
+- **Swerve-drive controller** — 역기구학 기반 4륜 독립 조향 제어, 오도메트리 출력
+- **Hardware interface** — Dynamixel Protocol 2.0으로 ANT-RCU 보드와 통신
+- **Multi-camera driver** — V4L2, USB, Orbbec Gemini 336L RGB-D 카메라 동시 지원
+- **Sensor integration** — 2D/3D LiDAR, IMU, GNSS 센서 통합 관리
+- **Complete URDF model** — 센서 프레임, 메시까지 포함된 전체 로봇 모델
+- **One-command bringup** — 명령어 하나로 전체 시스템 한 번에 실행
 
 
 <p align="right">(<a href="#readme-top">상단으로</a>)</p>

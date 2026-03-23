@@ -104,12 +104,12 @@
 
 This repository provides a complete, modular software stack to operate the robot:
 
-- 🛞 **Swerve-drive controller** with inverse kinematics, motion profiling, and odometry
-- 🔌 **Hardware interface** for the ANT-RCU board via Dynamixel Protocol 2.0
-- 📷 **Multi-camera driver** supporting V4L2, USB, and Orbbec Gemini 336L RGB-D
-- 📡 **Sensor integration** for 2D/3D LiDAR, IMU, and GNSS
-- 🤖 **Complete URDF model** with sensor frames and visual meshes
-- 🚀 **One-command bringup** to launch the entire robot system
+- **Swerve-drive controller** — inverse kinematics, motion profiling, and odometry
+- **Hardware interface** — ANT-RCU board via Dynamixel Protocol 2.0
+- **Multi-camera driver** — V4L2, USB, and Orbbec Gemini 336L RGB-D
+- **Sensor integration** — 2D/3D LiDAR, IMU, and GNSS
+- **Complete URDF model** — sensor frames and visual meshes
+- **One-command bringup** — launch the entire robot system
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
