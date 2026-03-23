@@ -417,6 +417,18 @@ kbd {
 	margin: 0.2rem 0 0;
 }
 
+/* ── Overview epigraph (intro lead text) ──────────────── */
+.epigraph {
+	font-size: 1.35em;
+	font-weight: 700;
+	line-height: 1.6;
+	background: var(--ant-gradient);
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+	margin-bottom: 1.5rem;
+}
+
 /* ── Hide TOC "Overview" label ──────────────────────────── */
 starlight-toc > nav > ul > li:first-child > a[href="#_top"] {
 	display: none;

@@ -1,23 +1,48 @@
 ---
-title: 1.1 Overview
-description: AntBot Product Introduction
+title: 1.1 Design Philosophy
+description: About AntBot
 sidebar:
   order: 1
 ---
 
-**AntBot** is an open-source **outdoor autonomous delivery robot** developed by ROBOTIS AI.
+<p class="epigraph">Autonomous Navigation Transport Robot · ROBOTIS AI · Open Source</p>
 
-It uses a **Swerve Drive** system where each of the 4 wheels steers independently, enabling omnidirectional movement and in-place rotation, optimized for last-mile delivery.
+**AntBot** is an open-source autonomous delivery robot developed by ROBOTIS AI.
 
-This documentation covers everything from hardware configuration and software architecture to initial setup and developer guides. Whether you are an engineer deploying your first robot or a developer extending the system, you will find what you need here.
+![AntBot](../../../../assets/images/antbot_views_closed.png)
 
-### Key Features
+## Premise
 
-- **4WD Independent Steering**: Each wheel steers individually for omnidirectional movement, in-place rotation, and tight-space navigation
-- **Open-Source ROS 2 Stack**: Full software stack including controllers, hardware interfaces, and sensor drivers
-- **Production Ready**: Code quality validated in real-world delivery environments
-- **Modular Design**: Use only the packages you need, independently
+**A good robot goes anywhere. Good technology belongs to everyone.** Every design decision behind AntBot traces back to these two lines. From where each sensor sits to how the wheels turn to how much of the code we share. If it didn't serve the premise, it didn't ship.
 
-![AntBot - Cargo Closed](../../../../assets/images/antbot_views_closed.png)
+## Last Mile
+
+The last mile is the shortest stretch in logistics, and the hardest. Campus walkways, apartment blocks, underground garages. Tight alleys, curbs, ramps, pedestrians who don't look up. No lane markings. No traffic lights. No fixed route.
+
+What a robot needs to survive here boils down to one thing. Anywhere. Any direction. Right now. Every piece of AntBot's hardware exists to make that sentence real.
+
+## Swerve Drive
+
+Each of AntBot's four wheels steers on its own. That gives the robot omnidirectional movement, zero-radius turns, and sideways travel. Where a differential-drive robot would need a three-point turn to get out, a swerve drive slips through in one move.
+
+Last-mile throws endless exceptions. Dead ends, surprise obstacles, tight elevator lobbies. Rather than patching them one by one, a single drivetrain absorbs them all.
+
+## Sensor Architecture
+
+Going anywhere means seeing everything. AntBot's sensor layout is built to leave no gap.
+
+A roof-mounted 3D LiDAR sweeps 360 degrees and maps the space. Two 2D LiDARs at the front and rear catch what sits close to the ground: curbs, planters, low posts. An RGB-D camera reads depth so the robot knows how far and what shape. Four mono cameras cover the rest, eliminating blind spots.
+
+Each sensor picks up where another falls short. Cameras supply texture that LiDAR cannot. LiDAR's active pulses see through darkness that cameras cannot. This is not a stack of parts. It is one perceptual system.
 
 ![AntBot - Cargo Open](../../../../assets/images/antbot_views_open.png)
+
+## Open Source
+
+Technology left closed is technology left unfinished. AntBot ships its full software stack: controllers, sensor drivers, navigation and all.
+
+Outdoor autonomy generates edge cases without end. Wet manhole covers, drainage grates, headlights glaring at night. Answers to problems like these don't come from a conference room. They come from the field, from the people who run the robot day after day.
+
+We trust a community's experience over any single team's ability. Opening the code is our commitment to that experience, and our invitation to yours.
+
+This document walks through AntBot's hardware, software architecture, and the reasoning behind each design choice. Specs and implementation details follow in the sections ahead.
