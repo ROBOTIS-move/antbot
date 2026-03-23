@@ -339,3 +339,8 @@ CMakeLists.txt.user*
 # CMake generated config files (built from .cmake.in templates)
 vanjee_lidar_sdk/src/vanjee_driver/cmake/vanjee_driverConfig.cmake
 vanjee_lidar_sdk/src/vanjee_driver/cmake/vanjee_driverConfigVersion.cmake
+
+# Wiki (Astro/Starlight)
+docs/wiki/node_modules/
+docs/wiki/dist/
+docs/wiki/.astro/
