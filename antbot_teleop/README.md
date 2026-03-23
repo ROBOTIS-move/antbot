@@ -1,6 +1,6 @@
 # antbot_teleop
 
-Teleoperation package for the ANTBot swerve-drive robot. Provides keyboard and PS4 joystick control nodes. All nodes publish `geometry_msgs/msg/Twist` on `/cmd_vel`.
+Teleoperation package for the ANTBot swerve-drive robot. Provides keyboard and DualSense joystick control nodes. All nodes publish `geometry_msgs/msg/Twist` on `/cmd_vel`.
 
 ## Nodes
 
@@ -13,8 +13,8 @@ Terminal-based keyboard control. The robot moves only while a key is held and st
    a         d
         x
 
-w/x : forward / backward     (linear.x)
-a/d : strafe left / right    (linear.y)
+w/x       : forward / backward     (linear.x)
+a/d       : strafe left / right    (linear.y)
 q/e       : rotate CCW / CW        (angular.z)
 1~9       : speed level (1=slow, 9=max)
 ESC/Ctrl+C: quit

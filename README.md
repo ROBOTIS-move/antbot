@@ -342,7 +342,6 @@ ros2 launch antbot_teleop teleop_joy.launch.py
 | `W` / `X` | Forward / Backward  |
 | `A` / `D` | Strafe Left / Right |
 | `Q` / `E` | Rotate CCW / CW     |
-| `S`       | Stop                |
 | `1` ~ `9` | Speed Level         |
 | `ESC`     | Quit                |
 

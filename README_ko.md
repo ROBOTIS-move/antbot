@@ -341,7 +341,6 @@ ros2 launch antbot_teleop teleop_joy.launch.py
 | `W` / `X` | 전진 / 후진         |
 | `A` / `D` | 좌측 / 우측 이동    |
 | `Q` / `E` | 반시계 / 시계 회전  |
-| `S`       | 정지                |
 | `1` ~ `9` | 속도 레벨           |
 | `ESC`     | 종료                |
 
