@@ -9,17 +9,15 @@ AntBot에 관심을 가져주셔서 감사합니다! 이 문서는 본 프로젝
 | 브랜치 | 용도 | 생명주기 |
 |--------|------|----------|
 | `main` | 기본 브랜치. 안정적이고 배포 가능한 코드 | 영구 |
-| `feature-*` | 신규 기능 개발 (예: `feature-navigation`) | `main`에서 분기, 병합 후 삭제 |
-| `hotfix-*` | 긴급 버그 수정 (예: `hotfix-imu-crash`) | `main`에서 분기, 병합 후 삭제 |
+| `feature-*` | 기능 개발 및 버그 수정 (예: `feature-navigation`, `feature-fix-imu-crash`) | `main`에서 분기, 병합 후 삭제 |
 
 - **`main`**이 단일 기준점입니다. 모든 개발 브랜치는 `main`에서 생성하고, `main`으로 병합합니다.
-- `feature-*`와 `hotfix-*`는 **동일한 워크플로우**를 따릅니다. 접두사는 변경 성격을 빠르게 파악하기 위한 네이밍 컨벤션입니다.
 - `main` 브랜치에 직접 push는 **금지**됩니다. 모든 변경은 Pull Request를 통해야 합니다.
 
 ### 워크플로우
 
 ```
-(1) 분기:   main → feature-* 또는 hotfix-*
+(1) 분기:   main → feature-*
 (2) 개발:   브랜치에서 커밋 및 푸시
 (3) 병합:   PR 생성 → 코드 리뷰 → main에 병합
 (4) 릴리즈: main에서 태그 생성 → GitHub Release

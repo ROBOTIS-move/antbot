@@ -9,17 +9,15 @@ Thank you for your interest in contributing to AntBot! This document describes t
 | Branch | Purpose | Lifecycle |
 |--------|---------|-----------|
 | `main` | Default branch. Stable, release-ready code | Permanent |
-| `feature-*` | New feature development (e.g., `feature-navigation`) | Created from `main`, deleted after merge |
-| `hotfix-*` | Urgent bug fixes (e.g., `hotfix-imu-crash`) | Created from `main`, deleted after merge |
+| `feature-*` | Feature development and bug fixes (e.g., `feature-navigation`, `feature-fix-imu-crash`) | Created from `main`, deleted after merge |
 
 - **`main`** is the single source of truth. All development branches are created from and merged back into `main`.
-- `feature-*` and `hotfix-*` follow the **same workflow** — the prefix is a naming convention to quickly identify the nature of the change.
 - Direct pushes to `main` are **not allowed**. All changes must go through a Pull Request.
 
 ### Workflow
 
 ```
-(1) Branch:  main → feature-* or hotfix-*
+(1) Branch:  main → feature-*
 (2) Develop: Commit and push to your branch
 (3) Merge:   Open PR → Code review → Merge into main
 (4) Release: Tag on main → GitHub Release
