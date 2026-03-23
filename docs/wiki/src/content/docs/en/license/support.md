@@ -5,7 +5,7 @@ sidebar:
   order: 2
 ---
 
-### Contact
+## Contact
 
 **ROBOTIS AI CO., LTD.**
 
@@ -15,7 +15,7 @@ sidebar:
 | Website | [www.robotis.com](https://www.robotis.com/) |
 | GitHub | [github.com/ROBOTIS-move/antbot](https://github.com/ROBOTIS-move/antbot) |
 
-### GitHub Issues
+## GitHub Issues
 
 Bug reports and feature suggestions can be submitted through GitHub Issues.
 

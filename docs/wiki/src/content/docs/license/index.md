@@ -5,7 +5,7 @@ sidebar:
   order: 1
 ---
 
-### 소스코드
+## 소스코드
 
 AntBot에 기본 탑재된 소프트웨어는 **Apache License 2.0**으로 배포됩니다.
 
@@ -24,7 +24,7 @@ You may obtain a copy of the License at
     http://www.apache.org/licenses/LICENSE-2.0
 ```
 
-### 외부 의존 패키지
+## 외부 의존 패키지
 
 | 패키지 | 라이선스 |
 | :--- | :--- |

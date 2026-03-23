@@ -5,7 +5,7 @@ sidebar:
   order: 2
 ---
 
-### 연락처
+## 연락처
 
 **ROBOTIS AI CO., LTD.**
 
@@ -15,7 +15,7 @@ sidebar:
 | Website | [www.robotis.com](https://www.robotis.com/) |
 | GitHub | [github.com/ROBOTIS-move/antbot](https://github.com/ROBOTIS-move/antbot) |
 
-### GitHub Issues
+## GitHub Issues
 
 버그 리포트 및 기능 제안은 GitHub Issues를 통해 접수할 수 있습니다.
 

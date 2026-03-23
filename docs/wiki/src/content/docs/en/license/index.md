@@ -5,7 +5,7 @@ sidebar:
   order: 1
 ---
 
-### Source Code
+## Source Code
 
 The software pre-installed on AntBot is distributed under the **Apache License 2.0**.
 
@@ -24,7 +24,7 @@ You may obtain a copy of the License at
     http://www.apache.org/licenses/LICENSE-2.0
 ```
 
-### Third-Party Packages
+## Third-Party Packages
 
 | Package | License |
 | :--- | :--- |
