@@ -48,17 +48,3 @@ jobs:
           linter: ${{ matrix.linter }}
           distribution: humble
           package-name: ${{ steps.packages.outputs.names }}
-
-  # PR 머지 조건을 한 번에 설정하기 위한 통합 상태 체크 Job
-  lint_success:
-    needs: ament_lint
-    if: always()
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check matrix results
-        if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
-        run: |
-          echo "One or more matrix jobs failed."
-          exit 1
-      - name: All linters passed
-        run: echo "All linting jobs have passed successfully!"
