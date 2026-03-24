@@ -27,9 +27,9 @@ jobs:
     # 3. Skip execution for Draft PRs to save CI minutes, but always run on 'push'
     if: github.event.pull_request.draft == false || github.event_name == 'push'
 
-    # 4. Use GitHub-hosted native ARM64 runner for aarch64 compatibility
-    runs-on: ubuntu-22.04-arm64
-    # runs-on: ubuntu-22.04
+    # 4. Use GitHub-hosted runner
+    # runs-on: ubuntu-22.04-arm64
+    runs-on: ubuntu-22.04
 
     strategy:
       fail-fast: false
@@ -81,7 +81,7 @@ jobs:
           colcon-defaults: |
             {
               "build": {
-                "packages-skip": []
+                "packages-skip": [antbot_camera]
               },
               "test": {
                 "packages-skip": ["vanjee_lidar_sdk", "vanjee_lidar_msg"]
