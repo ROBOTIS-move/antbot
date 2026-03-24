@@ -23,7 +23,7 @@ When the emergency stop button is pressed,
 
 2. **Torque is maintained** so the robot does not slide on slopes.
 
-3. The `Estop_State` on the RCU board changes to <Badge text="ON" variant="danger" />.
+3. The [`Estop_State`](/antbot/en/development-guide/control-table/#emergency-stop) on the RCU board changes to <Badge text="ON" variant="danger" />.
 
 </Steps>
 
@@ -35,6 +35,5 @@ To release the emergency stop, **twist the button clockwise to pop it up**.
 
 :::caution
 Even after releasing the emergency stop, the motors do not operate immediately.
-Driving is only possible after the motor state transitions through `IDLE` → `READY_ENTER` → `READY`.
-
+Driving is only possible after the motor state transitions through `IDLE` → `READY_ENTER` → `READY` (within 1 second). See [Control Table > Motor](/antbot/en/development-guide/control-table/#motor) for details.
 :::

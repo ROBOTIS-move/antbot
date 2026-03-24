@@ -23,7 +23,7 @@ import { Badge, Steps } from '@astrojs/starlight/components';
 
 2. **토크가 유지**되어 로봇이 경사면에서 미끄러지지 않습니다.
 
-3. RCU 보드의 `Estop_State`가 <Badge text="ON" variant="danger" />으로 변경됩니다.
+3. RCU 보드의 [`Estop_State`](/antbot/development-guide/control-table/#비상정지)가 <Badge text="ON" variant="danger" />으로 변경됩니다.
 
 </Steps>
 
@@ -35,6 +35,5 @@ import { Badge, Steps } from '@astrojs/starlight/components';
 
 :::caution
 비상정지 해제 후에도 모터가 즉시 동작하지 않습니다.
-모터 상태가 `IDLE` → `READY_ENTER` → `READY` 순서로 전환된 후에야 주행이 가능합니다.
-
+모터 상태가 `IDLE` → `READY_ENTER` → `READY` 순서로 전환된 후(1초 이내) 주행이 가능합니다. 상세 정보는 [컨트롤 테이블 > 모터](/antbot/development-guide/control-table/#모터)를 참조하세요.
 :::

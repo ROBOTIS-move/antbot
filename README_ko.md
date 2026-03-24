@@ -37,16 +37,18 @@
   <p>
     <em>모든 길 위의 자율주행 배송 로봇</em>
     <br />
-    <strong>4WD 독립 조향 스워브 드라이브 로봇</strong> by <a href="https://www.robotis.com/">ROBOTIS AI</a>
+    by <a href="https://www.robotis.com/">ROBOTIS AI</a>
     <br />
     <br />
+    <a href="https://robotis-move.github.io/antbot/">
+      <img src="https://img.shields.io/badge/📖_Wiki_문서-방문하기-2ea44f?style=for-the-badge" alt="Wiki Documentation" />
+    </a>
+    <br /><br />
     <a href="#-시작하기"><strong>시작하기 »</strong></a>
     &ensp;·&ensp;
     <a href="#-패키지"><strong>패키지 »</strong></a>
     &ensp;·&ensp;
     <a href="#️-아키텍처"><strong>아키텍처 »</strong></a>
-    &ensp;·&ensp;
-    <a href="https://robotis-move.github.io/antbot/"><strong>Wiki »</strong></a>
   </p>
 </div>
 
@@ -91,12 +93,15 @@
 <!-- ABOUT -->
 ## 🤖 소개
 
-**AntBot**은 ROBOTIS AI에서 개발한 자율 배송 로봇용 오픈소스 ROS 2 소프트웨어입니다. 4바퀴가 각각 독립적으로 조향하는 **스워브 드라이브 방식**으로, 실제 배송 현장에서 바로 사용할 수 있는 수준의 코드를 제공합니다.
+**AntBot**은 ROBOTIS AI에서 개발한 자율주행 배송 로봇용 오픈소스 소프트웨어입니다. 4바퀴가 각각 독립적으로 조향하는 **스워브 드라이브 방식**으로, 실제 배송 현장에서 바로 사용할 수 있는 수준의 코드를 제공합니다.
+
+> *좋은 로봇은 어디든 갈 수 있어야 합니다. 좋은 기술은 누구나 쓸 수 있어야 합니다.*
+> — [자세히 보기 →](https://robotis-move.github.io/antbot/introduction/)
 
 <div align="center">
 
 ![](https://img.shields.io/badge/9-ROS_2_Packages-22314E?style=for-the-badge&logo=ros&logoColor=white)
-![](https://img.shields.io/badge/4WD-Independent_Swerve-6610f2?style=for-the-badge&logo=probot&logoColor=white)
+![](https://img.shields.io/badge/4륜-독립_조향_스워브_드라이브-6610f2?style=for-the-badge&logo=probot&logoColor=white)
 ![](https://img.shields.io/badge/5-Camera_Streams-5C3EE8?style=for-the-badge&logo=opencv&logoColor=white)
 ![](https://img.shields.io/badge/3-LiDAR_Sensors-20c997?style=for-the-badge&logo=lidar&logoColor=white)
 
@@ -104,14 +109,13 @@
 
 이 저장소 하나로 로봇 구동에 필요한 모든 것을 갖출 수 있습니다:
 
-- 🛞 **Swerve-drive controller** — 역기구학 기반 4륜 독립 조향 제어, 오도메트리 출력
-- 🔌 **Hardware interface** — Dynamixel Protocol 2.0으로 ANT-RCU 보드와 통신
-- 📷 **Multi-camera driver** — V4L2, USB, Orbbec Gemini 336L RGB-D 카메라 동시 지원
-- 📡 **Sensor integration** — 2D/3D LiDAR, IMU, GNSS 센서 통합 관리
-- 🤖 **Complete URDF model** — 센서 프레임, 메시까지 포함된 전체 로봇 모델
-- 🚀 **One-command bringup** — 명령어 하나로 전체 시스템 한 번에 실행
+- **Swerve-drive controller** — 역기구학 기반 4륜 독립 조향 제어, 오도메트리 출력
+- **Hardware interface** — Dynamixel Protocol 2.0으로 ANT-RCU 보드와 통신
+- **Multi-camera driver** — V4L2, USB, Orbbec Gemini 336L RGB-D 카메라 동시 지원
+- **Sensor integration** — 2D/3D LiDAR, IMU, GNSS 센서 통합 관리
+- **Complete URDF model** — 센서 프레임, 메시까지 포함된 전체 로봇 모델
+- **One-command bringup** — 명령어 하나로 전체 시스템 한 번에 실행
 
-[ROS 2 Humble](https://docs.ros.org/en/humble/) + [ros2_control](https://control.ros.org/) 기반입니다.
 
 <p align="right">(<a href="#readme-top">상단으로</a>)</p>
 
@@ -382,7 +386,7 @@ ros2 topic pub /cmd_vel geometry_msgs/msg/Twist \
   </tr>
   <tr>
     <td><strong>Drive Type</strong></td>
-    <td>4WD 독립 조향 스워브 드라이브</td>
+    <td>4륜 독립 조향 스워브 드라이브</td>
   </tr>
   <tr>
     <td><strong>Control Board</strong></td>

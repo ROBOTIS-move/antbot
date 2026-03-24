@@ -1,14 +1,42 @@
 ---
-title: 1.1 Overview
-description: AntBot Product Introduction
+title: 1.1 Introduction
+description: About AntBot
 sidebar:
   order: 1
 ---
 
-**AntBot** is an open-source **outdoor autonomous delivery robot** developed by ROBOTIS AI.
-It uses a **Swerve Drive** system where each of the 4 wheels steers independently,
-enabling omnidirectional movement and in-place rotation, optimized for last-mile delivery.
+<p class="epigraph">Autonomous Navigation Transport Robot · ROBOTIS AI · Open Source</p>
 
-![AntBot - Cargo Closed](../../../../assets/images/antbot_views_closed.png)
+**AntBot** is an open-source autonomous delivery robot developed by ROBOTIS AI.
+
+![AntBot](../../../../assets/images/antbot_views_closed.png)
+
+## Premise
+
+**Go anywhere. Open everywhere.** Every design decision behind AntBot traces back to these two lines. From where each sensor sits to how the wheels turn to how much of the code we share. If it didn't serve the premise, it didn't ship.
+
+## Last Mile
+
+The last mile is the shortest stretch in logistics, and the hardest. Campus walkways, apartment blocks, underground garages. Tight alleys, curbs, ramps, pedestrians who don't look up. No lane markings. No traffic lights. No fixed route.
+
+What a robot needs to survive here boils down to one thing. Anywhere. Any direction. Right now. Every piece of AntBot's hardware exists to make that sentence real.
+
+## Swerve Drive
+
+Each of AntBot's four wheels steers on its own. Omnidirectional movement, zero-radius turns, sideways travel. Where a differential-drive robot needs a three-point turn, a swerve drive slips through in one move.
+
+## Sensor Architecture
+
+A 360-degree 3D LiDAR maps the space. Two 2D LiDARs catch ground-level obstacles. An RGB-D camera reads depth. Four mono cameras eliminate blind spots. More than a collection of sensors — one perceptual system. See [Key Sensor Specifications](/antbot/en/hardware/sensor-coordinates/) for placement and coordinates.
 
 ![AntBot - Cargo Open](../../../../assets/images/antbot_views_open.png)
+
+## Open Source
+
+AntBot ships its full software stack under [Apache License 2.0](/antbot/en/license/): controllers, sensor drivers, navigation and all.
+
+Better answers come from the field. Opening the code is our commitment to join that field, and our invitation to yours. We hope this serves as the first page of that journey. Thank you.
+
+:::tip[Get Started]
+Just received the robot? Head to the [Quick Start Guide](/antbot/en/quick-start/powering-up/). Want to explore the source code? Check the [Open Source Repository](/antbot/en/software/repository/).
+:::

@@ -1,6 +1,6 @@
 # antbot_description
 
-URDF/xacro robot description for the ANTBot 4-wheel independent swerve-drive delivery robot.
+URDF/xacro robot description for the ANTBot 4-Wheel Independent Swerve Drive delivery robot.
 
 ## Robot Model
 

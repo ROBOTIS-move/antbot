@@ -1,6 +1,6 @@
 # antbot_hw_interface
 
-A [ros2_control](https://control.ros.org/) `SystemInterface` hardware plugin for the ANTBot 4-wheel independent swerve-drive delivery robot.
+A [ros2_control](https://control.ros.org/) `SystemInterface` hardware plugin for the ANTBot 4-Wheel Independent Swerve Drive delivery robot.
 
 This plugin communicates with the ANT-RCU (Robot Control Unit) board over Dynamixel Protocol 2.0.
 

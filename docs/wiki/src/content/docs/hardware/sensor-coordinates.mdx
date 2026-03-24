@@ -1,6 +1,6 @@
 ---
 title: 2.5 주요 센서 사양
-description: AntBot 주요 센서 구성 및 좌표 기준 — base_link 원점 기준 6DoF 위치
+description: AntBot 주요 센서 구성 및 좌표 기준 (base_link 원점 기준 6DoF 위치)
 sidebar:
   order: 5
 ---
@@ -11,11 +11,11 @@ AntBot에 탑재된 주요 센서 목록과 `base_link` 기준 좌표입니다.
 
 | 센서 | 수량 | 연결 | 비고 |
 | :--- | :---: | :--- | :--- |
-| 3D LiDAR | 1 | Ethernet | |
+| 3D LiDAR | 1 | Ethernet | 360° 3D 포인트 클라우드 |
 | 2D LiDAR | 2 | USB | 전방 + 후방 장애물 감지 |
 | RGB-D 카메라 | 1 | USB | Color + Depth |
 | 모노 카메라 | 4 | V4L2 | 전방 3 + 후방 1 |
-| IMU | 1 | USB | |
+| IMU | 1 | USB | 6축 (가속도 + 자이로) |
 | GNSS | 1 | USB | GPS 수신기 |
 
 ---
@@ -52,5 +52,5 @@ AntBot에 탑재된 주요 센서 목록과 `base_link` 기준 좌표입니다.
 | GNSS | 202.600 | -128.000 | 660.000 | 0 | 0 | 180 |
 
 :::note
-URDF에서 이 좌표를 확인하려면 [`antbot_description/urdf/antbot.xacro`](https://github.com/ROBOTIS-move/antbot/blob/main/antbot_description/urdf/antbot.xacro)를 참조하세요.
+URDF에서 이 좌표를 확인하려면 [`antbot_description/urdf/antbot.xacro`](https://github.com/ROBOTIS-move/antbot/blob/main/antbot_description/urdf/antbot.xacro)를 참조하세요. 각 센서의 ROS 토픽은 [주요 ROS 토픽/서비스](/antbot/development-guide/ros-topics/)에서 확인할 수 있습니다.
 :::

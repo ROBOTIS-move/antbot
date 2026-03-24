@@ -5,8 +5,10 @@ sidebar:
   order: 2
 ---
 
-:::note
-Firmware update instructions will be released in the future.
+This section will cover the firmware update procedure for the RCU board.
 
-If you need a firmware update, please refer to the [Technical Support](/antbot/en/license/support/) page.
+:::note
+This guide is currently being written and will be provided in a future update. If you need a firmware update, please refer to the [Technical Support](/antbot/en/license/support/) page.
 :::
+
+For current RCU board status checks, see [Firmware Diagnostics](/antbot/en/maintenance/firmware-diagnostics/).
