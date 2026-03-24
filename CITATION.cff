@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+title: AntBot
+message: >-
+  If you use this software in your research, please cite it
+  using the metadata from this file.
+type: software
+authors:
+  - name: ROBOTIS AI CO., LTD.
+    website: https://www.robotis.com/
+repository-code: https://github.com/ROBOTIS-move/antbot
+url: https://robotis-move.github.io/antbot/
+license: Apache-2.0
+keywords:
+  - autonomous-mobile-robot
+  - swerve-drive
+  - ros2
+  - delivery-robot
+  - robotis
+  - open-source
