@@ -33,9 +33,9 @@ jobs:
               echo "Excluding package: $name"
               continue
             fi
-            if find "$path" \( -name "*.cpp" -o -name "*.hpp" -o -name "*.py" -o -name "*.h" -o -name "*.c" \) -print -quit | grep -q .; then
-              PACKAGES="$PACKAGES $name"
-            fi
+            # if find "$path" \( -name "*.cpp" -o -name "*.hpp" -o -name "*.py" -o -name "*.h" -o -name "*.c" \) -print -quit | grep -q .; then
+            PACKAGES="$PACKAGES $name"
+            # fi
           done < <(colcon list)
           echo "names=${PACKAGES# }" >> $GITHUB_OUTPUT
 
