@@ -28,7 +28,8 @@ jobs:
     if: github.event.pull_request.draft == false || github.event_name == 'push'
 
     # 4. Use GitHub-hosted native ARM64 runner for aarch64 compatibility
-    runs-on: ubuntu-22.04-arm64
+    # runs-on: ubuntu-22.04-arm64
+    runs-on: ubuntu-22.04
 
     strategy:
       fail-fast: false
