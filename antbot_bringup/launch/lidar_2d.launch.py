@@ -34,10 +34,10 @@ def generate_launch_description():
         parameters=[
             default_params,
             {'lidar_0.port': '/dev/ttyUSB3',
-             'lidar_0.reverse': True,
+             'lidar_0.reverse': False,
              'lidar_0.frame_id': 'lidar_2d_front_link',
              'lidar_1.port': '/dev/ttyUSB2',
-             'lidar_1.reverse': True,
+             'lidar_1.reverse': False,
              'lidar_1.frame_id': 'lidar_2d_back_link'}],
         sigterm_timeout=LaunchConfiguration('sigterm_timeout', default=15),
         sigkill_timeout=LaunchConfiguration('sigkill_timeout', default=15))
