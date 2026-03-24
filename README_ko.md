@@ -509,6 +509,7 @@ Copyright 2026 ROBOTIS AI CO., LTD.
 **ROBOTIS AI CO., LTD.**
 
 - 🌐 Website: [www.robotis.com](https://www.robotis.com/)
+- 📧 Contact: peter@robotis.com
 
 <p align="right">(<a href="#readme-top">상단으로</a>)</p>
 
