@@ -59,11 +59,10 @@ jobs:
         with:
           target-ros2-distro: ${{ matrix.ros_distribution }}
           vcs-repo-file-url: "https://raw.githubusercontent.com/ROBOTIS-move/antbot/${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}/additional_repos.repos"
-          # antbot_camera: excluded due to ARM(aarch64)-only librectrl.so dependency
-          colcon-extra-args: --packages-skip antbot_camera
+          # antbot_camera, antbot_bringup: excluded due to ARM(aarch64)-only librectrl.so dependency
+          colcon-extra-args: --packages-skip antbot_camera antbot_bringup
           package-name: |
             antbot
-            antbot_bringup
             antbot_description
             antbot_hw_interface
             antbot_imu
