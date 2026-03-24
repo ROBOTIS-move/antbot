@@ -5,9 +5,9 @@ sidebar:
   order: 1
 ---
 
-The control table consists of data representing the current state of the device as well as numerous data items required for drive and control operations.
+The control table consists of data representing the current state of the device as well as numerous data items required for drive and control operations. Each individual data entry in the control table is called a **control item**, and each item has properties such as a unique Name, size, and access permission.
 
-Users can read specific data from the control table using the **[Dynamixel Protocol 2.0](https://emanual.robotis.com/docs/en/dxl/protocol2/)** to check the device status, and control the device by modifying the data.
+Users can read specific items from the control table using the **[Dynamixel Protocol 2.0](https://emanual.robotis.com/docs/en/dxl/protocol2/)** to check the device status, and control the device by modifying their values.
 
 Internally, AntBot manages the control table as an XML file.
 
