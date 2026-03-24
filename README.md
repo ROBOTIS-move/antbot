@@ -95,6 +95,9 @@
 
 **AntBot** is a production-ready, open-source software stack for the ROBOTIS AI AntBot autonomous delivery robot, a **4-Wheel Independent Swerve Drive** platform built for last-mile delivery.
 
+> *Go anywhere. Open everywhere.*
+> — [Read the full story →](https://robotis-move.github.io/antbot/en/introduction/)
+
 <div align="center">
 
 ![](https://img.shields.io/badge/9-ROS_2_Packages-22314E?style=for-the-badge&logo=ros&logoColor=white)

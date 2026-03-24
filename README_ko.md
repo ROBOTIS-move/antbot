@@ -95,6 +95,9 @@
 
 **AntBot**은 ROBOTIS AI에서 개발한 자율주행 배송 로봇용 오픈소스 소프트웨어입니다. 4바퀴가 각각 독립적으로 조향하는 **스워브 드라이브 방식**으로, 실제 배송 현장에서 바로 사용할 수 있는 수준의 코드를 제공합니다.
 
+> *좋은 로봇은 어디든 갈 수 있어야 합니다. 좋은 기술은 누구나 쓸 수 있어야 합니다.*
+> — [자세히 보기 →](https://robotis-move.github.io/antbot/introduction/)
+
 <div align="center">
 
 ![](https://img.shields.io/badge/9-ROS_2_Packages-22314E?style=for-the-badge&logo=ros&logoColor=white)
