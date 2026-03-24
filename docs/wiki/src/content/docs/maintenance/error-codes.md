@@ -7,6 +7,8 @@ sidebar:
 
 ## 펌웨어 에러코드
 
+각 에러코드의 관련 하드웨어 항목은 [컨트롤 테이블](/antbot/development-guide/control-table/)에서 상세 확인할 수 있습니다.
+
 <details>
 <summary>RCU 에러코드 전체 보기</summary>
 

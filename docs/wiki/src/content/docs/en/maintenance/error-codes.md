@@ -7,6 +7,8 @@ sidebar:
 
 ## Firmware Error Codes
 
+For details on related hardware items, see the [Control Table](/antbot/en/development-guide/control-table/).
+
 <details>
 <summary>View all RCU error codes</summary>
 
@@ -18,7 +20,7 @@ sidebar:
 | `0x01030012` | Task | Task thread start failed |
 | `0x01030014` | Task | System check timeout |
 | `0x01030015` | Task | System check error |
-| `0x01050001` | E-Stop | Emergency stop activated |
+| `0x01050001` | E-Stop | [Emergency stop](/antbot/en/hardware/emergency-stop/) activated |
 | `0x02010001` | Battery | Battery low voltage |
 | `0x02010002` | Battery | Battery over voltage |
 | `0x02010005` | Battery | BMS disconnected |
