@@ -37,7 +37,7 @@
   <p>
     <em>모든 길 위의 자율주행 배송 로봇</em>
     <br />
-    <strong>4륜 독립 조향 스워브 드라이브 로봇</strong> by <a href="https://www.robotis.com/">ROBOTIS AI</a>
+    by <a href="https://www.robotis.com/">ROBOTIS AI</a>
     <br />
     <br />
     <a href="https://robotis-move.github.io/antbot/">
