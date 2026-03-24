@@ -62,7 +62,7 @@ jobs:
           package-name: |
             antbot
             antbot_bringup
-            antbot_camera
+            # antbot_camera — Skipped: depends on ARM(aarch64)-only librectrl.so, cannot build on x86 CI
             antbot_description
             antbot_hw_interface
             antbot_imu
