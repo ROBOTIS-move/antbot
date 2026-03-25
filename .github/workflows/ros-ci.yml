@@ -76,15 +76,15 @@ jobs:
           vcs-repo-file-url: "https://raw.githubusercontent.com/ROBOTIS-move/antbot/${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}/additional_repos.repos"
 
           # Configuration for colcon build and test:
-          # antbot_camera: excluded from build due to ARM(aarch64)-only librectrl.so dependency
-          # antbot_bringup: excluded from build due to exec_depend on antbot_camera
-          # vanjee_lidar_sdk, vanjee_lidar_msg: excluded from test only (external code, lint failures)
+          # antbot_camera: excluded due to ARM(aarch64)-only librectrl.so dependency
+          # antbot_bringup: excluded due to exec_depend on antbot_camera
+          # vanjee_lidar_sdk, vanjee_lidar_msg: excluded from test (external code, lint failures)
           colcon-defaults: |
             {
               "build": {
                 "packages-skip": ["antbot_camera", "antbot_bringup"]
               },
               "test": {
-                "packages-skip": ["vanjee_lidar_sdk", "vanjee_lidar_msg"]
+                "packages-skip": ["antbot_camera", "antbot_bringup", "vanjee_lidar_sdk", "vanjee_lidar_msg"]
               }
             }
