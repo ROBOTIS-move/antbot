@@ -4,18 +4,11 @@ name: CI
 on:
   push:
     branches: [ main ]
-    paths-ignore:
-      - 'docs/**'
-      - '**.md'
-      - 'LICENSE'
+
   pull_request:
     branches: [ main ]
     # Includes 'ready_for_review' to trigger when a draft PR is marked as ready
     types: [opened, synchronize, reopened, ready_for_review]
-    paths-ignore:
-      - 'docs/**'
-      - '**.md'
-      - 'LICENSE'
 
 # 2. Prevent redundant builds by canceling previous runs on the same PR/branch
 concurrency:
