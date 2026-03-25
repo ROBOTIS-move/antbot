@@ -28,7 +28,6 @@ jobs:
     if: github.event.pull_request.draft == false || github.event_name == 'push'
 
     # 4. Use GitHub-hosted runner
-    # runs-on: ubuntu-22.04-arm64
     runs-on: ubuntu-22.04
 
     strategy:
@@ -42,7 +41,6 @@ jobs:
             ros_version: 2
 
     container:
-      # Automatically loads the arm64v8 version of the image on ARM runners
       image: ${{ matrix.docker_image }}
 
     steps:
