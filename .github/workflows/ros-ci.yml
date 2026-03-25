@@ -81,7 +81,7 @@ jobs:
           colcon-defaults: |
             {
               "build": {
-                "packages-skip": [antbot_camera]
+                "packages-skip": ["antbot_camera"]
               },
               "test": {
                 "packages-skip": ["vanjee_lidar_sdk", "vanjee_lidar_msg"]
