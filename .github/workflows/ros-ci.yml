@@ -1,35 +1,42 @@
 name: CI
 
-# 1. Trigger conditions and path exclusions
 on:
   push:
     branches: [ main ]
-    paths-ignore:
-      - 'docs/**'
-      - '**.md'
-      - 'LICENSE'
-      - .github/workflows/**
   pull_request:
     branches: [ main ]
     # Includes 'ready_for_review' to trigger when a draft PR is marked as ready
     types: [opened, synchronize, reopened, ready_for_review]
-    paths-ignore:
-      - 'docs/**'
-      - '**.md'
-      - 'LICENSE'
-      - .github/workflows/**
 
-# 2. Prevent redundant builds by canceling previous runs on the same PR/branch
+# Prevent redundant builds by canceling previous runs on the same PR/branch
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
-  ROS_CI:
-    # 3. Skip execution for Draft PRs to save CI minutes, but always run on 'push'
-    if: github.event.pull_request.draft == false || github.event_name == 'push'
+  # 1. Check which files changed to decide whether to run CI
+  changes:
+    runs-on: ubuntu-22.04
+    outputs:
+      source: ${{ steps.filter.outputs.source }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            source:
+              - '!docs/**'
+              - '!**.md'
+              - '!LICENSE'
+              - .github/workflows/**
 
-    # 4. Use GitHub-hosted runner
+  # 2. Run build and test only when source code is changed
+  build:
+    needs: changes
+    if: |
+      needs.changes.outputs.source == 'true' &&
+      (github.event.pull_request.draft == false || github.event_name == 'push')
     runs-on: ubuntu-22.04
 
     strategy:
@@ -90,3 +97,17 @@ jobs:
                 "packages-skip": ["antbot_camera", "antbot_bringup", "vanjee_lidar_sdk", "vanjee_lidar_msg"]
               }
             }
+
+  # 3. Status gate for branch protection
+  ROS_CI:
+    needs: [changes, build]
+    if: always()
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Check CI result
+        run: |
+          if [[ "${{ needs.build.result }}" == "failure" || "${{ needs.build.result }}" == "cancelled" ]]; then
+            echo "CI failed or was cancelled"
+            exit 1
+          fi
+          echo "CI passed or was skipped (docs-only change)"
