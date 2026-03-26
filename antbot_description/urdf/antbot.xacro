@@ -9,6 +9,10 @@
   <xacro:include filename="$(find antbot_description)/urdf/wheel.xacro"/>
   <xacro:include filename="$(find antbot_description)/urdf/ros2_control.xacro"/>
 
+  <xacro:arg name="calibration_yaml_path" default=""/>
+  <xacro:property name="calibration_yaml_path_val" value="$(arg calibration_yaml_path)"/>
+  <xacro:property name="calibration_config" value="${xacro.load_yaml(calibration_yaml_path_val) if calibration_yaml_path_val != '' else dict()}"/>
+
   <!-- Wheel parameters -->
   <xacro:property name="wheelbase_length" value="0.530"/>
   <xacro:property name="wheelbase_width" value="0.512"/>
@@ -41,13 +45,19 @@
   <xacro:OpticalFrame name="camera_stereo_front_rgb_optical" parent="camera_stereo_front_rgb"/>
 
   <!-- Mono cameras -->
-  <xacro:Sensors name="camera_mono_left" xyz="0.260 0.25477 0.5875" rpy="0.0 0.0 ${radians(90)}"/>
+  <xacro:CalibratedSensors name="camera_mono_left"
+    default_xyz="0.260 0.25477 0.5875" default_rpy="0.0 0.0 ${radians(90)}"
+    calibration_key="camera_left_extrinsic"/>
   <xacro:OpticalFrame name="camera_mono_left_optical" parent="camera_mono_left"/>
 
-  <xacro:Sensors name="camera_mono_front" xyz="0.35807 0.0 0.5875" rpy="0.0 0.0 0.0"/>
+  <xacro:CalibratedSensors name="camera_mono_front"
+    default_xyz="0.35807 0.0 0.5875" default_rpy="0.0 0.0 0.0"
+    calibration_key="camera_front_extrinsic"/>
   <xacro:OpticalFrame name="camera_mono_front_optical" parent="camera_mono_front"/>
 
-  <xacro:Sensors name="camera_mono_right" xyz="0.260 -0.25477 0.5875" rpy="0.0 0.0 ${radians(-90)}"/>
+  <xacro:CalibratedSensors name="camera_mono_right"
+    default_xyz="0.260 -0.25477 0.5875" default_rpy="0.0 0.0 ${radians(-90)}"
+    calibration_key="camera_right_extrinsic"/>
   <xacro:OpticalFrame name="camera_mono_right_optical" parent="camera_mono_right"/>
 
   <xacro:Sensors name="camera_mono_back" xyz="-0.37669 0.0 0.299" rpy="0.0 0.0 ${radians(180)}"/>
@@ -63,7 +73,9 @@
   <xacro:Sensors name="lidar_2d_back" xyz="-0.325 0.0 0.255" rpy="${radians(180)} 0.0 0.0"/>
 
   <!-- 3D LiDAR -->
-  <xacro:Sensors name="lidar_3d" xyz="0.225332 0.0 0.724904" rpy="0.0 ${radians(10)} 0.0"/>
+  <xacro:CalibratedSensors name="lidar_3d"
+    default_xyz="0.225332 0.0 0.724904" default_rpy="0.0 ${radians(10)} 0.0"
+    calibration_key="lidar_3d_extrinsic"/>
   <xacro:SensorsRel parent="lidar_3d" child="lidar_3d_imu" xyz="0.00677 -0.02045 -0.02597" rpy="0.0 0.0 0.0"/>
 
   <!-- Charging coil -->
