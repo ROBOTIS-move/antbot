@@ -59,12 +59,12 @@
   <xacro:Sensors name="magnetometer" xyz="0.240 -0.00425 0.3902" rpy="0.0 0.0 0.0"/>
 
   <!-- 2D LiDARs -->
-  <xacro:Sensors name="lidar_2d_front" xyz="0.325 0.0 0.255" rpy="0.0 0.0 ${radians(180)}"/>
-  <xacro:Sensors name="lidar_2d_back" xyz="-0.325 0.0 0.255" rpy="0.0 0.0 0.0"/>
+  <xacro:Sensors name="lidar_2d_front" xyz="0.325 0.0 0.255" rpy="0.0 ${radians(180)} 0.0"/>
+  <xacro:Sensors name="lidar_2d_back" xyz="-0.325 0.0 0.255" rpy="${radians(180)} 0.0 0.0"/>
 
   <!-- 3D LiDAR -->
   <xacro:Sensors name="lidar_3d" xyz="0.225332 0.0 0.724904" rpy="0.0 ${radians(10)} 0.0"/>
-  <xacro:SensorsRel parent="lidar_3d" child="lidar_3d_imu" xyz="-0.00559 -0.00571 -0.02668" rpy="0.0 0.0 0.0"/>
+  <xacro:SensorsRel parent="lidar_3d" child="lidar_3d_imu" xyz="0.00677 -0.02045 -0.02597" rpy="0.0 0.0 0.0"/>
 
   <!-- Charging coil -->
   <xacro:Sensors name="robot_charging_coil" xyz="-0.299119 0.0 0.170631" rpy="0.0 0.0 0.0"/>
