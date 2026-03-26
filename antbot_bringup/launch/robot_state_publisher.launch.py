@@ -30,8 +30,14 @@ def generate_launch_description():
         get_package_share_directory('antbot_description'),
         'urdf',
         'antbot.xacro')
-    robot_description_config = xacro.process_file(urdf_path)
-    robot_description = {'robot_description': robot_description_config.toxml()}
+
+    calibration_yaml_path = os.path.expanduser('~/ANTBOT/calibration.yaml')
+    mappings = {}
+    if os.path.isfile(calibration_yaml_path):
+        mappings['calibration_yaml_path'] = calibration_yaml_path
+    robot_description_config = xacro.process_file(urdf_path, mappings=mappings)
+    robot_description_xml = robot_description_config.toxml()
+    robot_description = {'robot_description': robot_description_xml}
 
     robot_state_publisher_node = Node(
         package='robot_state_publisher',

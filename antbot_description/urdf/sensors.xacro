@@ -34,4 +34,20 @@
     <link name="${name}_link"/>
   </xacro:macro>
 
+  <xacro:macro name="CalibratedSensors" params="name default_xyz default_rpy calibration_key">
+    <xacro:property name="calib_data" value="${calibration_config.get(calibration_key)}"/>
+    <xacro:property name="_xyz" value="${
+      str(calib_data['tx']) + ' ' + str(calib_data['ty']) + ' ' + str(calib_data['tz'])
+      if calib_data else default_xyz}"/>
+    <xacro:property name="_rpy" value="${
+      str(calib_data['rx']) + ' ' + str(calib_data['ry']) + ' ' + str(calib_data['rz'])
+      if calib_data else default_rpy}"/>
+    <joint name="${name}_joint" type="fixed">
+      <parent link="base_link"/>
+      <child link="${name}_link"/>
+      <origin xyz="${_xyz}" rpy="${_rpy}"/>
+    </joint>
+    <link name="${name}_link"/>
+  </xacro:macro>
+
 </robot>
