@@ -1,13 +1,17 @@
 # Nav2 stack parameters for AntBot holonomic swerve-drive robot (REAL ROBOT)
+#
+# ARCHITECTURE:
+# - LiDAR: Front LiDAR only (/scan_0, ~270° coverage)
+# - Odometry: Swerve controller (RK4 integration, no EKF)
+# - TF: swerve controller publishes odom→base_link, AMCL publishes map→odom
+# - Controller: MPPI for holonomic motion
+#
 # All Nav2 server configurations in one file.
-# Robot footprint defined once, referenced by both local and global costmaps.
-robot_footprint: &robot_footprint "[[0.35, 0.30], [0.35, -0.30], [-0.35, -0.30], [-0.35, 0.30]]"
-
 bt_navigator:
   ros__parameters:
     global_frame: map
     robot_base_frame: base_link
-    odom_topic: /odometry/filtered
+    odom_topic: /odom
     bt_loop_duration: 10
     default_server_timeout: 20
     navigators: ["navigate_to_pose", "navigate_through_poses"]
@@ -47,102 +51,30 @@ controller_server:
       xy_goal_tolerance: 0.20        # tighter than sim (0.25)
       yaw_goal_tolerance: 0.20       # tighter than sim (0.25)
 
-    # MPPI controller for holonomic swerve-drive
-    # Real robot: reduced batch_size for Jetson Orin compute budget,
-    # lower vx_max to respect real motor limits after velocity_smoother.
+    # RPP controller - rotate-in-place then drive straight
     FollowPath:
-      plugin: "nav2_mppi_controller::MPPIController"
-      time_steps: 56
-      model_dt: 0.05
-      batch_size: 1500              # reduced from sim 2000 for Jetson Orin
-      vx_std: 2.0
-      vy_std: 0.5
-      wz_std: 1.5
-      vx_max: 2.0                   # reduced from sim 5.0
-      vx_min: -0.5                  # reduced from sim -1.0
-      vy_max: 0.5                   # reduced from sim 1.0
-      wz_max: 2.0                   # reduced from sim 4.0
-      iteration_count: 1
-      prune_distance: 1.7
-      transform_tolerance: 0.1
-      temperature: 0.2
-      gamma: 0.015
-      motion_model: "Omni"
-      visualize: false              # disabled on real robot to save bandwidth
-      retry_attempt_limit: 1
-      regenerate_noises: false
-      TrajectoryVisualizer:
-        trajectory_step: 5
-        time_step: 3
-      critics: ["ConstraintCritic", "CostCritic", "GoalCritic",
-                "GoalAngleCritic", "PathAlignCritic", "PathFollowCritic",
-                "PathAngleCritic", "PreferForwardCritic", "ObstaclesCritic",
-                "TwirlingCritic"]
-      ConstraintCritic:
-        enabled: true
-        cost_power: 1
-        cost_weight: 4.0
-      GoalCritic:
-        enabled: true
-        cost_power: 1
-        cost_weight: 5.0
-        threshold_to_consider: 1.4
-      GoalAngleCritic:
-        enabled: true
-        cost_power: 1
-        cost_weight: 3.0
-        threshold_to_consider: 0.5
-      PreferForwardCritic:
-        enabled: true
-        cost_power: 1
-        cost_weight: 5.0
-        threshold_to_consider: 0.5
-      ObstaclesCritic:
-        enabled: true
-        cost_power: 1
-        repulsion_weight: 0.15      # slightly higher than sim (0.1)
-        critical_weight: 20.0
-        consider_footprint: true
-        collision_cost: 10000.0
-        collision_margin_distance: 0.15   # wider than sim (0.1)
-        near_goal_distance: 0.5
-        inflation_radius: 0.55
-        cost_scaling_factor: 3.0
-      CostCritic:
-        enabled: true
-        cost_power: 1
-        cost_weight: 2.0
-        critical_cost: 300.0
-        consider_footprint: true
-        collision_cost: 1000000.0
-        near_goal_distance: 1.0
-      PathAlignCritic:
-        enabled: true
-        cost_power: 1
-        cost_weight: 10.0
-        max_path_occupancy_ratio: 0.05
-        trajectory_point_step: 4
-        threshold_to_consider: 0.5
-        offset_from_furthest: 20
-        use_path_orientations: false
-      PathFollowCritic:
-        enabled: true
-        cost_power: 1
-        cost_weight: 5.0
-        offset_from_furthest: 5
-        threshold_to_consider: 1.4
-      PathAngleCritic:
-        enabled: true
-        cost_power: 1
-        cost_weight: 5.0
-        offset_from_furthest: 4
-        threshold_to_consider: 0.5
-        max_angle_to_furthest: 1.0
-        mode: 0
-      TwirlingCritic:
-        enabled: true
-        twirling_cost_power: 1
-        twirling_cost_weight: 5.0
+      plugin: "nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController"
+      desired_linear_vel: 0.30
+      lookahead_dist: 0.6
+      min_lookahead_dist: 0.4
+      max_lookahead_dist: 1.0
+      lookahead_time: 1.5
+      rotate_to_heading_angular_vel: 0.5
+      transform_tolerance: 0.5
+      use_velocity_scaled_lookahead_dist: true
+      min_approach_linear_velocity: 0.05
+      approach_velocity_scaling_dist: 0.5
+      use_collision_detection: true
+      max_allowed_time_to_collision_up_to_carrot: 1.0
+      use_regulated_linear_velocity_scaling: true
+      use_fixed_curvature_lookahead: false
+      use_cost_regulated_linear_velocity_scaling: false
+      regulated_linear_scaling_min_radius: 0.9
+      regulated_linear_scaling_min_speed: 0.10
+      use_rotate_to_heading: true       # STOP and rotate in place when heading error > threshold
+      rotate_to_heading_min_angle: 0.785  # ~45deg error triggers rotate-in-place
+      max_angular_accel: 0.5
+      max_robot_pose_search_dist: 10.0
 
 local_costmap:
   local_costmap:
@@ -155,28 +87,14 @@ local_costmap:
       width: 5
       height: 5
       resolution: 0.05
-      footprint: *robot_footprint
-      plugins: ["obstacle_layer_front", "obstacle_layer_back", "inflation_layer"]
+      footprint: "[[0.35, 0.30], [0.35, -0.30], [-0.35, -0.30], [-0.35, 0.30]]"
+      plugins: ["obstacle_layer_front", "inflation_layer"]
       obstacle_layer_front:
         plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: true
         observation_sources: scan_front
         scan_front:
-          topic: /scan_0
-          max_obstacle_height: 2.0
-          clearing: true
-          marking: true
-          data_type: "LaserScan"
-          raytrace_max_range: 5.0
-          raytrace_min_range: 0.7
-          obstacle_max_range: 4.5
-          obstacle_min_range: 0.7
-      obstacle_layer_back:
-        plugin: "nav2_costmap_2d::ObstacleLayer"
-        enabled: true
-        observation_sources: scan_back
-        scan_back:
-          topic: /scan_1
+          topic: /scan_0_fixed
           max_obstacle_height: 2.0
           clearing: true
           marking: true
@@ -188,7 +106,7 @@ local_costmap:
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 1.5
-        inflation_radius: 0.75
+        inflation_radius: 0.5
       always_send_full_costmap: true
 
 global_costmap:
@@ -198,10 +116,10 @@ global_costmap:
       publish_frequency: 1.0
       global_frame: map
       robot_base_frame: base_link
-      footprint: *robot_footprint
+      footprint: "[[0.35, 0.30], [0.35, -0.30], [-0.35, -0.30], [-0.35, 0.30]]"
       resolution: 0.05
       track_unknown_space: true
-      plugins: ["static_layer", "obstacle_layer_front", "obstacle_layer_back", "inflation_layer"]
+      plugins: ["static_layer", "obstacle_layer_front", "inflation_layer"]
       static_layer:
         plugin: "nav2_costmap_2d::StaticLayer"
         map_subscribe_transient_local: true
@@ -210,21 +128,7 @@ global_costmap:
         enabled: true
         observation_sources: scan_front
         scan_front:
-          topic: /scan_0
-          max_obstacle_height: 2.0
-          clearing: true
-          marking: true
-          data_type: "LaserScan"
-          raytrace_max_range: 5.0
-          raytrace_min_range: 0.7
-          obstacle_max_range: 4.5
-          obstacle_min_range: 0.7
-      obstacle_layer_back:
-        plugin: "nav2_costmap_2d::ObstacleLayer"
-        enabled: true
-        observation_sources: scan_back
-        scan_back:
-          topic: /scan_1
+          topic: /scan_0_fixed
           max_obstacle_height: 2.0
           clearing: true
           marking: true
@@ -236,7 +140,7 @@ global_costmap:
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 1.5
-        inflation_radius: 0.75
+        inflation_radius: 0.5
       always_send_full_costmap: true
 
 behavior_server:
@@ -253,7 +157,7 @@ behavior_server:
       plugin: "nav2_behaviors/Wait"
     global_frame: odom
     robot_base_frame: base_link
-    transform_tolerance: 0.1
+    transform_tolerance: 0.5
     simulate_ahead_time: 2.0
     max_rotational_vel: 1.0
     min_rotational_vel: 0.4
@@ -275,10 +179,10 @@ velocity_smoother:
     smoothing_frequency: 20.0
     scale_velocities: false
     feedback: "OPEN_LOOP"
-    max_velocity: [1.0, 0.10, 1.0]       # conservative: sim [1.5, 0.15, 1.5]
-    min_velocity: [-0.2, -0.10, -1.0]    # conservative: sim [-0.3, -0.15, -1.5]
-    max_accel: [0.5, 0.3, 1.0]           # gentler: sim [1.0, 0.5, 2.0]
-    max_decel: [-1.0, -0.3, -2.0]        # gentler: sim [-1.5, -0.5, -2.5]
+    max_velocity: [0.30, 0.02, 0.3]
+    min_velocity: [-0.10, -0.02, -0.3]
+    max_accel: [0.2, 0.05, 0.3]
+    max_decel: [-0.3, -0.05, -0.3]
     odom_topic: "/odom"
     odom_duration: 0.1
     deadband_velocity: [0.01, 0.01, 0.01]
@@ -321,7 +225,7 @@ amcl:
     z_max: 0.05
     z_rand: 0.5
     z_short: 0.05
-    scan_topic: /scan_0
+    scan_topic: /scan_0_fixed  # Front LiDAR via scan_fix_relay
     set_initial_pose: true
     initial_pose:
       x: 0.0

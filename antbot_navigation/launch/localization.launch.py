@@ -19,6 +19,7 @@ from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.actions import ExecuteProcess
 from launch.actions import TimerAction
+from launch.conditions import IfCondition
 from launch.substitutions import LaunchConfiguration
 from launch.substitutions import PathJoinSubstitution
 from launch.substitutions import PythonExpression
@@ -48,23 +49,16 @@ def generate_launch_description():
 
     use_sim_time = PythonExpression(["'", mode, "' == 'sim'"])
 
-    # Disable swerve controller's odom TF so the EKF publishes it instead.
-    disable_odom_tf = TimerAction(
-        period=3.0,
-        actions=[ExecuteProcess(
-            cmd=['ros2', 'param', 'set',
-                 '/antbot_swerve_controller', 'enable_odom_tf', 'false'],
-            output='screen')])
+    # =========================================================================
+    # REAL MODE ARCHITECTURE (Simplified):
+    # - Odometry: Swerve controller only (no EKF, no IMU fusion)
+    # - TF: Swerve controller publishes odom→base_link directly (enable_odom_tf=true by default)
+    # - LiDAR: Front LiDAR (/scan_0) only (no merger, no back LiDAR)
+    #
+    # This configuration prioritizes stability and simplicity over sensor fusion.
+    # =========================================================================
 
-    # EKF node for sensor fusion (wheel odom + IMU)
-    ekf_node = Node(
-        package='robot_localization',
-        executable='ekf_node',
-        name='ekf_filter_node',
-        output='screen',
-        parameters=[ekf_params_file, {'use_sim_time': use_sim_time}])
-
-    # Map server
+    # Map server - loads pre-saved map
     map_server_node = Node(
         package='nav2_map_server',
         executable='map_server',
@@ -75,6 +69,9 @@ def generate_launch_description():
                      'use_sim_time': use_sim_time}])
 
     # AMCL localization
+    # - Subscribes to /scan_0 (front LiDAR) via nav2_params.yaml
+    # - Publishes map→odom TF
+    # - Performs particle filter localization
     amcl_node = Node(
         package='nav2_amcl',
         executable='amcl',
@@ -90,7 +87,7 @@ def generate_launch_description():
         output='screen',
         parameters=[nav2_params_file, {'use_sim_time': use_sim_time}])
 
-    # Delay localization nodes to allow EKF to start publishing TF
+    # Delay localization nodes to ensure swerve controller TF is ready
     delayed_localization = TimerAction(
         period=2.0,
         actions=[
@@ -102,7 +99,5 @@ def generate_launch_description():
     return LaunchDescription([
         mode_arg,
         map_arg,
-        disable_odom_tf,
-        ekf_node,
         delayed_localization,
     ])

@@ -26,6 +26,13 @@
   <exec_depend>nav2_smoother</exec_depend>
   <exec_depend>python3-yaml</exec_depend>
 
+  <!-- Laser scan merger dependencies -->
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>tf2_ros</exec_depend>
+  <exec_depend>tf2_geometry_msgs</exec_depend>
+  <exec_depend>python3-numpy</exec_depend>
+
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
 
