@@ -1,24 +1,34 @@
 # antbot_navigation
 
-AntBot용 ROS 2 Nav2 네비게이션 패키지입니다. 저장된 맵 기반 자율주행, SLAM 기반 맵 생성, 위치 추정 전용 실행을 지원하며, 실제 로봇(`mode:=real`)과 시뮬레이션(`mode:=sim`) 설정을 한 패키지 안에서 분리해 관리합니다.
+ROS 2 Nav2 navigation package for AntBot. This package supports saved-map navigation, SLAM-based map creation, and localization-only launches. It keeps physical robot settings (`mode:=real`) and simulation settings (`mode:=sim`) separated inside the same package.
 
-AntBot은 4-wheel independent swerve-drive 구조이지만 스티어링 각도 제한 때문에 완전한 횡이동 로봇처럼 동작하지 않습니다. 실제 로봇에서는 안정성을 우선해 RPP(Regulated Pure Pursuit)를 사용하고, 시뮬레이션에서는 MPPI를 사용해 rollout 기반 경로 추종을 테스트합니다.
+AntBot uses a 4-wheel independent swerve-drive layout, but steering angle limits mean it does not behave like a fully holonomic robot in practice. The real robot prioritizes stability with RPP (Regulated Pure Pursuit), while simulation uses MPPI to test rollout-based path following.
 
 ## Prerequisites
 
-Nav2, SLAM Toolbox, robot localization, MPPI, RPP 컨트롤러 패키지가 필요합니다.
+The Nav2, SLAM Toolbox, robot localization, MPPI, and RPP controller dependencies are declared in `package.xml`, so they can be installed with rosdep from the workspace root.
+
+```bash
+rosdep install --from-paths src --ignore-src -r -y
+```
+
+To install them manually, use:
 
 ```bash
 sudo apt install ros-humble-navigation2 ros-humble-nav2-bringup \
   ros-humble-slam-toolbox ros-humble-robot-localization \
   ros-humble-nav2-mppi-controller \
   ros-humble-nav2-regulated-pure-pursuit-controller
+```
 
+Then build the package:
+
+```bash
 colcon build --symlink-install --packages-select antbot_navigation
 source install/setup.bash
 ```
 
-모든 launch 파일은 `mode` 인자로 설정 디렉토리와 시간 기준을 선택합니다.
+All launch files use the `mode` argument to select the configuration directory and time source.
 
 ```bash
 ros2 launch antbot_navigation navigation.launch.py mode:=real map:=/path/to/map.yaml
@@ -27,46 +37,46 @@ ros2 launch antbot_navigation navigation.launch.py mode:=sim map:=/path/to/map.y
 
 ## Real Mode
 
-실제 로봇 운용을 위한 기본 모드입니다. 센서 퓨전보다 단순성과 안정성을 우선하며, 전방 LiDAR와 swerve controller odometry를 직접 사용합니다.
+This is the default mode for operating the physical robot. It favors simplicity and stability over sensor fusion, and directly uses the front LiDAR and swerve controller odometry.
 
-### Real 실행
+### Real Launches
 
-저장된 맵 기반 자율주행:
+Saved-map navigation:
 
 ```bash
 ros2 launch antbot_navigation navigation.launch.py mode:=real map:=/path/to/map.yaml
 ```
 
-SLAM으로 맵 생성:
+Create a map with SLAM:
 
 ```bash
 ros2 launch antbot_navigation slam.launch.py mode:=real
 ```
 
-`slam.launch.py`는 `localization.launch.py`를 함께 실행하지 않습니다. 저장된 맵을 읽는 `map_server`와 AMCL 대신, `slam_toolbox`가 LiDAR와 `/odom`을 사용해 맵을 만들면서 `map -> odom` TF를 발행합니다.
+`slam.launch.py` does not include `localization.launch.py`. Instead of running `map_server` and AMCL against a saved map, `slam_toolbox` builds the map from LiDAR and `/odom` while publishing the `map -> odom` TF.
 
-위치 추정 전용:
+Localization only:
 
 ```bash
 ros2 launch antbot_navigation localization.launch.py mode:=real map:=/path/to/map.yaml
 ```
 
-SLAM으로 생성한 맵 저장:
+Save a map created by SLAM:
 
 ```bash
 ros2 run nav2_map_server map_saver_cli -f ~/maps/my_map
 ```
 
-### Real 아키텍처
+### Real Architecture
 
-- **Controller**: RPP. Heading 오차가 크면 정지 후 제자리 회전하고, 그 외에는 lookahead point를 따라 주행합니다.
-- **Command DOF**: 실제 주행에서는 `vy`를 거의 사용하지 않고 `vx`, `wz` 중심으로 이동합니다.
-- **Odometry**: swerve controller가 `/odom`과 `odom -> base_link` TF를 직접 발행합니다.
-- **EKF**: 현재 real launch에서는 사용하지 않습니다.
-- **LiDAR**: 전방 LiDAR(`/scan_0`)만 사용합니다.
-- **Scan fix relay**: COIN D4 드라이버의 가변 길이 LaserScan을 `/scan_0_fixed`로 정규화합니다.
+- **Controller**: RPP. If the heading error is large, the robot stops and rotates in place; otherwise, it follows the lookahead point.
+- **Command DOF**: Real driving mostly avoids `vy` and uses `vx` and `wz`.
+- **Odometry**: The swerve controller directly publishes `/odom` and the `odom -> base_link` TF.
+- **EKF**: Not used by the current real launch.
+- **LiDAR**: Uses only the front LiDAR (`/scan_0`).
+- **Scan fix relay**: Normalizes the COIN D4 driver's variable-length LaserScan output to `/scan_0_fixed`.
 
-TF 체인은 다음과 같습니다.
+The TF chain is:
 
 ```text
 map -> odom -> base_link -> sensor_frames
@@ -74,13 +84,13 @@ map -> odom -> base_link -> sensor_frames
 
 | Transform | Publisher | Description |
 |-----------|-----------|-------------|
-| `map -> odom` | AMCL 또는 SLAM Toolbox | 맵과 LiDAR 스캔을 비교해 글로벌 위치 보정 |
-| `odom -> base_link` | Swerve controller | 바퀴 오도메트리 기반 로봇 이동량 |
-| `base_link -> *` | `robot_state_publisher` | URDF 기반 센서/바퀴 프레임 |
+| `map -> odom` | AMCL or SLAM Toolbox | Corrects the global pose by matching the map and LiDAR scan |
+| `odom -> base_link` | Swerve controller | Robot motion estimated from wheel odometry |
+| `base_link -> *` | `robot_state_publisher` | URDF-based sensor and wheel frames |
 
-### Real 핵심 설정
+### Real Key Settings
 
-주요 설정 파일은 `config/real/nav2_params.yaml`입니다.
+The main configuration file is `config/real/nav2_params.yaml`.
 
 | Item | Value |
 |------|-------|
@@ -93,95 +103,95 @@ map -> odom -> base_link -> sensor_frames
 | Velocity smoother | `[0.30, 0.02, 0.3]` |
 | Costmap inflation | `0.5m` |
 
-RPP 핵심 파라미터:
+Key RPP parameters:
 
 | Parameter | Value | Description |
 |-----------|-------|-------------|
-| `desired_linear_vel` | `0.30` | 목표 선속도 |
-| `lookahead_dist` | `0.6` | 기본 lookahead 거리 |
-| `min_lookahead_dist` | `0.4` | 저속에서도 유지하는 최소 lookahead |
-| `max_lookahead_dist` | `1.0` | 최대 lookahead 거리 |
-| `rotate_to_heading_angular_vel` | `0.5` | 제자리 회전 속도 |
-| `rotate_to_heading_min_angle` | `0.785` | 약 45도 이상 heading 오차에서 제자리 회전 |
-| `regulated_linear_scaling_min_speed` | `0.10` | 곡률 기반 감속 시 최소 속도 |
-| `max_angular_accel` | `0.5` | 최대 각가속도 |
+| `desired_linear_vel` | `0.30` | Target linear velocity |
+| `lookahead_dist` | `0.6` | Default lookahead distance |
+| `min_lookahead_dist` | `0.4` | Minimum lookahead distance kept at low speed |
+| `max_lookahead_dist` | `1.0` | Maximum lookahead distance |
+| `rotate_to_heading_angular_vel` | `0.5` | In-place rotation speed |
+| `rotate_to_heading_min_angle` | `0.785` | Rotate in place when heading error is about 45 degrees or greater |
+| `regulated_linear_scaling_min_speed` | `0.10` | Minimum speed during curvature-based slowdown |
+| `max_angular_accel` | `0.5` | Maximum angular acceleration |
 
-`rotate_to_heading_min_angle`이 너무 낮으면 완만한 커브에서도 멈춰서 회전하려고 합니다. 현재 값은 약 45도로, 작은 커브는 주행하면서 따라가고 큰 방향 전환만 제자리 회전하도록 맞춰져 있습니다.
+If `rotate_to_heading_min_angle` is too low, the robot may stop and rotate even on gentle curves. The current value is about 45 degrees, so small curves are followed while driving and only larger heading changes trigger in-place rotation.
 
-### Real 센서 토픽
+### Real Sensor Topics
 
 | Topic | Source | Usage |
 |-------|--------|-------|
-| `/scan_0` | 전방 COIN D4 LiDAR 원본 | 원본 scan의 range 개수가 프레임마다 달라 `scan_fix_relay`로 보정 |
-| `/scan_0_fixed` | 고정 400포인트 보정 scan | Real AMCL/SLAM/costmap 입력 |
-| `/odom` | swerve controller | Nav2 odom, TF 기준 |
-| `/imu/accel_gyro` | 실제 IMU | 현재 real launch에서는 사용 안 함 |
+| `/scan_0` | Raw front COIN D4 LiDAR | Corrected by `scan_fix_relay` because the number of ranges can vary per frame |
+| `/scan_0_fixed` | Corrected fixed 400-point scan | Real AMCL, SLAM, and costmap input |
+| `/odom` | Swerve controller | Nav2 odometry and TF reference |
+| `/imu/accel_gyro` | Physical IMU | Not used by the current real launch |
 
-`scan_fix_relay.py`는 `/scan_0`의 가변 길이 range 배열을 고정 400포인트 LaserScan인 `/scan_0_fixed`로 재발행합니다. 원본 scan은 프레임마다 포인트 개수가 달라지고 angle metadata와 실제 range 개수가 맞지 않을 수 있어, Real 모드의 AMCL, SLAM, costmap은 보정된 토픽을 사용합니다.
+`scan_fix_relay.py` republishes the variable-length range array from `/scan_0` as `/scan_0_fixed`, a fixed 400-point LaserScan. The raw scan can vary in point count from frame to frame, and its angle metadata may not match the actual range count, so real-mode AMCL, SLAM, and costmaps use the corrected topic.
 
-### Real costmap
+### Real Costmap
 
 | Item | Local Costmap | Global Costmap |
 |------|---------------|----------------|
 | Frame | `odom` | `map` |
-| Size | `5m x 5m`, rolling window | 전체 맵 |
+| Size | `5m x 5m`, rolling window | Full map |
 | Update frequency | `5Hz` | `1Hz` |
 | Layers | front obstacle + inflation | static + front obstacle + inflation |
 | Footprint | `0.70m x 0.60m` | `0.70m x 0.60m` |
 
 ## Sim Mode
 
-Gazebo 기반 테스트 모드입니다. 실제 로봇보다 공격적인 속도와 듀얼 LiDAR costmap을 사용하며, 컨트롤러는 MPPI로 설정되어 있습니다.
+This is the Gazebo-based test mode. It uses more aggressive speeds than the real robot, a dual-LiDAR costmap, and MPPI as the controller.
 
-### Sim 실행
+### Sim Launches
 
-터미널 1에서 Gazebo 시뮬레이션을 실행합니다.
+Run the Gazebo simulation in terminal 1.
 
 ```bash
 ros2 launch antbot_gazebo gazebo.launch.py world:=depot
 ```
 
-터미널 2에서 저장된 맵 기반 Nav2 스택을 실행합니다.
+Run the saved-map Nav2 stack in terminal 2.
 
 ```bash
 ros2 launch antbot_navigation navigation.launch.py mode:=sim map:=/path/to/depot_sim.yaml
 ```
 
-터미널 3에서 RViz를 실행합니다.
+Run RViz in terminal 3.
 
 ```bash
 rviz2 -d $(ros2 pkg prefix antbot_navigation --share)/rviz/navigation.rviz \
   --ros-args -p use_sim_time:=true
 ```
 
-SLAM으로 맵 생성:
+Create a map with SLAM:
 
 ```bash
 ros2 launch antbot_navigation slam.launch.py mode:=sim
 ```
 
-`slam.launch.py`는 `localization.launch.py`를 함께 실행하지 않습니다. 저장된 맵 기반 AMCL 위치 추정이 아니라, `slam_toolbox`가 실시간으로 맵을 생성하면서 `map -> odom` TF를 발행합니다.
+`slam.launch.py` does not include `localization.launch.py`. Instead of AMCL localization against a saved map, `slam_toolbox` creates the map in real time while publishing the `map -> odom` TF.
 
-위치 추정 전용:
+Localization only:
 
 ```bash
 ros2 launch antbot_navigation localization.launch.py mode:=sim map:=/path/to/map.yaml
 ```
 
-Gazebo 창이 뜨고 ros2_control 컨트롤러가 로드될 때까지 보통 8-15초 정도 걸립니다. RViz에서 `2D Pose Estimate`로 초기 위치를 맞춘 다음 `Nav2 Goal`로 목표 지점을 지정합니다.
+Gazebo usually takes about 8-15 seconds to open and load the ros2_control controllers. In RViz, set the initial pose with `2D Pose Estimate`, then choose a target with `Nav2 Goal`.
 
-### Sim 아키텍처
+### Sim Architecture
 
-- **Controller**: MPPI. 여러 후보 궤적을 샘플링하고 critic으로 평가해 가장 좋은 명령을 선택합니다.
-- **Command DOF**: `vx`, `vy`, `wz`를 모두 생성할 수 있지만, `vy_max`를 낮게 둬 직진/회전 위주로 움직이게 합니다.
-- **LiDAR**: `/scan_0`, `/scan_1`을 costmap obstacle layer에서 사용합니다.
-- **Costmap**: 조향 오버슈트와 넓은 회전 반경을 고려해 real보다 큰 inflation을 사용합니다.
+- **Controller**: MPPI. It samples multiple candidate trajectories and selects the best command using critics.
+- **Command DOF**: It can generate `vx`, `vy`, and `wz`, but `vy_max` is kept low to encourage forward driving and turning instead of crab-walking.
+- **LiDAR**: Uses `/scan_0` and `/scan_1` in the costmap obstacle layers.
+- **Costmap**: Uses larger inflation than real mode to account for steering overshoot and a wider turning radius.
 
-현재 launch 파일 기준으로 `config/sim/ekf.yaml`은 존재하지만 `localization.launch.py`에서 EKF 노드를 실행하지 않습니다. EKF를 다시 사용하려면 `robot_localization/ekf_node` 실행과 `odom -> base_link` TF 발행 주체를 함께 정리해야 합니다.
+Based on the current launch files, `config/sim/ekf.yaml` exists but `localization.launch.py` does not start an EKF node. To re-enable EKF, also revisit the `robot_localization/ekf_node` launch and which node publishes the `odom -> base_link` TF.
 
-### Sim 핵심 설정
+### Sim Key Settings
 
-주요 설정 파일은 `config/sim/nav2_params.yaml`입니다.
+The main configuration file is `config/sim/nav2_params.yaml`.
 
 | Item | Value |
 |------|-------|
@@ -193,67 +203,67 @@ Gazebo 창이 뜨고 ros2_control 컨트롤러가 로드될 때까지 보통 8-1
 | Velocity smoother | `[1.5, 0.15, 1.5]` |
 | Costmap inflation | `0.75m` |
 
-MPPI 핵심 파라미터:
+Key MPPI parameters:
 
 | Parameter | Value | Description |
 |-----------|-------|-------------|
-| `vx_max` | `1.0` | 전진 최대 속도 |
-| `vy_max` | `0.1` | 횡방향 속도 제한. crab-walking을 거의 막고 직진/회전 위주로 유도 |
-| `wz_max` | `1.5` | 최대 회전 속도 |
-| `batch_size` | `2000` | 한 번에 평가하는 후보 궤적 수 |
-| `time_steps` | `56` | `model_dt: 0.05` 기준 2.8초 미래 예측 |
-| `motion_model` | `Omni` | Nav2 컨트롤러 내부 motion model |
+| `vx_max` | `1.0` | Maximum forward velocity |
+| `vy_max` | `0.1` | Lateral velocity limit. This mostly prevents crab-walking and encourages forward driving and turning |
+| `wz_max` | `1.5` | Maximum angular velocity |
+| `batch_size` | `2000` | Number of candidate trajectories evaluated at once |
+| `time_steps` | `56` | Predicts 2.8 seconds ahead with `model_dt: 0.05` |
+| `motion_model` | `Omni` | Internal Nav2 controller motion model |
 
-주요 critic:
+Main critics:
 
 | Critic | Weight | Purpose |
 |--------|--------|---------|
-| `PreferForwardCritic` | `15.0` | 후진과 횡이동보다 전방 주행을 선호 |
-| `PathAngleCritic` | `15.0` | 로봇 진행 방향과 글로벌 경로 방향 정렬 |
-| `TwirlingCritic` | `10.0` | 불필요한 제자리 회전 억제 |
-| `PathAlignCritic` | `10.0` | 글로벌 경로와 후보 궤적의 정렬도 평가 |
-| `PathFollowCritic` | `5.0` | 글로벌 경로 이탈 억제 |
-| `ObstaclesCritic` | `collision_cost: 10000.0` | 충돌 궤적 차단 |
-| `ConstraintCritic` | `4.0` | 속도/가속도 제한 위반 페널티 |
+| `PreferForwardCritic` | `15.0` | Prefers forward driving over reverse or lateral motion |
+| `PathAngleCritic` | `15.0` | Aligns robot travel direction with the global path direction |
+| `TwirlingCritic` | `10.0` | Suppresses unnecessary in-place rotation |
+| `PathAlignCritic` | `10.0` | Scores alignment between candidate trajectories and the global path |
+| `PathFollowCritic` | `5.0` | Penalizes deviation from the global path |
+| `ObstaclesCritic` | `collision_cost: 10000.0` | Rejects collision trajectories |
+| `ConstraintCritic` | `4.0` | Penalizes velocity and acceleration limit violations |
 
-### Sim 센서 토픽
+### Sim Sensor Topics
 
 | Topic | Source | Usage |
 |-------|--------|-------|
-| `/scan_0` | 전방 LiDAR | Sim AMCL/SLAM/costmap |
-| `/scan_1` | 후방 LiDAR | Sim costmap obstacle layer |
-| `/odom` | swerve controller odom | velocity smoother feedback |
-| `/odometry/filtered` | EKF 출력으로 예약된 토픽 | Sim BT navigator 설정에 남아 있음 |
-| `/imu/data` | 시뮬레이션 IMU | EKF 사용 시 입력 |
+| `/scan_0` | Front LiDAR | Sim AMCL, SLAM, and costmap |
+| `/scan_1` | Rear LiDAR | Sim costmap obstacle layer |
+| `/odom` | Swerve controller odometry | Velocity smoother feedback |
+| `/odometry/filtered` | Reserved topic for EKF output | Still present in the Sim BT navigator configuration |
+| `/imu/data` | Simulated IMU | EKF input if EKF is used |
 
-### Sim costmap
+### Sim Costmap
 
 | Item | Local Costmap | Global Costmap |
 |------|---------------|----------------|
 | Frame | `odom` | `map` |
-| Size | `5m x 5m`, rolling window | 전체 맵 |
+| Size | `5m x 5m`, rolling window | Full map |
 | Update frequency | `5Hz` | `1Hz` |
 | Layers | front obstacle + back obstacle + inflation | static + front obstacle + back obstacle + inflation |
 | Footprint | `0.70m x 0.60m` | `0.70m x 0.60m` |
 
 ## Common Usage
 
-### Navigation goal
+### Navigation Goal
 
-RViz에서 단일 목표를 줄 때는 `2D Pose Estimate`로 초기 위치를 설정한 뒤 `Nav2 Goal`을 클릭합니다.
+For a single goal in RViz, set the initial pose with `2D Pose Estimate`, then click `Nav2 Goal`.
 
-CLI로 목표를 보낼 수도 있습니다.
+You can also send a goal from the CLI.
 
 ```bash
 ros2 action send_goal /navigate_to_pose nav2_msgs/action/NavigateToPose \
   "{pose: {header: {frame_id: 'map'}, pose: {position: {x: 5.0, y: 3.0}}}}"
 ```
 
-다중 웨이포인트를 사용하려면 `Panels > Add New Panel > nav2_rviz_plugins/Navigation2`를 추가한 뒤 Waypoint Mode를 켜고 여러 목표를 선택합니다.
+For multiple waypoints, add `Panels > Add New Panel > nav2_rviz_plugins/Navigation2`, enable Waypoint Mode, and select multiple goals.
 
-### World and map
+### World and Map
 
-`navigation.launch.py`는 `map:=` 인자를 직접 받을 수 있습니다. `world:=depot`처럼 월드 이름으로 맵을 자동 선택하려면 `maps/worlds.yaml`에 월드 이름과 맵 파일을 등록해야 합니다.
+`navigation.launch.py` can take a direct `map:=` argument. To auto-select a map from a world name such as `world:=depot`, register the world name and map file in `maps/worlds.yaml`.
 
 ```yaml
 worlds:
@@ -262,13 +272,13 @@ worlds:
     map: depot_sim.yaml
 ```
 
-등록 후에는 다음처럼 실행할 수 있습니다.
+After registration, launch with:
 
 ```bash
 ros2 launch antbot_navigation navigation.launch.py mode:=sim world:=depot
 ```
 
-새 월드를 추가할 때는 `.sdf`, `.pgm`, `.yaml` 맵 파일을 `maps/`에 넣고 `worlds.yaml`에 등록합니다.
+When adding a new world, place the `.sdf`, `.pgm`, and `.yaml` map files in `maps/`, then register them in `worlds.yaml`.
 
 ## Real / Sim Comparison
 
@@ -279,16 +289,16 @@ ros2 launch antbot_navigation navigation.launch.py mode:=sim world:=depot
 | Controller | RPP | MPPI |
 | Controller plugin | `nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController` | `nav2_mppi_controller::MPPIController` |
 | Motion model | AMCL `OmniMotionModel` | MPPI `Omni`, AMCL `OmniMotionModel` |
-| Command DOF | `vx`, `wz` 중심 | `vx`, `vy`, `wz` |
+| Command DOF | mostly `vx`, `wz` | `vx`, `vy`, `wz` |
 | Max linear speed | RPP `desired_linear_vel: 0.30` | MPPI `vx_max: 1.0` |
 | Velocity smoother | `[0.30, 0.02, 0.3]` | `[1.5, 0.15, 1.5]` |
-| Odometry | swerve controller `/odom` | `/odom`, `/odometry/filtered` 설정 일부 존재 |
+| Odometry | swerve controller `/odom` | `/odom`, with some `/odometry/filtered` configuration still present |
 | LiDAR | `/scan_0` -> `/scan_0_fixed` | `/scan_0`, `/scan_1` |
 | Costmap inflation | `0.5m` | `0.75m` |
 
-AMCL은 두 모드 모두 `nav2_amcl::OmniMotionModel`을 사용합니다. AntBot은 구조상 holonomic motion을 고려해야 하므로 일반 diff-drive용 `DifferentialMotionModel`을 쓰면 좌우 이동 성분을 제대로 반영하지 못합니다.
+AMCL uses `nav2_amcl::OmniMotionModel` in both modes. AntBot's structure needs to account for holonomic motion, so the diff-drive `DifferentialMotionModel` does not represent lateral motion components well enough.
 
-DWB 컨트롤러는 현재 기본 설정에서 사용하지 않습니다. AntBot에서는 `wz` 진동과 `vx` 정체가 발생하기 쉬워, real은 RPP, sim은 MPPI 구성을 기본으로 둡니다.
+The DWB controller is not used in the current default configuration. AntBot is prone to `wz` oscillation and `vx` stalling with DWB, so real mode defaults to RPP and sim mode defaults to MPPI.
 
 ## Package Structure
 
@@ -310,11 +320,10 @@ antbot_navigation/
 ├── maps/
 │   ├── depot.sdf
 │   ├── depot_sim.pgm
-│   └── depot_sim.yaml
+│   ├── depot_sim.yaml
+│   └── worlds.yaml
 ├── scripts/
-│   ├── scan_fix_relay.py
-│   ├── cmd_vel_logger.py
-│   └── laserscan_merger.py
+│   └── scan_fix_relay.py
 └── rviz/
     └── navigation.rviz
 ```
@@ -323,65 +332,62 @@ antbot_navigation/
 
 ### `Failed to create plan`
 
-로봇 초기 위치가 틀렸거나 costmap 상에서 로봇 footprint가 장애물과 겹칠 때 발생합니다.
+This can happen when the robot's initial pose is wrong or the robot footprint overlaps an obstacle in the costmap.
 
-- RViz에서 `2D Pose Estimate`로 초기 위치를 다시 지정합니다.
-- global costmap을 초기화합니다.
+- Reset the initial pose in RViz with `2D Pose Estimate`.
+- Clear the global costmap.
 
 ```bash
 ros2 service call /global_costmap/clear_entirely_global_costmap nav2_msgs/srv/ClearEntireCostmap
 ```
 
-### 벽 충돌 또는 장애물 회피 실패
+### Wall Collisions or Obstacle Avoidance Failures
 
-장애물과의 안전 여유가 부족한 경우입니다.
+This usually means the safety margin around obstacles is too small.
 
-- `inflation_radius` 증가: real `0.5 -> 0.75`, sim `0.75 -> 1.0`
-- `cost_scaling_factor` 감소: 예) `1.5 -> 1.0`
-- MPPI 사용 시 `ObstaclesCritic.collision_margin_distance` 증가: 예) `0.1 -> 0.2`
+- Increase `inflation_radius`: real `0.5 -> 0.75`, sim `0.75 -> 1.0`
+- Decrease `cost_scaling_factor`: for example, `1.5 -> 1.0`
+- When using MPPI, increase `ObstaclesCritic.collision_margin_distance`: for example, `0.1 -> 0.2`
 
-### Real: 커브에서 주행이 멈추는 경우
+### Real: Robot Stops on Curves
 
-`use_rotate_to_heading: true` 상태에서 heading 오차가 `rotate_to_heading_min_angle`보다 커지면 RPP가 정지 후 제자리 회전으로 전환합니다.
+With `use_rotate_to_heading: true`, RPP switches to stop-and-rotate behavior when the heading error exceeds `rotate_to_heading_min_angle`.
 
-- `rotate_to_heading_min_angle`을 너무 낮게 두지 않습니다. 현재 권장값은 `0.785` rad입니다.
-- `min_lookahead_dist`를 너무 작게 두면 정지, lookahead 축소, 더 급한 커브 인식이 반복될 수 있습니다.
-- `rotate_to_heading_angular_vel`을 높이면 제자리 회전을 더 빨리 끝낼 수 있습니다.
+- Do not set `rotate_to_heading_min_angle` too low. The current recommended value is `0.785` rad.
+- If `min_lookahead_dist` is too small, the robot can repeatedly stop, shrink the lookahead, and interpret the curve as sharper.
+- Increase `rotate_to_heading_angular_vel` to finish in-place rotation faster.
 
-### Sim: 제자리 회전이 과도한 경우
+### Sim: Excessive In-Place Rotation
 
-- `TwirlingCritic` 가중치 증가: `10.0 -> 15.0`
-- `wz_max` 감소: `1.5 -> 1.0`
-- `PreferForwardCritic` 가중치 조정
+- Increase the `TwirlingCritic` weight: `10.0 -> 15.0`
+- Decrease `wz_max`: `1.5 -> 1.0`
+- Tune the `PreferForwardCritic` weight
 
-### TF 타임아웃 또는 `map` 프레임 누락
+### TF Timeout or Missing `map` Frame
 
-Gazebo를 재시작하면 sim time이 0으로 리셋되어 TF 버퍼가 깨질 수 있습니다. Gazebo와 Navigation은 함께 재시작하는 편이 안전합니다.
+When Gazebo restarts, sim time resets to 0 and can invalidate the TF buffer. Restart Gazebo and Navigation together when this happens.
 
-### 진단 명령어
+### Diagnostic Commands
 
 ```bash
-# LiDAR 데이터 수신 주기 확인
+# Check LiDAR receive rate
 ros2 topic hz /scan_0
 
-# Real 모드 보정 scan 확인
+# Check corrected scan in real mode
 ros2 topic hz /scan_0_fixed
 
-# map -> odom TF 확인
+# Check map -> odom TF
 ros2 run tf2_ros tf2_echo map odom
 
-# odom -> base_link TF 확인
+# Check odom -> base_link TF
 ros2 run tf2_ros tf2_echo odom base_link
 
-# swerve controller의 odom TF 발행 상태 확인
+# Check swerve controller odom TF publishing state
 ros2 param get /antbot_swerve_controller enable_odom_tf
 
-# Nav2 controller lifecycle 상태 확인
+# Check Nav2 controller lifecycle state
 ros2 lifecycle get /controller_server
 
-# ros2_control controller 상태 확인
+# Check ros2_control controller state
 ros2 control list_controllers
-
-# cmd_vel 로깅
-ros2 run antbot_navigation cmd_vel_logger.py
 ```

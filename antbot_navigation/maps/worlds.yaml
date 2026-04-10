@@ -1,0 +1,5 @@
+# World configuration for AntBot Nav2 navigation
+worlds:
+  depot:
+    sdf: depot.sdf
+    map: depot_sim.yaml

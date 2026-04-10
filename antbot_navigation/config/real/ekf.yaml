@@ -1,6 +1,9 @@
 # robot_localization EKF configuration for AntBot (REAL ROBOT)
 # Fuses wheel odometry from swerve controller with IMU angular velocity
 # to produce a more accurate odom -> base_link transform.
+#
+# NOTE: The current real launch does not start this EKF. The file is kept as a
+# reference configuration for future sensor-fusion experiments.
 
 ekf_filter_node:
   ros__parameters:
@@ -32,7 +35,7 @@ ekf_filter_node:
     imu0_config: [false, false, false,   # x, y, z
                   false, false, true,     # roll, pitch, yaw
                   false, false, false,    # vx, vy, vz
-                  false, false, false,     # vroll, vpitch, vyaw (꺼보기)
+                  false, false, false,     # vroll, vpitch, vyaw (disabled for testing)
                   false, false, false]    # ax, ay, az
     imu0_differential: true
     imu0_relative: false

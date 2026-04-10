@@ -49,18 +49,25 @@ class ScanFixRelay(Node):
             return
 
         n_out = self.num_ranges_
+        if n_out < 2:
+            self.get_logger().warn('num_ranges must be at least 2')
+            return
 
         # Input angles from the raw scan
         angles_in = msg.angle_min + np.arange(n_in) * msg.angle_increment
 
         # Fixed output angles
-        angle_inc_out = (msg.angle_max - msg.angle_min) / n_out
+        angle_inc_out = (msg.angle_max - msg.angle_min) / (n_out - 1)
         angles_out = msg.angle_min + np.arange(n_out) * angle_inc_out
 
         # Nearest-neighbor resampling
         ranges_in = np.array(msg.ranges, dtype=np.float32)
         indices = np.searchsorted(angles_in, angles_out, side='left')
-        indices = np.clip(indices, 0, n_in - 1)
+        indices = np.clip(indices, 1, n_in - 1)
+        left_indices = indices - 1
+        dist_left = np.abs(angles_in[left_indices] - angles_out)
+        dist_right = np.abs(angles_in[indices] - angles_out)
+        indices = np.where(dist_left < dist_right, left_indices, indices)
 
         out = LaserScan()
         out.header = msg.header
@@ -68,7 +75,7 @@ class ScanFixRelay(Node):
         out.angle_max = msg.angle_min + angle_inc_out * (n_out - 1)
         out.angle_increment = angle_inc_out
         out.scan_time = msg.scan_time
-        out.time_increment = msg.scan_time / n_out if n_out > 0 else 0.0
+        out.time_increment = msg.scan_time / (n_out - 1)
         out.range_min = msg.range_min
         out.range_max = msg.range_max
         out.ranges = ranges_in[indices].tolist()

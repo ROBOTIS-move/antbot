@@ -16,10 +16,19 @@ AntBot은 ROS 2의 공식 네비게이션 프레임워크인 Nav2를 연동하�
 
 ## 의존성 설치
 
+`antbot_navigation/package.xml`에 Nav2, SLAM Toolbox, robot localization, MPPI, RPP controller 의존성이 선언되어 있으므로 워크스페이스 루트에서 rosdep으로 설치할 수 있습니다.
+
+```bash
+rosdep install --from-paths src --ignore-src -r -y
+```
+
+수동으로 설치하려면 다음 패키지를 설치합니다.
+
 ```bash
 sudo apt install ros-humble-navigation2 ros-humble-nav2-bringup \
   ros-humble-slam-toolbox ros-humble-robot-localization \
-  ros-humble-nav2-mppi-controller
+  ros-humble-nav2-mppi-controller \
+  ros-humble-nav2-regulated-pure-pursuit-controller
 ```
 
 ---
@@ -100,9 +109,6 @@ ros2 launch antbot_navigation navigation.launch.py mode:=sim \
 
 ## 실제 로봇 모드
 
-:::note
-이 섹션은 추후 업데이트 예정입니다.
-:::
 
 ### 실행
 
@@ -185,5 +191,5 @@ ros2 action send_goal /navigate_to_pose nav2_msgs/action/NavigateToPose \
 ---
 
 :::tip[더 알아보기]
-- 파라미터 튜닝, TF 구조, 트러블슈팅 → [antbot_navigation README](https://github.com/ROBOTIS-move/antbot/tree/main/antbot_navigation)
+- 파라미터 튜닝, 트러블슈팅 → [antbot_navigation README](https://github.com/ROBOTIS-move/antbot/tree/main/antbot_navigation)
 :::

@@ -10,9 +10,7 @@ install(
 
 install(
   PROGRAMS
-    scripts/laserscan_merger.py
     scripts/scan_fix_relay.py
-    scripts/cmd_vel_logger.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

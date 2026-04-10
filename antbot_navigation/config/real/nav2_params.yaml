@@ -4,7 +4,7 @@
 # - LiDAR: Front LiDAR only (/scan_0, ~270° coverage)
 # - Odometry: Swerve controller (RK4 integration, no EKF)
 # - TF: swerve controller publishes odom→base_link, AMCL publishes map→odom
-# - Controller: MPPI for holonomic motion
+# - Controller: RPP (Regulated Pure Pursuit) for stable path following
 #
 # All Nav2 server configurations in one file.
 bt_navigator:
