@@ -1,0 +1,437 @@
+// Copyright 2026 ROBOTIS AI CO., LTD.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+/*
+ * Author: Geonhee Lee
+ */
+
+ #include "antbot_swerve_controller/odometry.hpp"
+
+#include <Eigen/Dense>
+#include <vector>
+#include <cmath>
+#include <stdexcept>
+#include <string>
+
+#include "tf2/transform_datatypes.h"
+#include "tf2_geometry_msgs/tf2_geometry_msgs.hpp"
+#include "rclcpp/logging.hpp"
+
+namespace antbot
+{
+
+namespace swerve_drive_controller
+{
+
+Odometry::Odometry(size_t velocity_rolling_window_size)
+: timestamp_(0, 0, RCL_ROS_TIME),
+  position_x_odom_(0.0),
+  position_y_odom_(0.0),
+  orientation_yaw_odom_(0.0),
+  velocity_in_base_frame_linear_x_(0.0),
+  velocity_in_base_frame_linear_y_(0.0),
+  velocity_in_base_frame_angular_z_(0.0),
+  num_modules_(0),
+  wheel_radius_(0.0),
+  solver_method_(OdomSolverMethod::SVD),
+  velocity_rolling_window_size_(velocity_rolling_window_size),
+  linear_x_accumulator_(velocity_rolling_window_size),
+  linear_y_accumulator_(velocity_rolling_window_size),
+  angular_z_accumulator_(velocity_rolling_window_size)
+{
+  base_frame_offset_.fill(0.0);
+}
+
+void Odometry::init(const rclcpp::Time & time, const std::array<double, 3> & base_frame_offset)
+{
+  position_x_odom_ = 0.0;
+  position_y_odom_ = 0.0;
+  orientation_yaw_odom_ = 0.0;
+  timestamp_ = time;
+  base_frame_offset_ = base_frame_offset;
+
+  linear_x_accumulator_ = rcppmath::RollingMeanAccumulator<double>(velocity_rolling_window_size_);
+  linear_y_accumulator_ = rcppmath::RollingMeanAccumulator<double>(velocity_rolling_window_size_);
+  angular_z_accumulator_ = rcppmath::RollingMeanAccumulator<double>(velocity_rolling_window_size_);
+}
+
+void Odometry::setModuleParams(
+  const std::vector<double> & module_x_offsets,
+  const std::vector<double> & module_y_offsets,
+  const std::vector<double> & steering_to_wheel_offsets,
+  const double wheel_radius)
+{
+  if (module_x_offsets.size() != module_y_offsets.size()) {
+    throw std::runtime_error("Odometry: Module X and Y offset vectors must have the same size.");
+  }
+  num_modules_ = module_x_offsets.size();
+  if (num_modules_ != 3 && num_modules_ != 4) {
+    throw std::runtime_error("Odometry: Number of modules must be 3 or 4.");
+  }
+  if (wheel_radius <= 0.0) {
+    throw std::runtime_error("Odometry: Wheel radius must be positive.");
+  }
+  module_x_offsets_ = module_x_offsets;
+  module_y_offsets_ = module_y_offsets;
+  steering_to_wheel_offsets_ = steering_to_wheel_offsets;
+  wheel_radius_ = wheel_radius;
+}
+
+void Odometry::setSolverMethod(OdomSolverMethod method)
+{
+  solver_method_ = method;
+  auto logger = rclcpp::get_logger("OdometryClass");
+  switch (method) {
+    case OdomSolverMethod::PSEUDO_INVERSE:
+      RCLCPP_INFO(logger, "Odometry solver set to: Normal Equation (Manual Pseudo-inverse)");
+      break;
+    case OdomSolverMethod::QR_DECOMPOSITION:
+      RCLCPP_INFO(logger, "Odometry solver set to: QR Decomposition (Eigen)");
+      break;
+    case OdomSolverMethod::SVD:
+      RCLCPP_INFO(logger, "Odometry solver set to: SVD (Eigen)");
+      break;
+    default:
+      RCLCPP_WARN(logger, "Unknown odometry solver method specified. Defaulting to SVD.");
+      solver_method_ = OdomSolverMethod::SVD;
+      break;
+  }
+}
+
+double Odometry::normalize_angle(double angle_rad)
+{
+  double remainder = std::fmod(angle_rad + M_PI, 2.0 * M_PI);
+  if (remainder < 0.0) {
+    remainder += 2.0 * M_PI;
+  }
+  return remainder - M_PI;
+}
+
+bool Odometry::update(
+  const std::vector<double> & steering_positions,
+  const std::vector<double> & wheel_velocities,
+  const double dt)
+{
+  auto logger = rclcpp::get_logger("swerve_odometry_update");
+
+  if (num_modules_ == 0 || wheel_radius_ == 0.0) { /* ... */ return false;}
+  if (steering_positions.size() != num_modules_ || wheel_velocities.size() != num_modules_) {
+    return false;
+  }
+  if (dt < 0.00001) { /* ... */ return false;}
+
+  RCLCPP_DEBUG(
+    logger, "Odometry Update ---- dt: %.4f ---- Solver: %d", dt,
+    static_cast<int>(solver_method_));
+
+  size_t num_equations = 2 * num_modules_;
+  Eigen::MatrixXd A_eigen(num_equations, 3);
+  Eigen::VectorXd b_eigen(num_equations);
+
+  for (size_t i = 0; i < num_modules_; ++i) {
+    const double theta_s = steering_positions[i];
+    const double omega_w = wheel_velocities[i];
+    const double v_w = omega_w * wheel_radius_;
+    const double lx = module_x_offsets_[i];
+    const double ly = module_y_offsets_[i];
+
+    // non-coaxial swerve drive offset
+    const double d = steering_to_wheel_offsets_[i];
+    const double cos_theta = std::cos(theta_s);
+    const double sin_theta = std::sin(theta_s);
+    const double vx_contact = v_w * cos_theta;
+    const double vy_contact = v_w * sin_theta;
+
+    size_t row1 = i * 2;
+    size_t row2 = row1 + 1;
+
+    A_eigen(row1, 0) = 1.0;
+    A_eigen(row1, 1) = 0.0;
+    A_eigen(row1, 2) = -(ly + d * sin_theta);
+    b_eigen(row1) = vx_contact;
+
+    A_eigen(row2, 0) = 0.0;
+    A_eigen(row2, 1) = 1.0;
+    A_eigen(row2, 2) = lx + d * cos_theta;
+
+    b_eigen(row2) = vy_contact;
+  }
+
+  Eigen::Vector3d robot_twist_eigen;
+
+  if (solver_method_ == OdomSolverMethod::PSEUDO_INVERSE) {
+    RCLCPP_DEBUG_ONCE(logger, "Using Normal Equation solver for odometry.");
+    std::vector<std::vector<double>> A_manual(num_equations, std::vector<double>(3));
+    std::vector<double> b_manual(num_equations);
+    for (size_t r = 0; r < num_equations; ++r) {
+      b_manual[r] = b_eigen(r);
+      for (size_t c = 0; c < 3; ++c) {
+        A_manual[r][c] = A_eigen(r, c);
+      }
+    }
+
+    std::vector<std::vector<double>> AT(3, std::vector<double>(num_equations));
+    for (size_t i = 0; i < num_equations; ++i) {
+      for (size_t j = 0; j < 3; ++j) {
+        AT[j][i] = A_manual[i][j];
+      }
+    }
+    std::vector<std::vector<double>> ATA(3, std::vector<double>(3, 0.0));
+    for (size_t i = 0; i < 3; ++i) {
+      for (size_t j = 0; j < 3; ++j) {
+        for (size_t k = 0; k < num_equations; ++k) {
+          ATA[i][j] += AT[i][k] * A_manual[k][j];
+        }
+      }
+    }
+    std::vector<double> ATb(3, 0.0);
+    for (size_t i = 0; i < 3; ++i) {
+      for (size_t j = 0; j < num_equations; ++j) {
+        ATb[i] += AT[i][j] * b_manual[j];
+      }
+    }
+    double det = ATA[0][0] * (ATA[1][1] * ATA[2][2] - ATA[2][1] * ATA[1][2]) -
+      ATA[0][1] * (ATA[1][0] * ATA[2][2] - ATA[1][2] * ATA[2][0]) +
+      ATA[0][2] * (ATA[1][0] * ATA[2][1] - ATA[1][1] * ATA[2][0]);
+    if (std::abs(det) < 1e-9) {
+      RCLCPP_WARN(
+        logger,
+        "Normal Equation: Matrix ATA is singular (det: %e). Setting twist to zero.",
+        det);
+      robot_twist_eigen.setZero();
+    } else {
+      double invDet = 1.0 / det;
+      std::vector<std::vector<double>> invATA(3, std::vector<double>(3));
+      invATA[0][0] = (ATA[1][1] * ATA[2][2] - ATA[2][1] * ATA[1][2]) * invDet;
+      invATA[0][1] = (ATA[0][2] * ATA[2][1] - ATA[0][1] * ATA[2][2]) * invDet;
+      invATA[0][2] = (ATA[0][1] * ATA[1][2] - ATA[0][2] * ATA[1][1]) * invDet;
+      invATA[1][0] = (ATA[1][2] * ATA[2][0] - ATA[1][0] * ATA[2][2]) * invDet;
+      invATA[1][1] = (ATA[0][0] * ATA[2][2] - ATA[0][2] * ATA[2][0]) * invDet;
+      invATA[1][2] = (ATA[1][0] * ATA[0][2] - ATA[0][0] * ATA[1][2]) * invDet;
+      invATA[2][0] = (ATA[1][0] * ATA[2][1] - ATA[2][0] * ATA[1][1]) * invDet;
+      invATA[2][1] = (ATA[2][0] * ATA[0][1] - ATA[0][0] * ATA[2][1]) * invDet;
+      invATA[2][2] = (ATA[0][0] * ATA[1][1] - ATA[1][0] * ATA[0][1]) * invDet;
+
+      robot_twist_eigen(0) = invATA[0][0] * ATb[0] + invATA[0][1] * ATb[1] + invATA[0][2] * ATb[2];
+      robot_twist_eigen(1) = invATA[1][0] * ATb[0] + invATA[1][1] * ATb[1] + invATA[1][2] * ATb[2];
+      robot_twist_eigen(2) = invATA[2][0] * ATb[0] + invATA[2][1] * ATb[1] + invATA[2][2] * ATb[2];
+    }
+  } else if (solver_method_ == OdomSolverMethod::QR_DECOMPOSITION) {
+    RCLCPP_DEBUG_ONCE(logger, "Using QR Decomposition solver for odometry.");
+    robot_twist_eigen = A_eigen.colPivHouseholderQr().solve(b_eigen);
+  } else {
+    RCLCPP_DEBUG_ONCE(logger, "Using SVD solver for odometry.");
+    robot_twist_eigen = A_eigen.bdcSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(b_eigen);
+  }
+
+  Eigen::Vector3d robot_filtered_twist =
+    updateFromVelocity(robot_twist_eigen(0), robot_twist_eigen(1), robot_twist_eigen(2));
+  velocity_in_base_frame_linear_x_ = robot_filtered_twist(0);
+  velocity_in_base_frame_linear_y_ = robot_filtered_twist(1);
+  velocity_in_base_frame_angular_z_ = robot_filtered_twist(2);
+
+  integratePose(
+    velocity_in_base_frame_linear_x_, velocity_in_base_frame_linear_y_,
+    velocity_in_base_frame_angular_z_, dt);
+
+  return true;
+}
+
+bool Odometry::update(double target_vx, double target_vy, double target_w, const double dt)
+{
+  integratePose(target_vx, target_vy, target_w, dt);
+
+  velocity_in_base_frame_linear_x_ = target_vx;
+  velocity_in_base_frame_linear_y_ = target_vy;
+  velocity_in_base_frame_angular_z_ = target_w;
+
+  return true;
+}
+
+Eigen::Vector3d Odometry::updateFromVelocity(double linear_x, double linear_y, double angular_z)
+{
+  Eigen::Vector3d filtered_twist;
+
+  if (velocity_rolling_window_size_ <= 1) {
+    filtered_twist(0) = linear_x;
+    filtered_twist(1) = linear_y;
+    filtered_twist(2) = angular_z;
+    return filtered_twist;
+  }
+
+  linear_x_accumulator_.accumulate(linear_x);
+  linear_y_accumulator_.accumulate(linear_y);
+  angular_z_accumulator_.accumulate(angular_z);
+
+  filtered_twist(0) = linear_x_accumulator_.getRollingMean();
+  filtered_twist(1) = linear_y_accumulator_.getRollingMean();
+  filtered_twist(2) = angular_z_accumulator_.getRollingMean();
+
+  return filtered_twist;
+}
+
+void Odometry::resetAccumulators()
+{
+  linear_x_accumulator_ = RollingMeanAccumulator(velocity_rolling_window_size_);
+  linear_y_accumulator_ = RollingMeanAccumulator(velocity_rolling_window_size_);
+  angular_z_accumulator_ = RollingMeanAccumulator(velocity_rolling_window_size_);
+}
+
+void Odometry::setVelocityRollingWindowSize(size_t velocity_rolling_window_size)
+{
+  RCLCPP_INFO(
+    rclcpp::get_logger(
+      "OdometryClass"), "Setting velocity rolling window size to %zu",
+    velocity_rolling_window_size);
+
+  velocity_rolling_window_size_ = velocity_rolling_window_size;
+
+  resetAccumulators();
+}
+
+void Odometry::setIntegrationMethod(OdomIntegrationMethod method)
+{
+  integration_method_name_ = method;
+  auto logger = rclcpp::get_logger("OdometryClass");
+  switch (method) {
+    case OdomIntegrationMethod::EULER_METHOD:
+      RCLCPP_INFO(logger, "Odometry integration method set to: Euler");
+      break;
+    case OdomIntegrationMethod::RK2_METHOD:
+      RCLCPP_INFO(logger, "Odometry integration method set to: RK2");
+      break;
+    case OdomIntegrationMethod::RK4_METHOD:
+      RCLCPP_INFO(logger, "Odometry integration method set to: RK4");
+      break;
+    case OdomIntegrationMethod::ANALYTIC_SWERVE_METHOD:
+      RCLCPP_INFO(logger, "Odometry integration method set to: Analytic Swerve");
+      break;
+    default:
+      RCLCPP_WARN(logger, "Unknown odometry integration method specified. Defaulting to RK2.");
+      integration_method_name_ = OdomIntegrationMethod::RK2_METHOD;
+      break;
+  }
+}
+
+void Odometry::integratePose(double v_x_body, double v_y_body, double omega_body, double dt_sec)
+{
+  if (integration_method_name_ == OdomIntegrationMethod::EULER_METHOD) {
+    integrateEuler(v_x_body, v_y_body, omega_body, dt_sec);
+  } else if (integration_method_name_ == OdomIntegrationMethod::RK2_METHOD) {
+    integrateRK2(v_x_body, v_y_body, omega_body, dt_sec);
+  } else if (integration_method_name_ == OdomIntegrationMethod::RK4_METHOD) {
+    integrateRK4(v_x_body, v_y_body, omega_body, dt_sec);
+  } else if (integration_method_name_ == OdomIntegrationMethod::ANALYTIC_SWERVE_METHOD) {
+    integrateAnalyticSwerve(v_x_body, v_y_body, omega_body, dt_sec);
+  } else {
+    integrateRK2(v_x_body, v_y_body, omega_body, dt_sec);
+  }
+  orientation_yaw_odom_ = normalize_angle(orientation_yaw_odom_);
+}
+
+void Odometry::integrateEuler(double v_x_body, double v_y_body, double omega_body, double dt_sec)
+{
+  position_x_odom_ +=
+    (v_x_body * std::cos(orientation_yaw_odom_) - v_y_body * std::sin(orientation_yaw_odom_)) *
+    dt_sec;
+  position_y_odom_ +=
+    (v_x_body * std::sin(orientation_yaw_odom_) + v_y_body * std::cos(orientation_yaw_odom_)) *
+    dt_sec;
+
+  double d_heading_increment = omega_body * dt_sec;
+  orientation_yaw_odom_ += d_heading_increment;
+}
+
+void Odometry::integrateRK2(double v_x_body, double v_y_body, double omega_body, double dt_sec)
+{
+  double d_heading_increment = omega_body * dt_sec;
+  double mid_heading = orientation_yaw_odom_ + d_heading_increment * 0.5;
+
+  position_x_odom_ += (v_x_body * std::cos(mid_heading) - v_y_body * std::sin(mid_heading)) *
+    dt_sec;
+  position_y_odom_ += (v_x_body * std::sin(mid_heading) + v_y_body * std::cos(mid_heading)) *
+    dt_sec;
+
+  orientation_yaw_odom_ += d_heading_increment;
+}
+
+Odometry::StateDerivative Odometry::calculateWorldDerivatives(
+  double current_heading_world, double v_x_body, double v_y_body, double omega_body)
+{
+  StateDerivative derivs;
+  derivs.dx_dt_world = v_x_body * std::cos(current_heading_world) -
+    v_y_body * std::sin(current_heading_world);
+  derivs.dy_dt_world = v_x_body * std::sin(current_heading_world) +
+    v_y_body * std::cos(current_heading_world);
+  derivs.dtheta_dt = omega_body;
+  return derivs;
+}
+
+void Odometry::integrateRK4(double v_x_body, double v_y_body, double omega_body, double dt_sec)
+{
+  StateDerivative k1, k2, k3, k4;
+
+  k1 = calculateWorldDerivatives(orientation_yaw_odom_, v_x_body, v_y_body, omega_body);
+
+  k2 = calculateWorldDerivatives(
+    orientation_yaw_odom_ + k1.dtheta_dt * dt_sec * 0.5, v_x_body, v_y_body, omega_body);
+
+  k3 = calculateWorldDerivatives(
+    orientation_yaw_odom_ + k2.dtheta_dt * dt_sec * 0.5, v_x_body,
+    v_y_body, omega_body);
+
+  k4 = calculateWorldDerivatives(
+    orientation_yaw_odom_ + k3.dtheta_dt * dt_sec, v_x_body, v_y_body,
+    omega_body);
+
+  position_x_odom_ +=
+    (k1.dx_dt_world + 2.0 * k2.dx_dt_world + 2.0 * k3.dx_dt_world + k4.dx_dt_world) *
+    (dt_sec / 6.0);
+  position_y_odom_ +=
+    (k1.dy_dt_world + 2.0 * k2.dy_dt_world + 2.0 * k3.dy_dt_world + k4.dy_dt_world) *
+    (dt_sec / 6.0);
+  orientation_yaw_odom_ += (k1.dtheta_dt + 2.0 * k2.dtheta_dt + 2.0 * k3.dtheta_dt + k4.dtheta_dt) *
+    (dt_sec / 6.0);
+}
+
+void Odometry::integrateAnalyticSwerve(
+  double v_x_body, double v_y_body, double omega_body,
+  double dt_sec)
+{
+  double d_heading_increment = omega_body * dt_sec;
+
+  double sin_h_initial = std::sin(orientation_yaw_odom_);
+  double cos_h_initial = std::cos(orientation_yaw_odom_);
+
+  double final_heading = orientation_yaw_odom_ + d_heading_increment;
+  double sin_h_final = std::sin(final_heading);
+  double cos_h_final = std::cos(final_heading);
+
+  if (std::fabs(omega_body) < 1e-6) {
+    position_x_odom_ += (v_x_body * cos_h_initial - v_y_body * sin_h_initial) * dt_sec;
+    position_y_odom_ += (v_x_body * sin_h_initial + v_y_body * cos_h_initial) * dt_sec;
+  } else {
+    double v_x_div_omega = v_x_body / omega_body;
+    double v_y_div_omega = v_y_body / omega_body;
+
+    position_x_odom_ += v_x_div_omega * (sin_h_final - sin_h_initial) + v_y_div_omega *
+      (cos_h_final - cos_h_initial);
+    position_y_odom_ += -v_x_div_omega * (cos_h_final - cos_h_initial) + v_y_div_omega *
+      (sin_h_final - sin_h_initial);
+  }
+  orientation_yaw_odom_ = final_heading;
+}
+
+}  // namespace swerve_drive_controller
+}  // namespace antbot

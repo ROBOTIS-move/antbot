@@ -1,0 +1,57 @@
+# Gazebo simulation swerve controller configuration.
+# Disables acceleration interfaces (unsupported by IgnitionSystem)
+# and uses simulation-specific tuning values.
+
+controller_manager:
+  ros__parameters:
+    use_sim_time: true
+    update_rate: 100  # Hz
+    antbot_swerve_controller:
+      type: antbot_swerve_controller/SwerveDriveController
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+antbot_swerve_controller:
+  ros__parameters:
+    steering_joint_names: ["steering_front_left_joint", "steering_front_right_joint", "steering_rear_left_joint", "steering_rear_right_joint"]
+    wheel_joint_names: ["wheel_front_left_joint", "wheel_front_right_joint", "wheel_rear_left_joint", "wheel_rear_right_joint"]
+
+    wheel_radius: 0.103
+
+    module_x_offsets: [ 0.265,  0.265, -0.265, -0.265]
+    module_y_offsets: [ 0.256, -0.256,  0.256, -0.256]
+    module_angle_offsets: [ 0.0, 0.0, 0.0, 0.0]
+    module_steering_limit_lower: [ -1.047, -1.047, -1.047, -1.047 ]
+    module_steering_limit_upper: [  1.047,  1.047,  1.047,  1.047 ]
+
+    steering_to_wheel_y_offsets: [ 0.0555, -0.0555, 0.0555, -0.0555 ]
+
+    module_wheel_speed_limit_lower: [ -50.0, -50.0, -50.0, -50.0 ]
+    module_wheel_speed_limit_upper: [ 50.0, 50.0, 50.0, 50.0 ]
+
+    # IgnitionSystem does not support acceleration interface
+    steering:
+      use_velocity_command: false
+      use_acceleration_command: false
+      max_velocity: 5.0
+      max_acceleration: 10.0
+
+    wheel:
+      use_acceleration_command: false
+
+    # Simulation tuning
+    non_coaxial_ik_iterations: 3
+    enable_steering_scrub_compensator: false
+    velocity_rolling_window_size: 10
+    odom_integration_method: "analytic_swerve"
+    odom_solver_method: "svd"
+
+    enable_direct_joint_commands: false
+    enable_odom_tf: true
+    base_frame_id: "base_link"
+    odom_frame_id: "odom"
+
+joint_state_broadcaster:
+  ros__parameters:
+    use_sim_time: true

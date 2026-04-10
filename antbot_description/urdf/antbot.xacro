@@ -1,0 +1,90 @@
+<?xml version="1.0" ?>
+<!--
+  Main URDF for ANTBot swerve-drive delivery robot.
+  Based on G50 hardware platform.
+-->
+<robot name="antbot" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:include filename="$(find antbot_description)/urdf/sensors.xacro"/>
+  <xacro:include filename="$(find antbot_description)/urdf/base.xacro"/>
+  <xacro:include filename="$(find antbot_description)/urdf/wheel.xacro"/>
+  <xacro:include filename="$(find antbot_description)/urdf/ros2_control.xacro"/>
+
+  <xacro:arg name="calibration_yaml_path" default=""/>
+  <xacro:property name="calibration_yaml_path_val" value="$(arg calibration_yaml_path)"/>
+  <xacro:property name="calibration_config" value="${xacro.load_yaml(calibration_yaml_path_val) if calibration_yaml_path_val != '' else dict()}"/>
+
+  <!-- Wheel parameters -->
+  <xacro:property name="wheelbase_length" value="0.530"/>
+  <xacro:property name="wheelbase_width" value="0.512"/>
+  <xacro:property name="steering_width" value="0.401"/>
+  <xacro:property name="wheel_radius" value="0.103"/>
+  <xacro:property name="steering_height" value="0.120"/>
+  <xacro:property name="wheel_offset" value="${(wheelbase_width - steering_width)/2}"/>
+
+  <!-- Base body assembly -->
+  <xacro:Base/>
+
+  <!-- Swerve drive wheel system -->
+  <xacro:SwerveWheelLeft position_name="front_left"
+                         x_pos="${wheelbase_length/2}" y_pos="${steering_width/2}"/>
+
+  <xacro:SwerveWheelRight position_name="front_right"
+                          x_pos="${wheelbase_length/2}" y_pos="${-steering_width/2}"/>
+
+  <xacro:SwerveWheelLeft position_name="rear_left"
+                         x_pos="${-wheelbase_length/2}" y_pos="${steering_width/2}"/>
+
+  <xacro:SwerveWheelRight position_name="rear_right"
+                          x_pos="${-wheelbase_length/2}" y_pos="${-steering_width/2}"/>
+
+  <!-- Stereo cameras -->
+  <xacro:Sensors name="camera_stereo_front_depth" xyz="0.348162 0.0475 0.526484" rpy="0.0 ${radians(30)} 0.0"/>
+  <xacro:OpticalFrame name="camera_stereo_front_depth_optical" parent="camera_stereo_front_depth"/>
+
+  <xacro:SensorsRel parent="camera_stereo_front_depth" child="camera_stereo_front_rgb" xyz="0.0 -0.124 0.0" rpy="0.0 0.0 0.0"/>
+  <xacro:OpticalFrame name="camera_stereo_front_rgb_optical" parent="camera_stereo_front_rgb"/>
+
+  <!-- Mono cameras -->
+  <xacro:CalibratedSensors name="camera_mono_left"
+    default_xyz="0.260 0.25477 0.5875" default_rpy="0.0 0.0 ${radians(90)}"
+    calibration_key="camera_left_extrinsic"/>
+  <xacro:OpticalFrame name="camera_mono_left_optical" parent="camera_mono_left"/>
+
+  <xacro:CalibratedSensors name="camera_mono_front"
+    default_xyz="0.35807 0.0 0.5875" default_rpy="0.0 0.0 0.0"
+    calibration_key="camera_front_extrinsic"/>
+  <xacro:OpticalFrame name="camera_mono_front_optical" parent="camera_mono_front"/>
+
+  <xacro:CalibratedSensors name="camera_mono_right"
+    default_xyz="0.260 -0.25477 0.5875" default_rpy="0.0 0.0 ${radians(-90)}"
+    calibration_key="camera_right_extrinsic"/>
+  <xacro:OpticalFrame name="camera_mono_right_optical" parent="camera_mono_right"/>
+
+  <xacro:Sensors name="camera_mono_back" xyz="-0.37669 0.0 0.299" rpy="0.0 0.0 ${radians(180)}"/>
+  <xacro:OpticalFrame name="camera_mono_back_optical" parent="camera_mono_back"/>
+
+  <!-- IMU / GNSS / Magnetometer -->
+  <xacro:Sensors name="imu" xyz="0.240 0.00675 0.3902" rpy="0.0 0.0 ${radians(180)}"/>
+  <xacro:Sensors name="gnss" xyz="0.2026 -0.128 0.660" rpy="0.0 0.0 ${radians(180)}"/>
+  <xacro:Sensors name="magnetometer" xyz="0.240 -0.00425 0.3902" rpy="0.0 0.0 0.0"/>
+
+  <!-- 2D LiDARs -->
+  <xacro:CalibratedSensors name="lidar_2d_front"
+    default_xyz="0.325 0.0 0.255" default_rpy="0.0 ${radians(180)} 0.0"
+    calibration_key="lidar_2d_front_extrinsic"/>
+  <xacro:CalibratedSensors name="lidar_2d_back"
+    default_xyz="-0.325 0.0 0.255" default_rpy="${radians(180)} 0.0 0.0"
+    calibration_key="lidar_2d_back_extrinsic"/>
+
+  <!-- 3D LiDAR -->
+  <xacro:CalibratedSensors name="lidar_3d"
+    default_xyz="0.225332 0.0 0.724904" default_rpy="0.0 ${radians(10)} 0.0"
+    calibration_key="lidar_3d_extrinsic"/>
+  <xacro:SensorsRel parent="lidar_3d" child="lidar_3d_imu" xyz="0.00677 -0.02045 -0.02597" rpy="0.0 0.0 0.0"/>
+
+  <!-- Charging coil -->
+  <xacro:Sensors name="robot_charging_coil" xyz="-0.299119 0.0 0.170631" rpy="0.0 0.0 0.0"/>
+
+  <!-- ros2_control hardware interface -->
+  <xacro:antbot_ros2_control/>
+</robot>

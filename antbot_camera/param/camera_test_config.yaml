@@ -1,0 +1,22 @@
+/**:
+  ros__parameters:
+    camera:
+      camera_list:
+        - "v4l2_driver"
+        - "usb_camera"
+        - "gemini336l"
+
+      v4l2_driver:
+        camera_position_list:
+          - "left"
+          - "front"
+          - "right"
+          - "rear"
+
+      usb_camera:
+        camera_position_list:
+          - "cargo"
+
+      gemini336l:
+        camera_position_list:
+          - "front"

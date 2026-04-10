@@ -1,0 +1,10 @@
+<library path="antbot_hw_interface">
+  <class name="antbot/hw_interface/BoardInterface"
+         type="antbot::hw_interface::BoardInterface"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>
+      Hardware interface for ANTBot delivery robot using Dynamixel Protocol 2.0.
+      Supports 4-wheel swerve drive with steering, encoder and battery devices.
+    </description>
+  </class>
+</library>

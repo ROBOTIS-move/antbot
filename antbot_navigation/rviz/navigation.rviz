@@ -1,0 +1,104 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+  - Class: rviz_common/Views
+    Name: Views
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Class: rviz_default_plugins/TF
+      Name: TF
+      Enabled: true
+      Show Arrows: false
+      Show Axes: true
+      Show Names: true
+      Update Interval: 0
+      Filter (Regex): (map|odom|base_link)
+    - Class: rviz_default_plugins/RobotModel
+      Name: RobotModel
+      Enabled: true
+      Description Source: Topic
+      Description Topic:
+        Value: /robot_description
+    - Class: rviz_default_plugins/Map
+      Name: Global Map
+      Enabled: true
+      Topic:
+        Value: /map
+        Reliability Policy: Reliable
+      Alpha: 0.7
+      Color Scheme: map
+    - Class: rviz_default_plugins/Map
+      Name: Global Costmap
+      Enabled: true
+      Topic:
+        Value: /global_costmap/costmap
+        Reliability Policy: Reliable
+      Alpha: 0.5
+      Color Scheme: costmap
+    - Class: rviz_default_plugins/Map
+      Name: Local Costmap
+      Enabled: true
+      Topic:
+        Value: /local_costmap/costmap
+        Reliability Policy: Reliable
+      Alpha: 0.5
+      Color Scheme: costmap
+    - Class: rviz_default_plugins/Path
+      Name: Global Path
+      Enabled: true
+      Topic:
+        Value: /plan
+    - Class: rviz_default_plugins/Path
+      Name: Local Path
+      Enabled: true
+      Topic:
+        Value: /local_plan
+      Color: 0; 255; 0
+    - Class: rviz_default_plugins/LaserScan
+      Name: Front LiDAR
+      Enabled: true
+      Topic:
+        Value: /scan_0
+        Reliability Policy: Best Effort
+      Size (m): 0.03
+      Color Transformer: FlatColor
+      Color: 255; 0; 0
+    - Class: rviz_default_plugins/LaserScan
+      Name: Back LiDAR
+      Enabled: true
+      Topic:
+        Value: /scan_1
+        Reliability Policy: Best Effort
+      Size (m): 0.03
+      Color Transformer: FlatColor
+      Color: 0; 0; 255
+    - Class: rviz_default_plugins/Polygon
+      Name: Robot Footprint
+      Enabled: true
+      Topic:
+        Value: /local_costmap/published_footprint
+    - Class: rviz_default_plugins/MarkerArray
+      Name: MPPI Trajectories
+      Enabled: false
+      Topic:
+        Value: /FollowPath/trajectories
+  Global Options:
+    Background Color: 48; 48; 48
+    Fixed Frame: map
+    Frame Rate: 30
+  Tools:
+    - Class: rviz_default_plugins/MoveCamera
+    - Class: rviz_default_plugins/SetInitialPose
+      Topic:
+        Value: /initialpose
+    - Class: rviz_default_plugins/SetGoal
+      Topic:
+        Value: /goal_pose
+  Views:
+    Current:
+      Class: rviz_default_plugins/TopDownOrtho
+      Name: TopDownOrtho
+      Scale: 20
+      X: 0
+      Y: 0

@@ -1,0 +1,55 @@
+/**:
+  ros__parameters:
+    camera:
+      camera_list:
+        - "v4l2_driver"
+        - "usb_camera"
+
+      v4l2_driver:
+        resolution:
+          width: 640
+          height: 360
+        default_fps: 30
+        use_rom_mode: true
+        port_info:
+          root: "/sys/class/video4linux"
+        camera_position_list:
+          - "left"
+          - "front"
+          - "right"
+          - "rear"
+        left:
+          port: "2-001a"
+          fourcc_type: "UYVY"
+          distortion_model: "equidistant"
+          frame_id: "left_camera_optical_frame"
+        front:
+          port: "2-001b"
+          fourcc_type: "UYVY"
+          distortion_model: "equidistant"
+          frame_id: "front_camera_optical_frame"
+        right:
+          port: "2-001c"
+          fourcc_type: "UYVY"
+          distortion_model: "equidistant"
+          frame_id: "right_camera_optical_frame"
+        rear:
+          fps: 15
+          vendor: "Generic"
+          port: "XCG"
+          fourcc_type: "YUYV"
+          grab_width: 640
+          grab_height: 480
+          frame_id: "rear_camera_optical_frame"
+
+      usb_camera:
+        resolution:
+          width: 640
+          height: 480
+        default_fps: 10
+        camera_position_list:
+          - "cargo"
+        cargo:
+          device_name: "Integrated Camera"
+          rotation: ""
+          frame_id: "cargo_camera_optical_frame"

@@ -1,0 +1,231 @@
+<?xml version="1.0" ?>
+<Device Name="ANTBOT-RCU" BootLoaderName="Dynamixel Boot Loader" ModelNumber="526" MinAddress="0" MaxAddress="377" AngleRange="360.0" Type="Dynamixel2">
+  <ControlItems>
+    <Item Address="0" Memory="1" Length="2" Name="Model_Number" RW="1" Min="0" Max="65535" Init="0" UI="2"/>
+    <Item Address="2" Memory="1" Length="1" Name="Robot_Generation" RW="1" Min="0" Max="255" Init="0" UI="2"/>
+    <Item Address="3" Memory="1" Length="1" Name="Board_Version" RW="1" Min="0" Max="255" Init="0" UI="2"/>
+    <Item Address="4" Memory="1" Length="1" Name="Firmware_Version_Major" RW="1" Min="0" Max="255" Init="0" UI="2"/>
+    <Item Address="5" Memory="1" Length="1" Name="Firmware_Version_Minor" RW="1" Min="0" Max="255" Init="0" UI="2"/>
+    <Item Address="6" Memory="1" Length="1" Name="ID" RW="1" Min="0" Max="255" Init="0" UI="2" Label="ID {0}"/>
+    <Item Address="7" Memory="1" Length="1" Name="Baud Rate (Bus)" RW="1" Min="0" Max="255" Init="0" UI="2" Label="9600 bps:57600 bps:115200 bps:1 Mbps:2 Mbps:3 Mbps:4 Mbps"/>
+    <Item Address="8" Memory="1" Length="1" Name="Bootloader_Version_Major" RW="1" Min="0" Max="255" Init="0" UI="2"/>
+    <Item Address="9" Memory="1" Length="1" Name="Bootloader_Version_Minor" RW="1" Min="0" Max="255" Init="0" UI="2"/>
+    <Item Address="10" Memory="1" Length="4" Name="Error_Code" RW="1" Min="0" Max="4294967295" Init="0" UI="2"/>
+    <Item Address="17" Memory="2" Length="1" Name="Operation_Command" RW="3" Min="0" Max="255" Init="0" UI="3" Label="None:Reboot"/>
+    <Item Address="18" Memory="2" Length="1" Name="Operation_Busy" RW="1" Min="0" Max="255" Init="0" UI="2" Label="FALSE:TRUE"/>
+    <Item Address="19" Memory="2" Length="4" Name="Sec_Since_Power_On" RW="1" Min="0" Max="4294967295" Init="0" UI="4" Unit="sec" Scale="1"/>
+    <Item Address="23" Memory="2" Length="4" Name="Sec_Since_Reset" RW="1" Min="0" Max="4294967295" Init="0" UI="4" Unit="sec" Scale="1"/>
+    <Item Address="27" Memory="2" Length="1" Name="System_State" RW="1" Min="0" Max="255" Init="0" UI="2" Label="START:CHECKING:READY:RUNNING:ERROR:ESTOP:IDLE"/>
+    <Item Address="28" Memory="2" Length="1" Name="Estop_State" RW="1" Min="0" Max="255" Init="0" UI="2" Label="OFF:ON"/>
+    <Item Address="29" Memory="2" Length="1" Name="Remote_Connected" RW="1" Min="0" Max="255" Init="0" UI="2" Label="FALSE:TRUE"/>
+    <Item Address="30" Memory="2" Length="4" Name="Remote_Mac_Address" RW="1" Min="0" Max="4294967295" Init="0" UI="2"/>
+    <Item Address="34" Memory="2" Length="1" Name="Motor_State" RW="1" Min="0" Max="255" Init="0" UI="2" Label="IDLE:READY_ENTER:READY:FAULT_ENTER:FAULT:FAULT_EXIT:NOT_CONNECT:BRAKE"/>
+    <Item Address="35" Memory="2" Length="1" Name="Motor_Reboot_Check" RW="3" Min="0" Max="255" Init="0" UI="3" Label="FALSE:TRUE"/>
+    <Item Address="36" Memory="2" Length="4" Name="Motor_Goal_Acceleration" RW="3" Min="0" Max="4294967295" Init="0" UI="5" Unit="rev/min²" Scale="53.64418029785156"/>
+    <Item Address="40" Memory="2" Length="1" Name="Motor_ORIN_TTL_Enable" RW="3" Min="0" Max="255" Init="0" UI="3" Label="FALSE:TRUE"/>
+    <Item Address="41" Memory="2" Length="4" Name="M1_Goal_RPM" RW="3" Min="-18500" Max="18500" Init="0" UI="5" Unit="rev/min" Scale="0.01"/>
+    <Item Address="45" Memory="2" Length="4" Name="M2_Goal_RPM" RW="3" Min="-18500" Max="18500" Init="0" UI="5" Unit="rev/min" Scale="0.01"/>
+    <Item Address="49" Memory="2" Length="4" Name="M3_Goal_RPM" RW="3" Min="-18500" Max="18500" Init="0" UI="5" Unit="rev/min" Scale="0.01"/>
+    <Item Address="53" Memory="2" Length="4" Name="M4_Goal_RPM" RW="3" Min="-18500" Max="18500" Init="0" UI="5" Unit="rev/min" Scale="0.01"/>
+    <Item Address="57" Memory="2" Length="4" Name="M1_Present_RPM" RW="1" Min="-2147483648" Max="2147483647" Init="0" UI="4" Unit="rev/min" Scale="0.01"/>
+    <Item Address="61" Memory="2" Length="4" Name="M2_Present_RPM" RW="1" Min="-2147483648" Max="2147483647" Init="0" UI="4" Unit="rev/min" Scale="0.01"/>
+    <Item Address="65" Memory="2" Length="4" Name="M3_Present_RPM" RW="1" Min="-2147483648" Max="2147483647" Init="0" UI="4" Unit="rev/min" Scale="0.01"/>
+    <Item Address="69" Memory="2" Length="4" Name="M4_Present_RPM" RW="1" Min="-2147483648" Max="2147483647" Init="0" UI="4" Unit="rev/min" Scale="0.01"/>
+    <Item Address="73" Memory="2" Length="4" Name="M1_Present_Position" RW="1" Min="-2147483648" Max="2147483647" Init="0" UI="4" Unit="pulse" Scale="1"/>
+    <Item Address="77" Memory="2" Length="4" Name="M2_Present_Position" RW="1" Min="-2147483648" Max="2147483647" Init="0" UI="4" Unit="pulse" Scale="1"/>
+    <Item Address="81" Memory="2" Length="4" Name="M3_Present_Position" RW="1" Min="-2147483648" Max="2147483647" Init="0" UI="4" Unit="pulse" Scale="1"/>
+    <Item Address="85" Memory="2" Length="4" Name="M4_Present_Position" RW="1" Min="-2147483648" Max="2147483647" Init="0" UI="4" Unit="pulse" Scale="1"/>
+    <Item Address="89" Memory="2" Length="4" Name="M1_Present_Current" RW="1" Min="-2147483648" Max="2147483647" Init="0" UI="4" Unit="mA" Scale="1"/>
+    <Item Address="93" Memory="2" Length="4" Name="M2_Present_Current" RW="1" Min="-2147483648" Max="2147483647" Init="0" UI="4" Unit="mA" Scale="1"/>
+    <Item Address="97" Memory="2" Length="4" Name="M3_Present_Current" RW="1" Min="-2147483648" Max="2147483647" Init="0" UI="4" Unit="mA" Scale="1"/>
+    <Item Address="101" Memory="2" Length="4" Name="M4_Present_Current" RW="1" Min="-2147483648" Max="2147483647" Init="0" UI="4" Unit="mA" Scale="1"/>
+    <Item Address="105" Memory="2" Length="1" Name="M1_HW_ERROR" RW="1" Min="0" Max="255" Init="0" UI="2" Label="No_Error:Over_Volt:Low_Volt:Hot_Inverter:Hot_Motor:Overload:-:Inverter:-:-:-:-:-:Encoder:Hall_Sensor:Calibration:STO:-:BUS_WDG:Over_Speed"/>
+    <Item Address="106" Memory="2" Length="1" Name="M2_HW_ERROR" RW="1" Min="0" Max="255" Init="0" UI="2" Label="No_Error:Over_Volt:Low_Volt:Hot_Inverter:Hot_Motor:Overload:-:Inverter:-:-:-:-:-:Encoder:Hall_Sensor:Calibration:STO:-:BUS_WDG:Over_Speed"/>
+    <Item Address="107" Memory="2" Length="1" Name="M3_HW_ERROR" RW="1" Min="0" Max="255" Init="0" UI="2" Label="No_Error:Over_Volt:Low_Volt:Hot_Inverter:Hot_Motor:Overload:-:Inverter:-:-:-:-:-:Encoder:Hall_Sensor:Calibration:STO:-:BUS_WDG:Over_Speed"/>
+    <Item Address="108" Memory="2" Length="1" Name="M4_HW_ERROR" RW="1" Min="0" Max="255" Init="0" UI="2" Label="No_Error:Over_Volt:Low_Volt:Hot_Inverter:Hot_Motor:Overload:-:Inverter:-:-:-:-:-:Encoder:Hall_Sensor:Calibration:STO:-:BUS_WDG:Over_Speed"/>
+    <Item Address="109" Memory="2" Length="1" Name="M1_Driver_Temperature" RW="1" Min="-128" Max="127" Init="0" UI="4" Unit="°C" Scale="1"/>
+    <Item Address="110" Memory="2" Length="1" Name="M2_Driver_Temperature" RW="1" Min="-128" Max="127" Init="0" UI="4" Unit="°C" Scale="1"/>
+    <Item Address="111" Memory="2" Length="1" Name="M3_Driver_Temperature" RW="1" Min="-128" Max="127" Init="0" UI="4" Unit="°C" Scale="1"/>
+    <Item Address="112" Memory="2" Length="1" Name="M4_Driver_Temperature" RW="1" Min="-128" Max="127" Init="0" UI="4" Unit="°C" Scale="1"/>
+    <Item Address="113" Memory="2" Length="1" Name="M1_Motor_Temperature" RW="1" Min="-128" Max="127" Init="0" UI="4" Unit="°C" Scale="1"/>
+    <Item Address="114" Memory="2" Length="1" Name="M2_Motor_Temperature" RW="1" Min="-128" Max="127" Init="0" UI="4" Unit="°C" Scale="1"/>
+    <Item Address="115" Memory="2" Length="1" Name="M3_Motor_Temperature" RW="1" Min="-128" Max="127" Init="0" UI="4" Unit="°C" Scale="1"/>
+    <Item Address="116" Memory="2" Length="1" Name="M4_Motor_Temperature" RW="1" Min="-128" Max="127" Init="0" UI="4" Unit="°C" Scale="1"/>
+    <Item Address="117" Memory="2" Length="1" Name="Swerve_Homing_Command" RW="3" Min="0" Max="255" Init="0" UI="3" Label="None:Auto:Manual_Start:Manual_Done"/>
+    <Item Address="118" Memory="2" Length="1" Name="S1_Error_Code" RW="1" Min="0" Max="255" Init="0" UI="2"/>
+    <Item Address="119" Memory="2" Length="1" Name="S2_Error_Code" RW="1" Min="0" Max="255" Init="0" UI="2"/>
+    <Item Address="120" Memory="2" Length="1" Name="S3_Error_Code" RW="1" Min="0" Max="255" Init="0" UI="2"/>
+    <Item Address="121" Memory="2" Length="1" Name="S4_Error_Code" RW="1" Min="0" Max="255" Init="0" UI="2"/>
+    <Item Address="122" Memory="2" Length="4" Name="S1_Goal_Position" RW="3" Min="-2147483648" Max="2147483647" Init="0" UI="5" Unit="pulse" Scale="1"/>
+    <Item Address="126" Memory="2" Length="4" Name="S2_Goal_Position" RW="3" Min="-2147483648" Max="2147483647" Init="0" UI="5" Unit="pulse" Scale="1"/>
+    <Item Address="130" Memory="2" Length="4" Name="S3_Goal_Position" RW="3" Min="-2147483648" Max="2147483647" Init="0" UI="5" Unit="pulse" Scale="1"/>
+    <Item Address="134" Memory="2" Length="4" Name="S4_Goal_Position" RW="3" Min="-2147483648" Max="2147483647" Init="0" UI="5" Unit="pulse" Scale="1"/>
+    <Item Address="138" Memory="2" Length="4" Name="S1_Present_Position" RW="1" Min="-2147483648" Max="2147483647" Init="0" UI="4" Unit="pulse" Scale="1"/>
+    <Item Address="142" Memory="2" Length="4" Name="S2_Present_Position" RW="1" Min="-2147483648" Max="2147483647" Init="0" UI="4" Unit="pulse" Scale="1"/>
+    <Item Address="146" Memory="2" Length="4" Name="S3_Present_Position" RW="1" Min="-2147483648" Max="2147483647" Init="0" UI="4" Unit="pulse" Scale="1"/>
+    <Item Address="150" Memory="2" Length="4" Name="S4_Present_Position" RW="1" Min="-2147483648" Max="2147483647" Init="0" UI="4" Unit="pulse" Scale="1"/>
+    <Item Address="154" Memory="2" Length="4" Name="S1_Profile_Acceleration" RW="3" Min="-2147483648" Max="2147483647" Init="0" UI="5" Unit="rev/min²" Scale="214.577"/>
+    <Item Address="158" Memory="2" Length="4" Name="S2_Profile_Acceleration" RW="3" Min="-2147483648" Max="2147483647" Init="0" UI="5" Unit="rev/min²" Scale="214.577"/>
+    <Item Address="162" Memory="2" Length="4" Name="S3_Profile_Acceleration" RW="3" Min="-2147483648" Max="2147483647" Init="0" UI="5" Unit="rev/min²" Scale="214.577"/>
+    <Item Address="166" Memory="2" Length="4" Name="S4_Profile_Acceleration" RW="3" Min="-2147483648" Max="2147483647" Init="0" UI="5" Unit="rev/min²" Scale="214.577"/>
+    <Item Address="170" Memory="2" Length="4" Name="S1_Profile_Velocity" RW="3" Min="-2147483648" Max="2147483647" Init="0" UI="5" Unit="rev/min" Scale="0.229"/>
+    <Item Address="174" Memory="2" Length="4" Name="S2_Profile_Velocity" RW="3" Min="-2147483648" Max="2147483647" Init="0" UI="5" Unit="rev/min" Scale="0.229"/>
+    <Item Address="178" Memory="2" Length="4" Name="S3_Profile_Velocity" RW="3" Min="-2147483648" Max="2147483647" Init="0" UI="5" Unit="rev/min" Scale="0.229"/>
+    <Item Address="182" Memory="2" Length="4" Name="S4_Profile_Velocity" RW="3" Min="-2147483648" Max="2147483647" Init="0" UI="5" Unit="rev/min" Scale="0.229"/>
+    <Item Address="186" Memory="2" Length="4" Name="S1_Present_Current" RW="1" Min="-2147483648" Max="2147483647" Init="0" UI="4" Unit="mA" Scale="1"/>
+    <Item Address="190" Memory="2" Length="4" Name="S2_Present_Current" RW="1" Min="-2147483648" Max="2147483647" Init="0" UI="4" Unit="mA" Scale="1"/>
+    <Item Address="194" Memory="2" Length="4" Name="S3_Present_Current" RW="1" Min="-2147483648" Max="2147483647" Init="0" UI="4" Unit="mA" Scale="1"/>
+    <Item Address="198" Memory="2" Length="4" Name="S4_Present_Current" RW="1" Min="-2147483648" Max="2147483647" Init="0" UI="4" Unit="mA" Scale="1"/>
+    <Item Address="202" Memory="2" Length="1" Name="S1_Motor_Temperature" RW="1" Min="-128" Max="127" Init="0" UI="4" Unit="°C" Scale="1"/>
+    <Item Address="203" Memory="2" Length="1" Name="S2_Motor_Temperature" RW="1" Min="-128" Max="127" Init="0" UI="4" Unit="°C" Scale="1"/>
+    <Item Address="204" Memory="2" Length="1" Name="S3_Motor_Temperature" RW="1" Min="-128" Max="127" Init="0" UI="4" Unit="°C" Scale="1"/>
+    <Item Address="205" Memory="2" Length="1" Name="S4_Motor_Temperature" RW="1" Min="-128" Max="127" Init="0" UI="4" Unit="°C" Scale="1"/>
+    <Item Address="206" Memory="2" Length="1" Name="Battery_Is_Charging" RW="1" Min="0" Max="255" Init="0" UI="2" Label="Discharging:Charging"/>
+    <Item Address="207" Memory="2" Length="2" Name="Battery_Voltage" RW="1" Min="0" Max="65535" Init="0" UI="4" Unit="V" Scale="0.01"/>
+    <Item Address="209" Memory="2" Length="2" Name="Battery_Current" RW="1" Min="-32768" Max="32767" Init="0" UI="4" Unit="mA" Scale="10"/>
+    <Item Address="211" Memory="2" Length="1" Name="Battery_Percentage" RW="1" Min="0" Max="255" Init="0" UI="4" Unit="%" Scale="1"/>
+    <Item Address="212" Memory="2" Length="2" Name="Battery_Capacity" RW="1" Min="0" Max="65535" Init="0" UI="4" Unit="Ah" Scale="0.01"/>
+    <Item Address="214" Memory="2" Length="2" Name="Battery_Charge_Current" RW="1" Min="0" Max="65535" Init="0" UI="4" Unit="A" Scale="0.01"/>
+    <Item Address="216" Memory="2" Length="1" Name="BMS_Is_Connected" RW="1" Min="0" Max="255" Init="0" UI="2" Label="Not Connected:Connected"/>
+    <Item Address="217" Memory="2" Length="1" Name="BMS_SOC" RW="1" Min="0" Max="255" Init="0" UI="4" Unit="%" Scale="1"/>
+    <Item Address="218" Memory="2" Length="4" Name="BMS_Status" RW="1" Min="0" Max="4294967295" Init="0" UI="2"/>
+    <Item Address="222" Memory="2" Length="2" Name="BMS_LOG" RW="1" Min="0" Max="65535" Init="0" UI="2"/>
+    <Item Address="224" Memory="2" Length="2" Name="BMS_Voltage" RW="1" Min="0" Max="65535" Init="0" UI="4" Unit="V" Scale="0.01"/>
+    <Item Address="226" Memory="2" Length="2" Name="BMS_Current" RW="1" Min="-32768" Max="32767" Init="0" UI="4" Unit="mA" Scale="10"/>
+    <Item Address="228" Memory="2" Length="1" Name="BMS_Temperature" RW="1" Min="-128" Max="127" Init="0" UI="4" Unit="°C" Scale="1"/>
+    <Item Address="229" Memory="2" Length="1" Name="BMS_Temperature_2" RW="1" Min="-128" Max="127" Init="0" UI="4" Unit="°C" Scale="1"/>
+    <Item Address="230" Memory="2" Length="1" Name="BMS_Heater_Enable" RW="3" Min="0" Max="255" Init="0" UI="3" Label="Disable:Enable"/>
+    <Item Address="231" Memory="2" Length="1" Name="BMS_Heater_Is_On" RW="1" Min="0" Max="255" Init="0" UI="2" Label="Off:On"/>
+    <Item Address="232" Memory="2" Length="1" Name="BMS_Heater_Mode" RW="3" Min="0" Max="255" Init="0" UI="3" Label="Off:Auto:Manual"/>
+    <Item Address="233" Memory="2" Length="1" Name="BMS_Heater_Manual_On" RW="3" Min="0" Max="255" Init="0" UI="3" Label="Off:On"/>
+    <Item Address="234" Memory="2" Length="1" Name="Docking" RW="1" Min="0" Max="255" Init="0" UI="2" Label="No:Yes"/>
+    <Item Address="235" Memory="2" Length="1" Name="Charge_Error" RW="1" Min="0" Max="255" Init="0" UI="2"/>
+    <Item Address="236" Memory="2" Length="1" Name="Charge_Sequence" RW="1" Min="0" Max="255" Init="0" UI="2" Label="Standby:Optimize Current:On Charge:Full Charged:Charge Error:Stop Charge"/>
+    <Item Address="237" Memory="2" Length="1" Name="Charge_Command" RW="3" Min="0" Max="255" Init="0" UI="3" Label="None:Grip:Release:Force Charge Enable:Force Charge Disable:Force Charge Clear"/>
+    <Item Address="238" Memory="2" Length="1" Name="Charge_Swerve_Status" RW="1" Min="0" Max="255" Init="0" UI="2" Label="Released:Gripped"/>
+    <Item Address="239" Memory="2" Length="1" Name="Charge_Force_Status" RW="1" Min="0" Max="255" Init="0" UI="2" Label="None:Force Charge Enabled:Force Charge Disabled"/>
+    <Item Address="240" Memory="2" Length="2" Name="Charge_Hall_Left" RW="1" Min="0" Max="65535" Init="0" UI="2"/>
+    <Item Address="242" Memory="2" Length="2" Name="Charge_Hall_Right" RW="1" Min="0" Max="65535" Init="0" UI="2"/>
+    <Item Address="244" Memory="2" Length="1" Name="Charging_Station_ID" RW="1" Min="0" Max="255" Init="0" UI="2"/>
+    <Item Address="245" Memory="2" Length="1" Name="Charging_Station_SET_ID" RW="3" Min="0" Max="255" Init="0" UI="2"/>
+    <Item Address="246" Memory="2" Length="1" Name="Charge_FW_Version_Major" RW="1" Min="0" Max="255" Init="0" UI="2"/>
+    <Item Address="247" Memory="2" Length="1" Name="Charge_FW_Version_Minor" RW="1" Min="0" Max="255" Init="0" UI="2"/>
+    <Item Address="248" Memory="2" Length="2" Name="Voltage_Batt" RW="1" Min="0" Max="65535" Init="0" UI="4" Unit="V" Scale="0.1"/>
+    <Item Address="250" Memory="2" Length="2" Name="Voltage_RCU_14V" RW="1" Min="0" Max="65535" Init="0" UI="4" Unit="V" Scale="0.1"/>
+    <Item Address="252" Memory="2" Length="2" Name="Voltage_RCU_12V" RW="1" Min="0" Max="65535" Init="0" UI="4" Unit="V" Scale="0.1"/>
+    <Item Address="254" Memory="2" Length="2" Name="Voltage_RCU_12V_2" RW="1" Min="0" Max="65535" Init="0" UI="4" Unit="V" Scale="0.1"/>
+    <Item Address="256" Memory="2" Length="2" Name="Voltage_RCU_5V" RW="1" Min="0" Max="65535" Init="0" UI="4" Unit="V" Scale="0.1"/>
+    <Item Address="258" Memory="2" Length="2" Name="Voltage_RCU_3V3" RW="1" Min="0" Max="65535" Init="0" UI="4" Unit="V" Scale="0.1"/>
+    <Item Address="260" Memory="2" Length="2" Name="Voltage_ORIN_17V" RW="1" Min="0" Max="65535" Init="0" UI="4" Unit="V" Scale="0.1"/>
+    <Item Address="262" Memory="2" Length="2" Name="Voltage_ORIN_12V" RW="1" Min="0" Max="65535" Init="0" UI="4" Unit="V" Scale="0.1"/>
+    <Item Address="264" Memory="2" Length="2" Name="Voltage_ORIN_5V" RW="1" Min="0" Max="65535" Init="0" UI="4" Unit="V" Scale="0.1"/>
+    <Item Address="266" Memory="2" Length="2" Name="Voltage_ORIN_3V3" RW="1" Min="0" Max="65535" Init="0" UI="4" Unit="V" Scale="0.1"/>
+    <Item Address="268" Memory="2" Length="2" Name="Voltage_ORIN_1V8" RW="1" Min="0" Max="65535" Init="0" UI="4" Unit="V" Scale="0.1"/>
+    <Item Address="270" Memory="2" Length="2" Name="Voltage_ORIN_1V2" RW="1" Min="0" Max="65535" Init="0" UI="4" Unit="V" Scale="0.1"/>
+    <Item Address="272" Memory="2" Length="2" Name="Voltage_ORIN_LIDAR" RW="1" Min="0" Max="65535" Init="0" UI="4" Unit="V" Scale="0.1"/>
+    <Item Address="274" Memory="2" Length="2" Name="Voltage_ORIN_ROUTER" RW="1" Min="0" Max="65535" Init="0" UI="4" Unit="V" Scale="0.1"/>
+    <Item Address="276" Memory="2" Length="2" Name="Current_Batt" RW="1" Min="0" Max="65535" Init="0" UI="4" Unit="A" Scale="0.1"/>
+    <Item Address="278" Memory="2" Length="2" Name="Current_Motor" RW="1" Min="0" Max="65535" Init="0" UI="4" Unit="A" Scale="0.1"/>
+    <Item Address="280" Memory="2" Length="2" Name="Current_Charge" RW="1" Min="0" Max="65535" Init="0" UI="4" Unit="A" Scale="0.1"/>
+    <Item Address="282" Memory="2" Length="2" Name="Current_RCU_12V" RW="1" Min="0" Max="65535" Init="0" UI="4" Unit="A" Scale="0.1"/>
+    <Item Address="284" Memory="2" Length="2" Name="Current_RCU_12V_2" RW="1" Min="0" Max="65535" Init="0" UI="4" Unit="A" Scale="0.1"/>
+    <Item Address="286" Memory="2" Length="2" Name="Current_RCU_5V" RW="1" Min="0" Max="65535" Init="0" UI="4" Unit="A" Scale="0.1"/>
+    <Item Address="288" Memory="2" Length="2" Name="Current_HEAT_POWER" RW="1" Min="0" Max="65535" Init="0" UI="4" Unit="A" Scale="0.1"/>
+    <Item Address="290" Memory="2" Length="2" Name="Current_ORIN_Batt" RW="1" Min="0" Max="65535" Init="0" UI="4" Unit="A" Scale="0.1"/>
+    <Item Address="292" Memory="2" Length="1" Name="Module_Type" RW="3" Min="0" Max="255" Init="0" UI="3" Label="None:Single:Dispenser:Double:Open:Single_Auto:Single_Dump:Single_Manual"/>
+    <Item Address="293" Memory="2" Length="1" Name="Cargo_Command" RW="3" Min="0" Max="255" Init="0" UI="3" Label="None:Stop:Lock:Unlock:Open:Close"/>
+    <Item Address="294" Memory="2" Length="1" Name="Cargo_Door_State" RW="1" Min="0" Max="255" Init="0" UI="2" Label="Closed:Opened"/>
+    <Item Address="295" Memory="2" Length="1" Name="Cargo_Lock_State" RW="1" Min="0" Max="255" Init="0" UI="2" Label="Neutral:Locked:Unlocked:No_Response"/>
+    <Item Address="296" Memory="2" Length="2" Name="Cargo_Detect_Adc" RW="1" Min="0" Max="65535" Init="0" UI="2"/>
+    <Item Address="298" Memory="2" Length="1" Name="Wiper_Mode" RW="3" Min="0" Max="255" Init="0" UI="3" Label="Off:Once:INT"/>
+    <Item Address="299" Memory="2" Length="1" Name="Wiper_INT_Time" RW="3" Min="0" Max="255" Init="0" UI="5" Unit="Sec." Scale="0.1"/>
+    <Item Address="300" Memory="2" Length="1" Name="Wiper_Connected_1" RW="1" Min="0" Max="255" Init="0" UI="2" Label="Disconnected:Connected"/>
+    <Item Address="301" Memory="2" Length="1" Name="Wiper_Pose_1" RW="1" Min="0" Max="255" Init="0" UI="2" Label="NEUTRAL:INIT:WIPED:"/>
+    <Item Address="302" Memory="2" Length="1" Name="Wiper_Hw_error_1" RW="1" Min="0" Max="255" Init="0" UI="2"/>
+    <Item Address="303" Memory="2" Length="1" Name="Wiper_Connected_2" RW="1" Min="0" Max="255" Init="0" UI="2" Label="Disconnected:Connected"/>
+    <Item Address="304" Memory="2" Length="1" Name="Wiper_Pose_2" RW="1" Min="0" Max="255" Init="0" UI="2" Label="NEUTRAL:INIT:WIPED:"/>
+    <Item Address="305" Memory="2" Length="1" Name="Wiper_Hw_error_2" RW="1" Min="0" Max="255" Init="0" UI="2"/>
+    <Item Address="306" Memory="2" Length="1" Name="Wiper_Connected_3" RW="1" Min="0" Max="255" Init="0" UI="2" Label="Disconnected:Connected"/>
+    <Item Address="307" Memory="2" Length="1" Name="Wiper_Pose_3" RW="1" Min="0" Max="255" Init="0" UI="2" Label="NEUTRAL:INIT:WIPED:"/>
+    <Item Address="308" Memory="2" Length="1" Name="Wiper_Hw_error_3" RW="1" Min="0" Max="255" Init="0" UI="2"/>
+    <Item Address="309" Memory="2" Length="1" Name="Led_Flag_Mode" RW="3" Min="0" Max="255" Init="0" UI="3" Label="OFF:LIVE:RGB:BLINK_100MS:BLINK_500MS:BLINK_1000MS:EYE_SOC:EYE_IDLING:EYE_SLEEPY:EYE_ANGRY:EYE_BLINK:EYE_OPEN:EYE_WOW"/>
+    <Item Address="310" Memory="2" Length="1" Name="Led_Flag_Brightness" RW="3" Min="0" Max="255" Init="0" UI="5" Unit="%" Scale="0.3921568627451"/>
+    <Item Address="311" Memory="2" Length="1" Name="Led_Flag_Control_Time" RW="3" Min="0" Max="255" Init="0" UI="5" Unit="Sec." Scale="0.1"/>
+    <Item Address="312" Memory="2" Length="1" Name="Led_Indicator_Left_Red" RW="3" Min="0" Max="255" Init="0" UI="5" Unit="%" Scale="0.3921568627451"/>
+    <Item Address="313" Memory="2" Length="1" Name="Led_Indicator_Left_Green" RW="3" Min="0" Max="255" Init="0" UI="5" Unit="%" Scale="0.3921568627451"/>
+    <Item Address="314" Memory="2" Length="1" Name="Led_Indicator_Left_Blue" RW="3" Min="0" Max="255" Init="0" UI="5" Unit="%" Scale="0.3921568627451"/>
+    <Item Address="315" Memory="2" Length="1" Name="Led_Indicator_Left_Mode" RW="3" Min="0" Max="255" Init="0" UI="3" Label="OFF:LIVE:RGB:BLINK_100MS:BLINK_500MS:BLINK_1000MS:EYE_SOC:EYE_IDLING:EYE_SLEEPY:EYE_ANGRY:EYE_BLINK:EYE_OPEN:EYE_WOW"/>
+    <Item Address="316" Memory="2" Length="1" Name="Led_Indicator_Left_Brightness" RW="3" Min="0" Max="255" Init="0" UI="5" Unit="%" Scale="0.3921568627451"/>
+    <Item Address="317" Memory="2" Length="1" Name="Led_Indicator_Left_Control_Time" RW="3" Min="0" Max="255" Init="0" UI="5" Unit="Sec." Scale="0.1"/>
+    <Item Address="318" Memory="2" Length="1" Name="Led_Indicator_Right_Red" RW="3" Min="0" Max="255" Init="0" UI="5" Unit="%" Scale="0.3921568627451"/>
+    <Item Address="319" Memory="2" Length="1" Name="Led_Indicator_Right_Green" RW="3" Min="0" Max="255" Init="0" UI="5" Unit="%" Scale="0.3921568627451"/>
+    <Item Address="320" Memory="2" Length="1" Name="Led_Indicator_Right_Blue" RW="3" Min="0" Max="255" Init="0" UI="5" Unit="%" Scale="0.3921568627451"/>
+    <Item Address="321" Memory="2" Length="1" Name="Led_Indicator_Right_Mode" RW="3" Min="0" Max="255" Init="0" UI="3" Label="OFF:LIVE:RGB:BLINK_100MS:BLINK_500MS:BLINK_1000MS:EYE_SOC:EYE_IDLING:EYE_SLEEPY:EYE_ANGRY:EYE_BLINK:EYE_OPEN:EYE_WOW"/>
+    <Item Address="322" Memory="2" Length="1" Name="Led_Indicator_Right_Brightness" RW="3" Min="0" Max="255" Init="0" UI="5" Unit="%" Scale="0.3921568627451"/>
+    <Item Address="323" Memory="2" Length="1" Name="Led_Indicator_Right_Control_Time" RW="3" Min="0" Max="255" Init="0" UI="5" Unit="Sec." Scale="0.1"/>
+    <Item Address="324" Memory="2" Length="1" Name="Led_Eye_Red" RW="3" Min="0" Max="255" Init="0" UI="5" Unit="%" Scale="0.3921568627451"/>
+    <Item Address="325" Memory="2" Length="1" Name="Led_Eye_Green" RW="3" Min="0" Max="255" Init="0" UI="5" Unit="%" Scale="0.3921568627451"/>
+    <Item Address="326" Memory="2" Length="1" Name="Led_Eye_Blue" RW="3" Min="0" Max="255" Init="0" UI="5" Unit="%" Scale="0.3921568627451"/>
+    <Item Address="327" Memory="2" Length="1" Name="Led_Eye_Mode" RW="3" Min="0" Max="255" Init="0" UI="3" Label="OFF:LIVE:RGB:BLINK_100MS:BLINK_500MS:BLINK_1000MS:EYE_SOC:EYE_IDLING:EYE_SLEEPY:EYE_ANGRY:EYE_BLINK:EYE_OPEN:EYE_WOW"/>
+    <Item Address="328" Memory="2" Length="1" Name="Led_Eye_Brightness" RW="3" Min="0" Max="255" Init="0" UI="5" Unit="%" Scale="0.3921568627451"/>
+    <Item Address="329" Memory="2" Length="1" Name="Led_Eye_Control_Time" RW="3" Min="0" Max="255" Init="0" UI="5" Unit="Sec." Scale="0.1"/>
+    <Item Address="330" Memory="2" Length="1" Name="Led_Turn_Signal" RW="3" Min="0" Max="255" Init="0" UI="3" Label="Off:Left:Right"/>
+    <Item Address="331" Memory="2" Length="1" Name="Led_Turn_Signal_Red" RW="3" Min="0" Max="255" Init="0" UI="5" Unit="%" Scale="0.3921568627451"/>
+    <Item Address="332" Memory="2" Length="1" Name="Led_Turn_Signal_Green" RW="3" Min="0" Max="255" Init="0" UI="5" Unit="%" Scale="0.3921568627451"/>
+    <Item Address="333" Memory="2" Length="1" Name="Led_Turn_Signal_Blue" RW="3" Min="0" Max="255" Init="0" UI="5" Unit="%" Scale="0.3921568627451"/>
+    <Item Address="334" Memory="2" Length="1" Name="Headlight_State" RW="3" Min="0" Max="255" Init="0" UI="3" Label="OFF:ON"/>
+    <Item Address="335" Memory="2" Length="1" Name="Fan1_Control" RW="3" Min="0" Max="255" Init="0" UI="3" Label="OFF:ON"/>
+    <Item Address="336" Memory="2" Length="1" Name="Fan2_Control" RW="3" Min="0" Max="255" Init="0" UI="3" Label="OFF:ON"/>
+    <Item Address="337" Memory="2" Length="1" Name="Fan3_Control" RW="3" Min="0" Max="255" Init="0" UI="3" Label="OFF:ON"/>
+    <Item Address="338" Memory="2" Length="1" Name="Fan4_Control" RW="3" Min="0" Max="255" Init="0" UI="3" Label="OFF:ON"/>
+    <Item Address="339" Memory="2" Length="1" Name="Fan5_Control" RW="3" Min="0" Max="255" Init="0" UI="3" Label="OFF:ON"/>
+    <Item Address="340" Memory="2" Length="4" Name="Relay_Control" RW="3" Min="0" Max="4294967295" Init="0" UI="9" Label="Relay1:Relay2:Relay3:Relay4:Relay5:Relay6:Relay7:Relay8"/>
+    <Item Address="344" Memory="2" Length="4" Name="Relay_Timeout" RW="3" Min="0" Max="4294967295" Init="0" UI="5" Unit="Sec" Scale="0.1"/>
+    <Item Address="348" Memory="2" Length="1" Name="Pressure_Sensor_Connection" RW="1" Min="0" Max="255" Init="0" UI="2" Label="Disconnected:Connected"/>
+    <Item Address="349" Memory="2" Length="1" Name="Pressure_Sensor_Temperature" RW="1" Min="-128" Max="127" Init="0" UI="4" Unit="°C" Scale="1"/>
+    <Item Address="350" Memory="2" Length="2" Name="Pressure_Out_Scale" RW="1" Min="-32768" Max="32767" Init="0" UI="4" Unit="LSB/hPa" Scale="1"/>
+    <Item Address="352" Memory="2" Length="4" Name="ATM_Pressure" RW="1" Min="0" Max="4294967295" Init="0" UI="4" Unit="hPa" Scale="0.01"/>
+    <Item Address="356" Memory="2" Length="2" Name="UltraSonic_1" RW="1" Min="0" Max="65535" Init="0" UI="4" Unit="cm" Scale="1"/>
+    <Item Address="358" Memory="2" Length="2" Name="UltraSonic_2" RW="1" Min="0" Max="65535" Init="0" UI="4" Unit="cm" Scale="1"/>
+    <Item Address="360" Memory="2" Length="1" Name="Orin_Power_Control" RW="3" Min="0" Max="255" Init="0" UI="3" Label="None:Off:On:Reboot"/>
+    <Item Address="361" Memory="2" Length="1" Name="Orin_Power_State" RW="1" Min="0" Max="255" Init="0" UI="2" Label="OFF:ON"/>
+    <Item Address="362" Memory="2" Length="1" Name="ESP32_Connection" RW="1" Min="0" Max="255" Init="0" UI="2" Label="Not Connected:Connected"/>
+    <Item Address="363" Memory="2" Length="1" Name="Magnet_Sensor_Connection" RW="1" Min="0" Max="255" Init="0" UI="2" Label="Disconnected:Connected"/>
+    <Item Address="364" Memory="2" Length="1" Name="Magnet_Sensor_Temperature" RW="1" Min="-128" Max="127" Init="0" UI="4" Unit="°C" Scale="1"/>
+    <Item Address="365" Memory="2" Length="2" Name="Magnet_Out_Scale" RW="1" Min="-32768" Max="32767" Init="0" UI="4" Unit="LSB/mG" Scale="0.1"/>
+    <Item Address="367" Memory="2" Length="4" Name="Magnet_Timestamp" RW="1" Min="0" Max="4294967295" Init="0" UI="4" Unit="μsec" Scale="1"/>
+    <Item Address="371" Memory="2" Length="2" Name="Magnet_Out_X" RW="1" Min="-32768" Max="32767" Init="0" UI="4" Unit="mG" Scale="1.5"/>
+    <Item Address="373" Memory="2" Length="2" Name="Magnet_Out_Y" RW="1" Min="-32768" Max="32767" Init="0" UI="4" Unit="mG" Scale="1.5"/>
+    <Item Address="375" Memory="2" Length="2" Name="Magnet_Out_Z" RW="1" Min="-32768" Max="32767" Init="0" UI="4" Unit="mG" Scale="1.5"/>
+    <Item Address="800" Memory="2" Length="1" Name="IMU_Sensor_Connection" RW="1" Min="0" Max="255" Init="0" UI="2" Label="Disconnected:Connected"/>
+    <Item Address="801" Memory="2" Length="1" Name="IMU_Sensor_Temperature" RW="1" Min="-128" Max="127" Init="0" UI="4" Unit="°C" Scale="1"/>
+    <Item Address="802" Memory="2" Length="2" Name="IMU_Acc_Scale" RW="1" Min="-32768" Max="32767" Init="0" UI="4" Unit="LSB/g" Scale="1"/>
+    <Item Address="804" Memory="2" Length="2" Name="IMU_Gyro_Scale" RW="1" Min="-32768" Max="32767" Init="0" UI="4" Unit="LSB/dps" Scale="0.1"/>
+    <Item Address="806" Memory="2" Length="4" Name="IMU_Timestamp" RW="1" Min="0" Max="4294967295" Init="0" UI="4" Unit="μsec" Scale="1"/>
+    <Item Address="810" Memory="2" Length="2" Name="IMU_Acc_X" RW="1" Min="-32768" Max="32767" Init="0" UI="4" Unit="g" Scale="0.00006103515625"/>
+    <Item Address="812" Memory="2" Length="2" Name="IMU_Acc_Y" RW="1" Min="-32768" Max="32767" Init="0" UI="4" Unit="g" Scale="0.00006103515625"/>
+    <Item Address="814" Memory="2" Length="2" Name="IMU_Acc_Z" RW="1" Min="-32768" Max="32767" Init="0" UI="4" Unit="g" Scale="0.00006103515625"/>
+    <Item Address="816" Memory="2" Length="2" Name="IMU_Gyro_X" RW="1" Min="-32768" Max="32767" Init="0" UI="4" Unit="dps" Scale="16.4"/>
+    <Item Address="818" Memory="2" Length="2" Name="IMU_Gyro_Y" RW="1" Min="-32768" Max="32767" Init="0" UI="4" Unit="dps" Scale="16.4"/>
+    <Item Address="820" Memory="2" Length="2" Name="IMU_Gyro_Z" RW="1" Min="-32768" Max="32767" Init="0" UI="4" Unit="dps" Scale="16.4"/>
+    <Item Address="822" Memory="2" Length="1" Name="Wiper_Temperature_1" RW="1" Min="0" Max="255" Init="0" UI="4" Unit="°C" Scale="1"/>
+    <Item Address="823" Memory="2" Length="1" Name="Wiper_Temperature_2" RW="1" Min="0" Max="255" Init="0" UI="4" Unit="°C" Scale="1"/>
+    <Item Address="824" Memory="2" Length="1" Name="Wiper_Temperature_3" RW="1" Min="0" Max="255" Init="0" UI="4" Unit="°C" Scale="1"/>
+    <Item Address="933" Memory="2" Length="1" Name="Led_Update_Mode" RW="3" Min="0" Max="255" Init="0" UI="3" Label="False:True"/>
+    <Item Address="1000" Memory="2" Length="1" Name="Error_List_Size" RW="1" Min="0" Max="255" Init="0" UI="2"/>
+    <Item Address="1001" Memory="2" Length="4" Name="Error_Main" RW="1" Min="0" Max="4294967295" Init="0" UI="2"/>
+    <Item Address="1005" Memory="2" Length="4" Name="Error_List1" RW="1" Min="0" Max="4294967295" Init="0" UI="2"/>
+    <Item Address="1009" Memory="2" Length="4" Name="Error_List2" RW="1" Min="0" Max="4294967295" Init="0" UI="2"/>
+    <Item Address="1013" Memory="2" Length="4" Name="Error_List3" RW="1" Min="0" Max="4294967295" Init="0" UI="2"/>
+    <Item Address="1017" Memory="2" Length="4" Name="Error_List4" RW="1" Min="0" Max="4294967295" Init="0" UI="2"/>
+    <Item Address="1021" Memory="2" Length="4" Name="Error_List5" RW="1" Min="0" Max="4294967295" Init="0" UI="2"/>
+    <Item Address="1025" Memory="2" Length="4" Name="Error_List6" RW="1" Min="0" Max="4294967295" Init="0" UI="2"/>
+    <Item Address="1029" Memory="2" Length="4" Name="Error_List7" RW="1" Min="0" Max="4294967295" Init="0" UI="2"/>
+    <Item Address="1033" Memory="2" Length="4" Name="Error_List8" RW="1" Min="0" Max="4294967295" Init="0" UI="2"/>
+    <Item Address="1037" Memory="2" Length="4" Name="RTC_Set_Date" RW="3" Min="0" Max="4294967295" Init="0" UI="2"/>
+    <Item Address="1041" Memory="2" Length="4" Name="RTC_Set_Time" RW="3" Min="0" Max="4294967295" Init="0" UI="2"/>
+  </ControlItems>
+  <ReleaseNotes MinimumVersion="0">
+    <Release Version="1" Date="02/03/2026" FileName="" Note="* First Released."/>
+  </ReleaseNotes>
+</Device>

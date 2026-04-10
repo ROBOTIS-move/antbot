@@ -1,0 +1,16 @@
+imu_node:
+  ros__parameters:
+    imu_board:
+      port: "/dev/ttyUSB1"
+      id: 200
+      baud_rate: 4000000
+      protocol_version: 2.0
+
+    imu:
+      frame_id: "imu_link"
+      filter_cutoff_hz: 10.0
+      publish_rate: 200.0
+      calibration_num: 350
+      scale:
+        acceleration: 0.00006103515625
+        angular_vel: 0.0609756098

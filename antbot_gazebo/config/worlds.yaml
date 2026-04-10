@@ -1,0 +1,9 @@
+# World configuration for AntBot Gazebo simulation
+# Maps world names to their SDF world files.
+# Usage: ros2 launch antbot_gazebo gazebo.launch.py world:=depot
+
+worlds:
+  empty:
+    sdf: empty.sdf
+  depot:
+    sdf: depot.sdf
