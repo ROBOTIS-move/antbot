@@ -1,0 +1,74 @@
+---
+title: 5.3 Simulation Environment Setup
+description: Ignition Gazebo simulation environment setup guide for AntBot
+sidebar:
+  order: 3
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+AntBot can be operated and tested in Ignition Gazebo (Fortress) without physical hardware.
+
+![Simulation Pipeline](../../../../assets/images/sim_pipeline.png)
+
+---
+
+## Prerequisites
+
+```bash
+sudo apt install ros-humble-ros-gz ros-humble-ign-ros2-control \
+  ros-humble-xacro ros-humble-robot-state-publisher
+```
+
+---
+
+## Build
+
+```bash
+cd ~/ros2_ws
+colcon build --symlink-install --packages-up-to antbot_gazebo
+source install/setup.bash
+```
+
+---
+
+## Run
+
+<Steps>
+
+1. **Start Gazebo simulation**
+
+   ```bash
+   # Terminal 1
+   ros2 launch antbot_gazebo gazebo.launch.py
+   ```
+
+2. **Control the robot with keyboard**
+
+   ```bash
+   # Terminal 2
+   ros2 run antbot_teleop teleop_keyboard
+   ```
+
+</Steps>
+
+---
+
+## Change World
+
+The default world is `empty`. Use the `world` argument to select a different one:
+
+```bash
+# Run by name (resolved via worlds.yaml)
+ros2 launch antbot_gazebo gazebo.launch.py world:=depot
+
+# Run by full SDF path
+ros2 launch antbot_gazebo gazebo.launch.py world:=/path/to/world.sdf
+```
+
+---
+
+:::tip[See Also]
+- URDF structure, sensors, controllers, custom worlds → [antbot_gazebo README](https://github.com/ROBOTIS-move/antbot/tree/main/antbot_gazebo)
+- Nav2 autonomous navigation → [5.4 Nav2 Integration](/antbot/en/development-guide/navigation/)
+:::

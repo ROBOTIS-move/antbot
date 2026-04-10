@@ -1,0 +1,90 @@
+---
+title: 3.4 소프트웨어 환경 구축
+description: AntBot 소프트웨어 빌드 환경 설정 가이드
+sidebar:
+  order: 4
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+AntBot 소프트웨어를 빌드하고 실행하기 위한 환경 구축 가이드입니다.
+
+## 사전 요구사항
+
+| 항목 | 요구 사양 |
+| :--- | :--- |
+| OS | Ubuntu 22.04 LTS |
+| ROS 2 | Humble Hawksbill |
+| C++ | C++17 이상 |
+| Python | 3.10 이상 |
+| 컴파일러 | GCC 11+ |
+
+:::note
+ROS 2 Humble 설치가 필요한 경우, [공식 설치 가이드](https://docs.ros.org/en/humble/Installation.html)를 참고하세요.
+:::
+
+## 설치 방법
+
+<Steps>
+
+1. 워크스페이스 생성 및 저장소 클론
+
+   ```bash
+   mkdir -p ~/antbot_ws/src && cd ~/antbot_ws/src
+   git clone https://github.com/ROBOTIS-move/antbot.git
+   ```
+
+2. 의존성 설치
+
+   `setting.sh` 스크립트가 다음 작업을 자동으로 수행합니다.
+   - 시스템 패키지 설치 (`netplan.io` 등)
+   - 외부 ROS 2 패키지 클론 (vcs import)
+   - `rosdep`을 통한 ROS 의존성 설치
+
+   ```bash
+   cd ~/antbot_ws/src/antbot
+   bash setting.sh
+   ```
+
+3. 워크스페이스 빌드
+
+   ```bash
+   cd ~/antbot_ws
+   colcon build --symlink-install
+   ```
+
+4. 환경 소싱
+
+   ```bash
+   source ~/antbot_ws/install/setup.bash
+   ```
+
+   :::tip
+   `~/.bashrc`에 다음 줄을 추가하면 새 터미널마다 자동으로 소싱됩니다.
+
+   ```bash
+   echo 'source ~/antbot_ws/install/setup.bash' >> ~/.bashrc
+   ```
+   :::
+
+</Steps>
+
+## 실행
+
+전체 시스템을 한 번에 실행하려면:
+
+```bash
+ros2 launch antbot_bringup bringup.launch.py
+```
+
+하드웨어 없이 URDF 모델만 확인하려면:
+
+```bash
+ros2 launch antbot_description description.launch.py
+```
+
+(전체 시스템이 켜져있는 상태에서) RViz로 센서를 모니터링하려면:
+
+```bash
+ros2 launch antbot_bringup view.launch.py
+```

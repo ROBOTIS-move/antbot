@@ -1,0 +1,73 @@
+---
+title: 4.5 SSD 마운트
+description: SSD 파티션 초기화 및 영구 마운트
+sidebar:
+  order: 5
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+온보드 컴퓨터에는 NVMe SSD가 기본 장착되어 있습니다. SSD를 사용하려면 파티션 초기화, 마운트, 그리고 재부팅 후에도 자동으로 마운트되도록 `/etc/fstab`에 등록해야 합니다.
+
+## 파티션 초기화
+
+<Steps>
+
+1. **SSD 파티션 초기화**
+
+   ```bash
+   sudo /sbin/parted /dev/nvme0n1 mklabel gpt --script
+   sudo /sbin/parted /dev/nvme0n1 mkpart primary ext4 0% 100% --script
+   sudo mkfs.ext4 /dev/nvme0n1p1
+   ```
+
+2. **마운트 디렉토리 생성 및 임시 마운트**
+
+   ```bash
+   sudo mkdir -p {마운트 경로}
+   sudo mount /dev/nvme0n1p1 {마운트 경로}
+   sudo chmod 777 {마운트 경로}
+   ```
+
+</Steps>
+
+## 영구 마운트
+
+<Steps>
+
+1. **UUID 확인**
+
+   ```bash
+   sudo blkid /dev/nvme0n1p1
+   ```
+
+   출력 예시:
+
+   ```
+   /dev/nvme0n1p1: UUID="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" BLOCK_SIZE="4096" TYPE="ext4"
+   ```
+
+2. **`/etc/fstab`에 영구 마운트 등록**
+
+   ```bash
+   # 기존 fstab 백업
+   sudo cp /etc/fstab /etc/fstab.bak
+
+   # fstab에 항목 추가 ({UUID}는 위에서 확인한 값으로 대체)
+   echo 'UUID={UUID}  {마운트 경로}  ext4  defaults,nofail  0  2' | sudo tee -a /etc/fstab
+   ```
+
+3. **마운트 적용 및 확인**
+
+   ```bash
+   # 기존 임시 마운트 해제 후 fstab 기반 재마운트
+   sudo umount {마운트 경로}
+   sudo mount -a
+
+   # 마운트 확인
+   df -h | grep {마운트 경로}
+   ```
+
+   정상적으로 마운트되었다면 `{마운트 경로}` 경로와 용량이 출력됩니다. 이후 재부팅하더라도 SSD가 자동으로 마운트됩니다.
+
+</Steps>

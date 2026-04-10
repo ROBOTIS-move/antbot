@@ -1,0 +1,81 @@
+---
+title: 6.4 Known Issues
+description: List of unresolved issues and workarounds for AntBot
+sidebar:
+  order: 4
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+## Known Issues
+
+
+| # | Issue | Description | Resolution |
+|---|-------|-------------|------------|
+| 1 | FTDI USB Not Recognized | FTDI USB devices not recognized on boot | USB reset or reboot |
+
+<details>
+<summary>1. FTDI USB Not Recognized</summary>
+
+#### Symptoms
+
+After booting, the robot does not operate normally, and some or all USB serial devices are not recognized.
+
+#### How to Check
+
+Run the following command to verify that all four ports (`/dev/ttyUSB0` through `/dev/ttyUSB3`) exist.
+
+```bash
+ls /dev/ttyUSB*
+```
+
+#### Resolution
+
+<Steps>
+
+1. Run the following command to reset the USB devices.
+
+   ```bash
+   gpioset 0 1=0
+   ```
+
+2. If the issue persists after the reset, reboot the AntBot.
+
+3. If still unresolved, power off and check the USB cable connections, then contact [technical support](/antbot/en/license/support/).
+
+</Steps>
+
+</details>
+
+---
+
+## Resolved Issues
+
+| # | Issue | Description | Resolution |
+|---|-------|-------------|------------|
+| 1 | x86 Build Failure | Full build failed on x86 PCs due to ARM-only packages | Architecture auto-detection in `antbot_camera` CMakeLists.txt |
+
+<details>
+<summary>1. x86 Build Failure</summary>
+
+#### Symptoms
+
+Running `colcon build` on the full workspace on an x86 environment (standard PC) failed at the `antbot_camera` package due to ARM-only library link errors.
+
+#### Resolution
+
+Architecture detection logic was added to `antbot_camera`'s `CMakeLists.txt` to automatically skip the build on x86 environments.
+
+```cmake
+# arm64-only package — skip build on x86
+if(NOT CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64|arm64|ARM64")
+  message(STATUS "[${PROJECT_NAME}] Skipping: arm64 only (current: ${CMAKE_SYSTEM_PROCESSOR})")
+  ament_package()
+  return()
+endif()
+```
+
+Full `colcon build` now works without `--packages-ignore`.
+Note that `antbot_camera` is skipped on x86, so camera functionality is not available in x86 environments.
+
+</details>

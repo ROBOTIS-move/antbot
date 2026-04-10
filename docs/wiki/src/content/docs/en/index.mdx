@@ -1,0 +1,69 @@
+---
+title: AntBot Wiki
+description: ROBOTIS AI AntBot - 4-Wheel Independent Swerve Drive Autonomous Navigation Transport Robot
+template: splash
+hero:
+  tagline: |
+    Every road. Every delivery. AntBot
+    4-Wheel Independent Swerve Drive · Open Source · ROBOTIS AI
+  image:
+    file: ../../../assets/images/antbot_front.png
+  actions:
+    - text: Quick Start Guide
+      link: /antbot/en/introduction/
+      icon: right-arrow
+      variant: primary
+    - text: GitHub Repository
+      link: https://github.com/ROBOTIS-move/antbot
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
+import LatestRelease from '../../../components/LatestRelease.astro';
+
+---
+
+## Key Features
+
+<CardGrid stagger>
+  <Card title="4-Wheel Independent Steering" icon="setting">
+    Omnidirectional, zero-radius turns, lateral travel
+  </Card>
+  <Card title="ROS 2 + ros2_control" icon="puzzle">
+    Modular package architecture
+  </Card>
+  <Card title="Rich Sensor Suite" icon="magnifier">
+    3D/2D LiDAR, RGB-D Camera, IMU, GNSS
+  </Card>
+  <Card title="Fully Open Source" icon="github">
+    **Apache License 2.0**<br/>
+    Free to use, modify, and extend
+  </Card>
+</CardGrid>
+
+---
+
+## Documentation Structure
+
+<CardGrid>
+  <LinkCard title="Introduction" description="New to AntBot? Start here" href="/antbot/en/introduction/" />
+  <LinkCard title="Hardware" description="From structure to sensors — hardware specs at a glance" href="/antbot/en/hardware/exterior/" />
+  <LinkCard title="Software" description="Package structure and dev environment at a glance" href="/antbot/en/software/repository/" />
+  <LinkCard title="Quick Start" description="From unboxing to first drive, step by step" href="/antbot/en/quick-start/powering-up/" />
+  <LinkCard title="Development Guide" description="Control table, ROS topics — a developer's reference" href="/antbot/en/development-guide/control-table/" />
+  <LinkCard title="Maintenance" description="Something wrong? Check here first" href="/antbot/en/maintenance/firmware-diagnostics/" />
+  <LinkCard title="License & Support" description="License details and where to get help" href="/antbot/en/license/" />
+</CardGrid>
+
+---
+
+## Release Notes
+
+<LatestRelease />
+
+<div class="doc-credits">
+  <p class="credits-label">Written by</p>
+  <p class="credits-org">ROBOTIS AI</p>
+  <p class="credits-authors">dujeong · robotdory</p>
+</div>

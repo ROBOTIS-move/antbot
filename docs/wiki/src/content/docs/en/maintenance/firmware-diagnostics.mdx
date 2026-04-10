@@ -1,0 +1,38 @@
+---
+title: 6.1 Firmware Diagnostics
+description: RCU Board Firmware Diagnostics and Status Check
+sidebar:
+  order: 1
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+This describes how to check and diagnose the status of the RCU (Robot Control Unit) board.
+
+## Diagnostics via Dynamixel Wizard CLI
+
+:::note
+This section will be updated in a future release.
+:::
+
+## Check Status via ROS 2 Interface
+
+You can directly check control items on the RCU board through the ROS 2 interface without stopping the service. For `item_name`, enter the Name of a control item listed in [5.1 Control Table Types - RCU](/antbot/en/development-guide/control-table/#control-table-types).
+
+```bash
+# Check battery level
+ros2 service call /hw/direct_read antbot_interfaces/srv/DirectRead \
+  "{item_name: 'Battery_Percentage'}"
+```
+
+```bash
+# Check motor state
+ros2 service call /hw/direct_read antbot_interfaces/srv/DirectRead \
+  "{item_name: 'Motor_State'}"
+```
+
+```bash
+# Check emergency stop state
+ros2 service call /hw/direct_read antbot_interfaces/srv/DirectRead \
+  "{item_name: 'Estop_State'}"
+```

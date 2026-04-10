@@ -1,0 +1,56 @@
+---
+title: 2.5 Key Sensor Specifications
+description: AntBot Key Sensor Configuration and Coordinate Reference (6DoF Position Based on base_link Origin)
+sidebar:
+  order: 5
+---
+
+List of key sensors installed on AntBot and their coordinates relative to `base_link`.
+
+## Key Sensor Configuration
+
+| Sensor | Qty | Connection | Notes |
+| :--- | :---: | :--- | :--- |
+| 3D LiDAR | 1 | Ethernet | 360° 3D point cloud |
+| 2D LiDAR | 2 | USB | Front + Rear obstacle detection |
+| RGB-D Camera | 1 | USB | Color + Depth |
+| Mono Camera | 4 | V4L2 | Front 3 + Rear 1 |
+| IMU | 1 | USB | 6-axis (accel + gyro) |
+| GNSS | 1 | USB | GPS receiver |
+
+---
+
+## Sensor Coordinates
+- Position: `mm`
+- Angle: `degree`
+
+![Robot Coordinate System](../../../../assets/images/antbot_coordinates.png)
+
+### Camera
+
+| Sensor | Position | X | Y | Z | Roll | Pitch | Yaw |
+| :--- | :--- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Mono Camera | LEFT | 260.000 | 254.770 | 587.500 | 0 | 0 | 90 |
+| Mono Camera | CENTER | 358.070 | 0 | 587.500 | 0 | 0 | 0 |
+| Mono Camera | RIGHT | 260.000 | -254.770 | 587.500 | 0 | 0 | -90 |
+| Mono Camera | BACK | -376.690 | 0 | 299.000 | 0 | 0 | 180 |
+| RGB-D Camera | CENTER | 348.162 | 47.500 | 526.484 | 0 | 30 | 0 |
+
+### LiDAR
+
+| Sensor | Position | X | Y | Z | Roll | Pitch | Yaw |
+| :--- | :--- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 2D LiDAR | FRONT | 325.000 | 0 | 255.000 | 0 | 180 | 0 |
+| 2D LiDAR | BACK | -325.000 | 0 | 255.000 | 180 | 0 | 0 |
+| 3D LiDAR | FRONT | 225.332 | 0 | 724.904 | 0 | 10 | 0 |
+
+### Other Sensors
+
+| Sensor | X | Y | Z | Roll | Pitch | Yaw |
+| :--- | ---: | ---: | ---: | ---: | ---: | ---: |
+| IMU | 240.000 | 6.75 | 390.200 | 0 | 0 | 180 |
+| GNSS | 202.600 | -128.000 | 660.000 | 0 | 0 | 180 |
+
+:::note
+To check these coordinates in the URDF, refer to [`antbot_description/urdf/antbot.xacro`](https://github.com/ROBOTIS-move/antbot/blob/main/antbot_description/urdf/antbot.xacro). For ROS topics published by each sensor, see [Key ROS Topics/Services](/antbot/en/development-guide/ros-topics/).
+:::

@@ -1,0 +1,38 @@
+---
+title: 6.1 펌웨어 진단
+description: RCU 보드 펌웨어 진단 및 상태 확인
+sidebar:
+  order: 1
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+RCU(Robot Control Unit) 보드의 상태를 확인하고 진단하는 방법입니다.
+
+## Dynamixel Wizard CLI를 통한 진단
+
+:::note
+이 섹션은 추후 업데이트 예정입니다.
+:::
+
+## ROS 2 인터페이스로 상태 확인
+
+서비스를 정지하지 않고 ROS 2 인터페이스로 RCU 보드의 컨트롤 아이템을 직접 확인할 수 있습니다. `item_name`에는 [5.1 컨트롤 테이블 종류 - RCU](/antbot/development-guide/control-table/#컨트롤-테이블-종류)에 존재하는 컨트롤 아이템의 Name을 입력합니다.
+
+```bash
+# 배터리 잔량 확인
+ros2 service call /hw/direct_read antbot_interfaces/srv/DirectRead \
+  "{item_name: 'Battery_Percentage'}"
+```
+
+```bash
+# 모터 상태 확인
+ros2 service call /hw/direct_read antbot_interfaces/srv/DirectRead \
+  "{item_name: 'Motor_State'}"
+```
+
+```bash
+# 비상정지 상태 확인
+ros2 service call /hw/direct_read antbot_interfaces/srv/DirectRead \
+  "{item_name: 'Estop_State'}"
+```

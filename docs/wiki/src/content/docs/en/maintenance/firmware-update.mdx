@@ -1,0 +1,58 @@
+---
+title: 6.2 Firmware Update
+description: AntBot RCU Firmware Update Method
+sidebar:
+  order: 2
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+This describes the procedure for updating the RCU (Robot Control Unit) board firmware.
+
+:::note
+The firmware update tool and binary files are provided by ROBOTIS AI. If you need these files, please contact [Technical Support](/antbot/en/license/support/).
+:::
+
+## Update Procedure
+
+<Steps>
+
+1. **Prepare the update tool and binary**
+
+   Download the following two files and place them in the same directory.
+
+   | File | Description |
+   |------|-------------|
+   | `antbot_fw_loader` | Firmware update tool |
+   | `ANTBOT.bin` | Firmware binary |
+
+   ```bash
+   chmod +x antbot_fw_loader
+   ```
+
+2. **Stop running software**
+
+   Stop all software using the `/dev/ttyUSB0` port.
+
+   If an AntBot launch is running, press `Ctrl+C` in its terminal to shut it down.
+
+3. **Run the firmware update**
+
+   ```bash
+   ./antbot_fw_loader
+   ```
+
+4. **Verify update completion**
+
+   Check the final log for the result.
+
+   - Success: `FW Update Success`
+   - Failure: `FW Update Failed(error code)`
+
+</Steps>
+
+:::caution
+Do not power off or disconnect the USB cable during the update. This may corrupt the firmware.
+:::
+
+For current RCU board status checks, see [Firmware Diagnostics](/antbot/en/maintenance/firmware-diagnostics/).

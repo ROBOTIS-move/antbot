@@ -1,0 +1,81 @@
+---
+title: 6.4 알려진 이슈
+description: AntBot에서 발생하는 미해결 이슈 목록 및 조치 방법
+sidebar:
+  order: 4
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+## 알려진 이슈
+
+
+| # | 이슈 이름 | 설명 | 조치 방법 |
+|---|----------|------|-------------|
+| 1 | FTDI USB 미인식 | 부팅 시 FTDI USB 장치가 인식되지 않음 | USB 리셋 또는 재부팅 |
+
+<details>
+<summary>1. FTDI USB 미인식</summary>
+
+#### 증상
+
+부팅 후 로봇이 정상적으로 동작하지 않으며, USB 시리얼 장치가 일부 또는 전부 인식되지 않습니다.
+
+#### 확인 방법
+
+아래 명령어를 실행하여 `/dev/ttyUSB0` ~ `/dev/ttyUSB3` 4개 포트가 모두 존재하는지 확인합니다.
+
+```bash
+ls /dev/ttyUSB*
+```
+
+#### 조치 방법
+
+<Steps>
+
+1. 아래 명령어를 실행하여 USB 장치를 리셋합니다.
+
+   ```bash
+   gpioset 0 1=0
+   ```
+
+2. 리셋 후에도 문제가 지속되면 AntBot을 재부팅합니다.
+
+3. 그래도 해결되지 않으면 전원을 끄고 USB 케이블 연결 상태를 점검한 뒤 [기술 지원](/antbot/license/support/)에 문의해 주십시오.
+
+</Steps>
+
+</details>
+
+---
+
+## 해결된 이슈
+
+| # | 이슈 이름 | 설명 | 해결 방법 |
+|---|----------|------|-----------|
+| 1 | x86 환경 빌드 실패 | x86 PC에서 전체 빌드 시 ARM 전용 패키지로 인해 실패 | `antbot_camera` CMakeLists.txt에서 아키텍처 자동 감지 |
+
+<details>
+<summary>1. x86 환경 빌드 실패</summary>
+
+#### 증상
+
+x86 환경(일반 PC)에서 `colcon build`로 전체 워크스페이스를 빌드하면 `antbot_camera` 패키지에서 ARM 전용 라이브러리 링크 오류가 발생했습니다.
+
+#### 해결
+
+`antbot_camera`의 `CMakeLists.txt`에 아키텍처 감지 로직을 추가하여, x86 환경에서는 빌드를 자동으로 건너뛰도록 수정했습니다.
+
+```cmake
+# arm64-only package — skip build on x86
+if(NOT CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64|arm64|ARM64")
+  message(STATUS "[${PROJECT_NAME}] Skipping: arm64 only (current: ${CMAKE_SYSTEM_PROCESSOR})")
+  ament_package()
+  return()
+endif()
+```
+
+이제 `--packages-ignore` 없이 `colcon build`로 전체 빌드가 가능합니다.
+단, x86 환경에서는 `antbot_camera` 패키지가 빌드에서 제외되므로 카메라 기능은 사용할 수 없습니다.
+
+</details>

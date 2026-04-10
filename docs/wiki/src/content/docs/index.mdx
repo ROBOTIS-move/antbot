@@ -1,0 +1,69 @@
+---
+title: AntBot Wiki
+description: ROBOTIS AI AntBot - 4륜 독립 조향 스워브 드라이브 자율주행 배송 로봇
+template: splash
+hero:
+  tagline: |
+    모든 길 위의 자율주행 배송 로봇, AntBot
+    4륜 독립 조향 스워브 드라이브 · 오픈소스 · ROBOTIS AI
+  image:
+    file: ../../assets/images/antbot_front.png
+  actions:
+    - text: 빠른 시작 가이드
+      link: /antbot/introduction/
+      icon: right-arrow
+      variant: primary
+    - text: GitHub Repository
+      link: https://github.com/ROBOTIS-move/antbot
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
+import LatestRelease from '../../components/LatestRelease.astro';
+
+---
+
+## 주요 특징
+
+<CardGrid stagger>
+  <Card title="4륜 독립 조향" icon="setting">
+    전방향 이동, 제자리 회전
+  </Card>
+  <Card title="ROS 2 + ros2_control" icon="puzzle">
+    모듈형 패키지 구조
+  </Card>
+  <Card title="풍부한 센서" icon="magnifier">
+    3D/2D LiDAR, RGB-D 카메라, IMU, GNSS
+  </Card>
+  <Card title="완전한 오픈소스" icon="github">
+    **Apache License 2.0**<br/>
+    상업적 이용 포함, 자유롭게 확장 가능
+  </Card>
+</CardGrid>
+
+---
+
+## 문서 구성
+
+<CardGrid>
+  <LinkCard title="소개" description="AntBot이 처음이라면 여기서부터" href="/antbot/introduction/" />
+  <LinkCard title="하드웨어" description="구조부터 센서까지, 하드웨어 스펙 한눈에" href="/antbot/hardware/exterior/" />
+  <LinkCard title="소프트웨어" description="패키지 구조와 개발 환경을 한눈에" href="/antbot/software/repository/" />
+  <LinkCard title="빠른 시작" description="박스를 열고 첫 주행까지, 차근차근" href="/antbot/quick-start/powering-up/" />
+  <LinkCard title="개발 가이드" description="컨트롤 테이블, ROS 토픽 — 개발자를 위한 레퍼런스" href="/antbot/development-guide/control-table/" />
+  <LinkCard title="유지보수" description="문제가 생겼을 때 여기를 먼저 확인하세요" href="/antbot/maintenance/firmware-diagnostics/" />
+  <LinkCard title="라이선스 및 기술 지원" description="라이선스 안내와 도움이 필요할 때" href="/antbot/license/" />
+</CardGrid>
+
+---
+
+## 릴리즈 노트
+
+<LatestRelease />
+
+<div class="doc-credits">
+  <p class="credits-label">Written by</p>
+  <p class="credits-org">ROBOTIS AI</p>
+  <p class="credits-authors">dujeong · robotdory</p>
+</div>

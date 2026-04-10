@@ -1,0 +1,73 @@
+---
+title: 4.5 SSD Mount
+description: SSD Partition Initialization and Permanent Mounting
+sidebar:
+  order: 5
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+An NVMe SSD is pre-installed in the onboard computer. To use the SSD, you need to initialize the partition, mount it, and register it in `/etc/fstab` so it mounts automatically after reboot.
+
+## Partition Initialization
+
+<Steps>
+
+1. **SSD Partition Initialization**
+
+   ```bash
+   sudo /sbin/parted /dev/nvme0n1 mklabel gpt --script
+   sudo /sbin/parted /dev/nvme0n1 mkpart primary ext4 0% 100% --script
+   sudo mkfs.ext4 /dev/nvme0n1p1
+   ```
+
+2. **Create Mount Directory and Temporary Mount**
+
+   ```bash
+   sudo mkdir -p {mount path}
+   sudo mount /dev/nvme0n1p1 {mount path}
+   sudo chmod 777 {mount path}
+   ```
+
+</Steps>
+
+## Permanent Mount
+
+<Steps>
+
+1. **Check UUID**
+
+   ```bash
+   sudo blkid /dev/nvme0n1p1
+   ```
+
+   Example output:
+
+   ```
+   /dev/nvme0n1p1: UUID="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" BLOCK_SIZE="4096" TYPE="ext4"
+   ```
+
+2. **Register Permanent Mount in `/etc/fstab`**
+
+   ```bash
+   # Backup existing fstab
+   sudo cp /etc/fstab /etc/fstab.bak
+
+   # Add entry to fstab (replace {UUID} with the value from above)
+   echo 'UUID={UUID}  {mount path}  ext4  defaults,nofail  0  2' | sudo tee -a /etc/fstab
+   ```
+
+3. **Apply and Verify Mount**
+
+   ```bash
+   # Unmount temporary mount and remount via fstab
+   sudo umount {mount path}
+   sudo mount -a
+
+   # Verify mount
+   df -h | grep {mount path}
+   ```
+
+   If mounted successfully, the `{mount path}` path and its capacity will be displayed. The SSD will be automatically mounted after reboot.
+
+</Steps>

@@ -1,0 +1,9 @@
+---
+import type { Props } from '@astrojs/starlight/props';
+import Default from '@astrojs/starlight/components/Footer.astro';
+---
+
+<Default {...Astro.props}><slot /></Default>
+<div class="sl-flex" style="justify-content: center; padding: 0.5rem 1rem 1.5rem; opacity: 0.6; font-size: var(--sl-text-xs);">
+	<p>© 2026 ROBOTIS AI. All rights reserved.</p>
+</div>

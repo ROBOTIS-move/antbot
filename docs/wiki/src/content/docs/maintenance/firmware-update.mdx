@@ -1,0 +1,58 @@
+---
+title: 6.2 펌웨어 업데이트
+description: AntBot RCU 펌웨어 업데이트 방법
+sidebar:
+  order: 2
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+RCU(Robot Control Unit) 보드의 펌웨어를 업데이트하는 절차입니다.
+
+:::note
+펌웨어 업데이트 툴과 바이너리 파일은 ROBOTIS AI에서 제공합니다. 파일이 필요한 경우 [기술 지원](/antbot/license/support/)을 통해 요청하세요.
+:::
+
+## 업데이트 절차
+
+<Steps>
+
+1. **업데이트 툴 및 바이너리 준비**
+
+   아래 두 파일을 다운로드하여 같은 디렉토리에 배치합니다.
+
+   | 파일 | 설명 |
+   |------|------|
+   | `antbot_fw_loader` | 펌웨어 업데이트 툴 |
+   | `ANTBOT.bin` | 펌웨어 바이너리 |
+
+   ```bash
+   chmod +x antbot_fw_loader
+   ```
+
+2. **소프트웨어 중지**
+
+   `/dev/ttyUSB0` 포트를 사용하는 소프트웨어를 모두 종료합니다.
+
+   실행 중인 AntBot launch가 있다면 해당 터미널에서 `Ctrl+C`로 종료하세요.
+
+3. **펌웨어 업데이트 실행**
+
+   ```bash
+   ./antbot_fw_loader
+   ```
+
+4. **업데이트 완료 확인**
+
+   마지막 로그에서 결과를 확인합니다.
+
+   - 성공: `FW Update Success`
+   - 실패: `FW Update Failed(에러코드)`
+
+</Steps>
+
+:::caution
+업데이트 중 전원을 끄거나 USB 연결을 해제하지 마세요. 펌웨어가 손상될 수 있습니다.
+:::
+
+현재 RCU 보드 상태 확인은 [펌웨어 진단](/antbot/maintenance/firmware-diagnostics/)에서 수행할 수 있습니다.

@@ -1,0 +1,90 @@
+---
+title: 3.4 Software Environment Setup
+description: AntBot Software Build Environment Setup Guide
+sidebar:
+  order: 4
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+This is a guide for setting up the environment to build and run AntBot software.
+
+## Prerequisites
+
+| Item | Requirement |
+| :--- | :--- |
+| OS | Ubuntu 22.04 LTS |
+| ROS 2 | Humble Hawksbill |
+| C++ | C++17 or higher |
+| Python | 3.10 or higher |
+| Compiler | GCC 11+ |
+
+:::note
+If you need to install ROS 2 Humble, refer to the [official installation guide](https://docs.ros.org/en/humble/Installation.html).
+:::
+
+## Installation
+
+<Steps>
+
+1. Create workspace and clone repository
+
+   ```bash
+   mkdir -p ~/antbot_ws/src && cd ~/antbot_ws/src
+   git clone https://github.com/ROBOTIS-move/antbot.git
+   ```
+
+2. Install dependencies
+
+   The `setting.sh` script automatically performs the following tasks:
+   - Install system packages (`netplan.io`, etc.)
+   - Clone external ROS 2 packages (vcs import)
+   - Install ROS dependencies via `rosdep`
+
+   ```bash
+   cd ~/antbot_ws/src/antbot
+   bash setting.sh
+   ```
+
+3. Build workspace
+
+   ```bash
+   cd ~/antbot_ws
+   colcon build --symlink-install
+   ```
+
+4. Source environment
+
+   ```bash
+   source ~/antbot_ws/install/setup.bash
+   ```
+
+   :::tip
+   Add the following line to `~/.bashrc` to automatically source in every new terminal.
+
+   ```bash
+   echo 'source ~/antbot_ws/install/setup.bash' >> ~/.bashrc
+   ```
+   :::
+
+</Steps>
+
+## Running
+
+To launch the entire system at once:
+
+```bash
+ros2 launch antbot_bringup bringup.launch.py
+```
+
+To view only the URDF model without hardware:
+
+```bash
+ros2 launch antbot_description description.launch.py
+```
+
+To monitor sensors with RViz (while the full system is running):
+
+```bash
+ros2 launch antbot_bringup view.launch.py
+```
