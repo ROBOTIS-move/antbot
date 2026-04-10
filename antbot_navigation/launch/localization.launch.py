@@ -17,9 +17,7 @@
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
-from launch.actions import ExecuteProcess
 from launch.actions import TimerAction
-from launch.conditions import IfCondition
 from launch.substitutions import LaunchConfiguration
 from launch.substitutions import PathJoinSubstitution
 from launch.substitutions import PythonExpression
@@ -45,7 +43,6 @@ def generate_launch_description():
     # Resolve config paths based on mode
     config_dir = PathJoinSubstitution([pkg_dir, 'config', mode])
     nav2_params_file = PathJoinSubstitution([config_dir, 'nav2_params.yaml'])
-    ekf_params_file = PathJoinSubstitution([config_dir, 'ekf.yaml'])
 
     use_sim_time = PythonExpression(["'", mode, "' == 'sim'"])
 

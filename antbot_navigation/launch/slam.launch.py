@@ -46,7 +46,6 @@ def generate_launch_description():
 
     # Resolve config paths based on mode: config/sim/ or config/real/
     config_dir = PathJoinSubstitution([pkg_dir, 'config', mode])
-    ekf_params_file = PathJoinSubstitution([config_dir, 'ekf.yaml'])
     slam_params_file = PathJoinSubstitution(
         [config_dir, 'slam_toolbox_params.yaml'])
 
