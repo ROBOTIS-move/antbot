@@ -39,7 +39,7 @@ ros2 launch antbot_gazebo gazebo.launch.py world:=/path/to/world.sdf
 
 | Argument | Default | Description |
 |----------|---------|-------------|
-| `world` | `empty` | World name (from `worlds.yaml`) or full path to SDF file |
+| `world` | `empty` | World name (resolved via `config/worlds.yaml`) or full path to SDF file |
 
 ## Package Structure
 
@@ -79,7 +79,7 @@ antbot_gazebo/
 gazebo.launch.py
   ├── Environment variables (IGN_GAZEBO_RESOURCE_PATH, PLUGIN_PATH)
   ├── xacro → URDF generation
-  ├── worlds.yaml → resolve world name to SDF path
+  ├── config/worlds.yaml → resolve world name to SDF path
   ├── ign gazebo -r world.sdf
   ├── Robot spawn (x=0, y=0, z=0.15)
   ├── robot_state_publisher
