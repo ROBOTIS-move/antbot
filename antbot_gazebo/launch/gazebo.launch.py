@@ -31,7 +31,7 @@ import yaml
 
 
 def _resolve_world_path(context, *args, **kwargs):
-    """Resolve world name to SDF path, then launch Gazebo."""
+    """Resolve a named world or direct SDF path, then launch Gazebo."""
     world_value = LaunchConfiguration('world').perform(context)
 
     if os.path.isfile(world_value):
@@ -71,7 +71,7 @@ def generate_launch_description():
     world_arg = DeclareLaunchArgument(
         'world',
         default_value='empty',
-        description='World name (from worlds.yaml) or full path to SDF file')
+        description='World name (resolved via config/worlds.yaml) or full path to SDF file')
 
     resource_path = os.path.dirname(description_pkg)
     existing_resource = os.environ.get('IGN_GAZEBO_RESOURCE_PATH', '')
