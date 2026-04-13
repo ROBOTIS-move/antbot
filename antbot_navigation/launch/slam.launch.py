@@ -19,6 +19,7 @@ from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.actions import ExecuteProcess
 from launch.actions import TimerAction
+from launch.conditions import IfCondition
 from launch.substitutions import LaunchConfiguration
 from launch.substitutions import PathJoinSubstitution
 from launch.substitutions import PythonExpression
@@ -34,45 +35,77 @@ def generate_launch_description():
         choices=['sim', 'real'],
         description='Operating mode: sim (Gazebo) or real (physical robot)')
 
+    odom_integration_method_arg = DeclareLaunchArgument(
+        'odom_integration_method',
+        default_value='rk4',
+        choices=['euler', 'rk2', 'rk4', 'analytic_swerve'],
+        description='Odometry integration method: euler, rk2, rk4, or analytic_swerve')
+
     mode = LaunchConfiguration('mode')
+    odom_integration_method = LaunchConfiguration('odom_integration_method')
 
     # Resolve config paths based on mode: config/sim/ or config/real/
     config_dir = PathJoinSubstitution([pkg_dir, 'config', mode])
-    ekf_params_file = PathJoinSubstitution([config_dir, 'ekf.yaml'])
     slam_params_file = PathJoinSubstitution(
         [config_dir, 'slam_toolbox_params.yaml'])
 
     # use_sim_time is derived from mode: sim=true, real=false
     use_sim_time = PythonExpression(["'", mode, "' == 'sim'"])
 
-    # Disable swerve controller's odom TF so the EKF publishes it instead.
-    # Delayed 3s to ensure the swerve controller is fully active first.
-    disable_odom_tf = TimerAction(
-        period=3.0,
+    # Set odometry integration method for swerve controller
+    # Delayed 2s to ensure the swerve controller is fully loaded first.
+    set_odom_integration_method = TimerAction(
+        period=2.0,
         actions=[ExecuteProcess(
             cmd=['ros2', 'param', 'set',
-                 '/antbot_swerve_controller', 'enable_odom_tf', 'false'],
+                 '/antbot_swerve_controller', 'odom_integration_method',
+                 odom_integration_method],
             output='screen')])
 
-    # EKF node for sensor fusion (wheel odom + IMU)
-    ekf_node = Node(
-        package='robot_localization',
-        executable='ekf_node',
-        name='ekf_filter_node',
-        output='screen',
-        parameters=[ekf_params_file, {'use_sim_time': use_sim_time}])
+    # =========================================================================
+    # REAL MODE ARCHITECTURE (Simplified):
+    # - Odometry: Swerve controller only (no EKF, no IMU fusion)
+    # - TF: Swerve controller publishes odom→base_link directly (enable_odom_tf=true by default)
+    # - LiDAR: Front LiDAR (/scan_0) only (no merger, no back LiDAR)
+    #
+    # This configuration prioritizes stability and simplicity over sensor fusion.
+    # =========================================================================
 
-    # SLAM Toolbox (provides map -> odom TF instead of AMCL)
+    # Scan fix relay (real mode only)
+    # COIN D4 driver publishes angle_increment for N points but only N-1 ranges.
+    # This relay recalculates metadata to match the actual ranges count.
+    scan_fix_relay_node = Node(
+        condition=IfCondition(PythonExpression(["'", mode, "' == 'real'"])),
+        package='antbot_navigation',
+        executable='scan_fix_relay.py',
+        name='scan_fix_relay',
+        output='screen',
+        parameters=[{
+            'input_topic': '/scan_0',
+            'output_topic': '/scan_0_fixed',
+        }])
+
+    # SLAM Toolbox
+    # - In real mode: subscribes to /scan_0_fixed (metadata-corrected)
+    # - In sim mode: subscribes to /scan_0 directly
+    # - Publishes map→odom TF
+    # - Performs online SLAM with loop closure
+    scan_topic = PythonExpression([
+        "'/scan_0_fixed' if '", mode, "' == 'real' else '/scan_0'"])
     slam_toolbox_node = Node(
         package='slam_toolbox',
         executable='async_slam_toolbox_node',
         name='slam_toolbox',
         output='screen',
-        parameters=[slam_params_file, {'use_sim_time': use_sim_time}])
+        parameters=[slam_params_file, {
+            'use_sim_time': use_sim_time,
+            'scan_topic': scan_topic,
+        }])
 
     return LaunchDescription([
         mode_arg,
-        disable_odom_tf,
-        ekf_node,
+        odom_integration_method_arg,
+        set_odom_integration_method,  # Sets RK4 integration after 2s
+        scan_fix_relay_node,
         slam_toolbox_node,
     ])

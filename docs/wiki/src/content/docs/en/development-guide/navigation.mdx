@@ -16,10 +16,19 @@ To run in simulation, [5.3 Simulation Environment Setup](/antbot/en/development-
 
 ## Prerequisites
 
+The Nav2, SLAM Toolbox, robot localization, MPPI, and RPP controller dependencies are declared in `antbot_navigation/package.xml`, so they can be installed with rosdep from the workspace root.
+
+```bash
+rosdep install --from-paths src --ignore-src -r -y
+```
+
+To install them manually, use:
+
 ```bash
 sudo apt install ros-humble-navigation2 ros-humble-nav2-bringup \
   ros-humble-slam-toolbox ros-humble-robot-localization \
-  ros-humble-nav2-mppi-controller
+  ros-humble-nav2-mppi-controller \
+  ros-humble-nav2-regulated-pure-pursuit-controller
 ```
 
 ---
@@ -100,9 +109,6 @@ ros2 launch antbot_navigation navigation.launch.py mode:=sim \
 
 ## Real Robot Mode
 
-:::note
-This section will be updated in a future release.
-:::
 
 ### Run
 
@@ -185,5 +191,5 @@ ros2 action send_goal /navigate_to_pose nav2_msgs/action/NavigateToPose \
 ---
 
 :::tip[See Also]
-- Parameter tuning, TF structure, troubleshooting → [antbot_navigation README](https://github.com/ROBOTIS-move/antbot/tree/main/antbot_navigation)
+- Parameter tuning, troubleshooting → [antbot_navigation README](https://github.com/ROBOTIS-move/antbot/tree/main/antbot_navigation)
 :::

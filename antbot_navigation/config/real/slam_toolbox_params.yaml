@@ -1,5 +1,11 @@
 # SLAM Toolbox configuration for AntBot (REAL ROBOT)
-# Async online SLAM using front 2D LiDAR
+#
+# ARCHITECTURE:
+# - LiDAR: Front LiDAR only (/scan_0, ~270° coverage)
+# - Odometry: Swerve controller (RK4 integration, no EKF)
+# - TF: swerve controller publishes odom→base_link
+#
+# Loop closure is enabled for drift correction.
 
 slam_toolbox:
   ros__parameters:
@@ -15,7 +21,7 @@ slam_toolbox:
     odom_frame: odom
     map_frame: map
     base_frame: base_link
-    scan_topic: /scan_0
+    scan_topic: /scan_0        # Front LiDAR only (merger disabled due to mapping issues)
     mode: mapping
 
     debug_logging: false
@@ -23,6 +29,7 @@ slam_toolbox:
     transform_publish_period: 0.02
     map_update_interval: 5.0
     resolution: 0.05
+    min_laser_range: 0.05           # below COIN D4 hardware minimum (0.10 m) to avoid SLAM toolbox warning
     max_laser_range: 12.0           # conservative for real COIN D4 LiDAR
     minimum_time_interval: 0.5
     transform_timeout: 0.2
@@ -38,12 +45,12 @@ slam_toolbox:
     scan_buffer_maximum_scan_distance: 10.0
     link_match_minimum_response_fine: 0.1
     link_scan_maximum_distance: 1.5
-    loop_search_maximum_distance: 3.0
+    loop_search_maximum_distance: 5.0          # Increased from 3.0 for better loop detection
     do_loop_closing: true
     loop_match_minimum_chain_size: 10
     loop_match_maximum_variance_coarse: 3.0
-    loop_match_minimum_response_coarse: 0.40   # stricter than sim (0.35)
-    loop_match_minimum_response_fine: 0.50     # stricter than sim (0.45)
+    loop_match_minimum_response_coarse: 0.38   # Slightly relaxed from 0.40 for more loops
+    loop_match_minimum_response_fine: 0.48     # Slightly relaxed from 0.50
 
     # Correlation params
     correlation_search_space_dimension: 0.5

@@ -1,7 +1,5 @@
 # World configuration for AntBot Nav2 navigation
-# Maps world names to their Nav2 map files.
-# Usage: ros2 launch antbot_navigation navigation.launch.py mode:=sim world:=depot
-
 worlds:
   depot:
+    sdf: depot.sdf
     map: depot_sim.yaml

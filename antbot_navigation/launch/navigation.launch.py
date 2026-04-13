@@ -61,6 +61,21 @@ def _resolve_map_and_launch(context, *args, **kwargs):
     if not os.path.isfile(map_yaml):
         raise FileNotFoundError(f'Map file not found: {map_yaml}')
 
+    # Scan fix relay (real mode only)
+    # COIN D4 driver publishes variable-length scans with mismatched metadata.
+    # This relay normalizes to fixed 400 points for Nav2 and AMCL.
+    scan_fix_relay_node = None
+    if mode == 'real':
+        scan_fix_relay_node = Node(
+            package='antbot_navigation',
+            executable='scan_fix_relay.py',
+            name='scan_fix_relay',
+            output='screen',
+            parameters=[{
+                'input_topic': '/scan_0',
+                'output_topic': '/scan_0_fixed',
+            }])
+
     # Include localization launch (EKF, map_server, AMCL, disable_odom_tf)
     localization_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -136,7 +151,10 @@ def _resolve_map_and_launch(context, *args, **kwargs):
             lifecycle_manager_navigation,
         ])
 
-    return [localization_launch, delayed_nav2]
+    result = [localization_launch, delayed_nav2]
+    if scan_fix_relay_node is not None:
+        result.insert(0, scan_fix_relay_node)
+    return result
 
 
 def generate_launch_description():
