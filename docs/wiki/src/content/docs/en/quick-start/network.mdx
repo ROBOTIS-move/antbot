@@ -11,18 +11,24 @@ The AntBot computer uses `netplan` as the network configuration tool.
 
 The interface name is **`eth0`**, and the onboard computer's static IP address is **`192.168.6.2`**.
 
+Unless otherwise requested, AntBot ships with a Wi-Fi router pre-installed. The Wi-Fi SSID is shown as **`antbot_xxxx`**. Refer to the separate notice for the password.
+
 ## SSH Connection to Onboard Computer
 
 <Steps>
 
-1. Set the internal network address range of the on-site network equipment to the `192.168.6` subnet.
+1. Connect your laptop to the AntBot Wi-Fi (`antbot_xxxx`).
+
+   The router is configured with the `192.168.6` internal subnet.
 
 2. Set the laptop's IP address to the `192.168.6.x` range. (Excluding `192.168.6.2` and `192.168.6.5`)
+
+   By default, an address in the `192.168.6.x` range is assigned automatically via DHCP.
 
    - `192.168.6.2` — Onboard computer (reserved)
    - `192.168.6.5` — 3D LiDAR (reserved)
 
-3. Connect the laptop to the same network, then SSH in using the following command.
+3. SSH in using the following command.
 
    ```bash
    ssh antbot@192.168.6.2
