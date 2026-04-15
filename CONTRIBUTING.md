@@ -26,7 +26,7 @@ Thank you for your interest in contributing to AntBot! This document describes t
 ## Pull Request Rules
 
 - **Reviewers**: At least **1 reviewer** must approve before merge.
-- **Merge responsibility**: The PR author merges after approval.
+- **Merge responsibility**: External contributors do not have merge permissions. After review approval, a ROBOTIS AI developer verifies and merges the PR.
 - **CI must pass**: All lint checks (cppcheck, cpplint, uncrustify, flake8, pep257, lint_cmake, xmllint, copyright) must pass.
 - **Assignees & Labels**: Assign yourself and add relevant labels to the PR.
 - Merged branches are **automatically deleted**.

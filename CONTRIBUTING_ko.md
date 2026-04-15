@@ -26,7 +26,7 @@ AntBot에 관심을 가져주셔서 감사합니다! 이 문서는 본 프로젝
 ## Pull Request 규칙
 
 - **리뷰어**: 최소 **1명**의 승인이 필요합니다.
-- **병합 담당**: PR 작성자가 승인 후 병합합니다.
+- **병합 담당**: 외부 기여자는 저장소 병합 권한이 없으므로, 리뷰 승인 후 ROBOTIS AI 개발자가 최종 확인 후 병합합니다.
 - **CI 통과 필수**: 모든 린트 검사(cppcheck, cpplint, uncrustify, flake8, pep257, lint_cmake, xmllint, copyright)를 통과해야 합니다.
 - **Assignees & Labels**: PR에 본인을 지정하고 관련 라벨을 추가합니다.
 - 병합된 브랜치는 **자동 삭제**됩니다.
