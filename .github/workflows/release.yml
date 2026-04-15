@@ -1,0 +1,263 @@
+name: Release - Prepare PR
+
+on:
+  workflow_dispatch:
+    inputs:
+      new_version:
+        description: 'New release version in semver form (e.g. 1.27.1)'
+        required: true
+        type: string
+      release_notes:
+        description: 'Release notes. Use \n for newlines (e.g. "line1\nline2").'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show user inputs
+        run: |
+          echo "=================================================="
+          echo "  Release - Prepare PR"
+          echo "=================================================="
+          echo "  new_version    : ${{ inputs.new_version }}"
+          echo "  release_notes  : ${{ inputs.release_notes }}"
+          echo "  ref            : ${{ github.ref_name }}"
+          echo "  actor          : ${{ github.actor }}"
+          echo "=================================================="
+
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Discover target files (package.xml / setup.py / package.json)
+        id: files
+        run: |
+          pkg_xml=$(find . -name package.xml \
+                     -not -path './.*' -not -path './vanjee_*/*' \
+                     | sed 's|^\./||' | sort)
+
+          setup_py=$(find . -name setup.py \
+                      -not -path './.*' -not -path '*/node_modules/*' \
+                      | sed 's|^\./||' | sort)
+
+          pkg_json=$(find . -name package.json \
+                      -not -path './.*' -not -path '*/node_modules/*' \
+                      | sed 's|^\./||' | sort)
+
+          echo "package.xml files:"
+          echo "${pkg_xml:-  (none)}"
+          echo ""
+          echo "setup.py files:"
+          echo "${setup_py:-  (none)}"
+          echo ""
+          echo "package.json files:"
+          echo "${pkg_json:-  (none)}"
+
+          {
+            echo "pkg_xml<<EOF"
+            echo "$pkg_xml"
+            echo "EOF"
+            echo "setup_py<<EOF"
+            echo "$setup_py"
+            echo "EOF"
+            echo "pkg_json<<EOF"
+            echo "$pkg_json"
+            echo "EOF"
+          } >> $GITHUB_OUTPUT
+
+      - name: Validate version input and prepare metadata
+        id: version
+        run: |
+          python3 <<'PY'
+          import os, re, sys
+
+          new_ver = os.environ["NEW_VERSION"].strip()
+
+          # No min/max check: bundled third-party packages may carry their own
+          # versions unrelated to the release version.
+          if not re.fullmatch(r"\d+\.\d+\.\d+", new_ver):
+              print(f"::error::Input version is not in semver form: '{new_ver}' (example: 1.27.1)")
+              sys.exit(1)
+
+          print(f"New version : {new_ver}")
+
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write(f"new={new_ver}\n")
+              f.write(f"branch=release/{new_ver}\n")
+              f.write(f"tag={new_ver}\n")
+          PY
+        env:
+          NEW_VERSION: ${{ inputs.new_version }}
+
+      - name: Duplicate release guard (branch / PR collision)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          branch="${{ steps.version.outputs.branch }}"
+          new_ver="${{ steps.version.outputs.new }}"
+
+          conflict=0
+
+          if git ls-remote --heads origin "$branch" | grep -q .; then
+            echo "::error::Branch '$branch' already exists on the remote."
+            conflict=1
+          fi
+
+          existing_pr=$(gh pr list --head "$branch" --state open \
+                         --json number,url --jq '.[0] // empty')
+          if [ -n "$existing_pr" ]; then
+            pr_url=$(echo "$existing_pr" | jq -r '.url')
+            pr_num=$(echo "$existing_pr" | jq -r '.number')
+            echo "::error::An open PR already exists: #$pr_num ($pr_url)"
+            conflict=1
+          fi
+
+          if [ $conflict -eq 1 ]; then
+            cat <<MSG
+          ==================================================
+          [Duplicate release detected] Version $new_ver is already in progress.
+
+          Pick one of the following and re-run:
+
+          [A] Continue with the existing PR -> do NOT re-run this workflow; review/merge the PR instead.
+
+          [B] Discard existing PR/branch and start over:
+              gh pr list --head $branch --state open --json number --jq '.[].number' \\
+                | xargs -r -I{} gh pr close {}
+              git push origin --delete $branch
+
+          [C] Release a different version -> re-run with a different new_version input.
+          ==================================================
+          MSG
+            exit 1
+          fi
+
+          echo "No duplicates. Continuing."
+
+      - name: Create release branch
+        run: |
+          git checkout -b "${{ steps.version.outputs.branch }}"
+
+      - name: Sync version across package.xml / setup.py / package.json
+        run: |
+          python3 <<'PY'
+          import os, re, json
+          from pathlib import Path
+
+          new_ver = os.environ["NEW_VER"]
+
+          def update_package_xml(path: Path):
+              content = path.read_text()
+              m = re.search(r"<version>\s*([\d.]+)\s*</version>", content)
+              if not m:
+                  print(f"  [skip] {path}: no <version> tag")
+                  return
+              old = m.group(1)
+              if old == new_ver:
+                  print(f"  [same] {path}: {old}")
+                  return
+              new_content = re.sub(
+                  r"(<version>)\s*[\d.]+\s*(</version>)",
+                  rf"\g<1>{new_ver}\g<2>",
+                  content, count=1,
+              )
+              path.write_text(new_content)
+              print(f"  [xml]  {path}: {old} -> {new_ver}")
+
+          def update_setup_py(path: Path):
+              content = path.read_text()
+              pat = re.compile(r"(version\s*=\s*['\"])([\d.]+)(['\"])")
+              m = pat.search(content)
+              if not m:
+                  print(f"  [skip] {path}: no version=... literal")
+                  return
+              old = m.group(2)
+              if old == new_ver:
+                  print(f"  [same] {path}: {old}")
+                  return
+              new_content = pat.sub(rf"\g<1>{new_ver}\g<3>", content, count=1)
+              path.write_text(new_content)
+              print(f"  [py]   {path}: {old} -> {new_ver}")
+
+          def update_package_json(path: Path):
+              # JSON parse (not regex) so only the top-level "version" is changed,
+              # leaving versions under "dependencies" etc. untouched.
+              try:
+                  data = json.loads(path.read_text())
+              except json.JSONDecodeError as e:
+                  print(f"  [skip] {path}: invalid JSON ({e})")
+                  return
+              if "version" not in data:
+                  print(f"  [skip] {path}: no top-level 'version'")
+                  return
+              old = data["version"]
+              if old == new_ver:
+                  print(f"  [same] {path}: {old}")
+                  return
+              data["version"] = new_ver
+              path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n")
+              print(f"  [json] {path}: {old} -> {new_ver}")
+
+          for f in os.environ["PKG_XML_LIST"].strip().splitlines():
+              if f: update_package_xml(Path(f))
+          for f in os.environ["SETUP_PY_LIST"].strip().splitlines():
+              if f: update_setup_py(Path(f))
+          for f in os.environ["PKG_JSON_LIST"].strip().splitlines():
+              if f: update_package_json(Path(f))
+          PY
+        env:
+          NEW_VER: ${{ steps.version.outputs.new }}
+          PKG_XML_LIST: ${{ steps.files.outputs.pkg_xml }}
+          SETUP_PY_LIST: ${{ steps.files.outputs.setup_py }}
+          PKG_JSON_LIST: ${{ steps.files.outputs.pkg_json }}
+
+      - name: Process release notes (\\n -> real newlines)
+        id: notes
+        env:
+          RAW_NOTES: ${{ inputs.release_notes }}
+        run: |
+          python3 <<'PY'
+          import os
+          processed = os.environ["RAW_NOTES"].replace("\\n", "\n")
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write("body<<EOF\n")
+              f.write(processed + "\n")
+              f.write("EOF\n")
+          PY
+
+      - name: Commit & push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "chore(release): bump version to ${{ steps.version.outputs.new }}"
+          git push origin "${{ steps.version.outputs.branch }}"
+
+      - name: Open PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cat > /tmp/pr_body.md <<EOF
+          ## Release notes
+          ${{ steps.notes.outputs.body }}
+          EOF
+
+          gh pr create \
+            --base main \
+            --head "${{ steps.version.outputs.branch }}" \
+            --title "Release ${{ steps.version.outputs.tag }}" \
+            --body-file /tmp/pr_body.md \
+            --label "release"
