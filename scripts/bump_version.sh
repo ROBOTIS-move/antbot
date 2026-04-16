@@ -55,8 +55,12 @@ for pkg_xml in "${REPO_ROOT}"/*/package.xml; do
     continue
   fi
 
-  old_version=$(sed -n 's/.*<version>\(.*\)<\/version>.*/\1/p' "${pkg_xml}")
-  sed -i "s|<version>${old_version}</version>|<version>${VERSION}</version>|" "${pkg_xml}"
+  old_version=$(sed -n 's/.*<version>\(.*\)<\/version>.*/\1/p' "${pkg_xml}" | head -1)
+  if [[ -z "${old_version}" ]]; then
+    echo "  skip: $(basename "${pkg_dir}")/package.xml (no version tag found)"
+    continue
+  fi
+  sed -i "0,/<version>${old_version}<\/version>/s//<version>${VERSION}<\/version>/" "${pkg_xml}"
   echo "  updated: $(basename "${pkg_dir}")/package.xml (${old_version} -> ${VERSION})"
   updated=$((updated + 1))
 done
