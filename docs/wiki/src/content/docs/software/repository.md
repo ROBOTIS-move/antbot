@@ -29,6 +29,7 @@ antbot/
 |-- antbot_teleop/                 # 키보드/조이스틱 텔레오퍼레이션
 |-- vanjee_lidar_sdk/              # Vanjee 3D LiDAR 드라이버 (외부)
 |-- vanjee_lidar_msg/              # LiDAR 메시지 정의 (외부)
-|-- setting.sh                     # 의존성 설치 스크립트
+|-- scripts/                       # 유틸리티 스크립트
+|   |-- setting.sh                 # 의존성 설치 스크립트
 +-- additional_repos.repos         # 외부 저장소 목록 (vcs import용)
 ```

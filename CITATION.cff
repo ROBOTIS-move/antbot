@@ -10,6 +10,7 @@ authors:
 repository-code: https://github.com/ROBOTIS-move/antbot
 url: https://robotis-move.github.io/antbot/
 license: Apache-2.0
+version: 1.0.0
 keywords:
   - autonomous-mobile-robot
   - swerve-drive

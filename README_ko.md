@@ -244,7 +244,8 @@ antbot/
 ├── vanjee_lidar_sdk/              # Vanjee 3D LiDAR 드라이버
 ├── vanjee_lidar_msg/              # Vanjee LiDAR 메시지 정의
 ├── docs/                          # 문서 및 이미지
-├── setting.sh                     # 의존성 설치 스크립트
+├── scripts/                       # 유틸리티 스크립트
+│   └── setting.sh                 # 의존성 설치 스크립트
 └── additional_repos.repos         # vcs import용 외부 저장소 목록
 ```
 
@@ -259,7 +260,7 @@ antbot/
 > ```bash
 > mkdir -p ~/antbot_ws/src && cd ~/antbot_ws/src
 > git clone https://github.com/ROBOTIS-move/antbot.git
-> cd ~/antbot_ws/src/antbot && bash setting.sh
+> cd ~/antbot_ws/src/antbot && bash scripts/setting.sh
 > cd ~/antbot_ws && colcon build --symlink-install && source install/setup.bash
 > ros2 launch antbot_bringup bringup.launch.py
 > ```
@@ -283,7 +284,7 @@ git clone https://github.com/ROBOTIS-move/antbot.git
 
 ```bash
 cd ~/antbot_ws/src/antbot
-bash setting.sh
+bash scripts/setting.sh
 ```
 
 **3.** 워크스페이스를 빌드합니다:
