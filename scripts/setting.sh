@@ -20,8 +20,9 @@ sudo apt remove -y brltty
 sudo apt install -y netplan.io minicom
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-repos_file="$script_dir/additional_repos.repos"
-src_path="$(cd "$script_dir/.." && pwd)"
+repo_root="$(cd "$script_dir/.." && pwd)"
+repos_file="$repo_root/additional_repos.repos"
+src_path="$(cd "$repo_root/.." && pwd)"
 
 if [ ! -f "$repos_file" ]; then
     echo "[Error] additional_repos.repos not found: $repos_file"

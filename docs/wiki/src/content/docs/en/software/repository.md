@@ -29,6 +29,7 @@ antbot/
 |-- antbot_teleop/                 # Keyboard/joystick teleoperation
 |-- vanjee_lidar_sdk/              # Vanjee 3D LiDAR driver (external)
 |-- vanjee_lidar_msg/              # LiDAR message definitions (external)
-|-- setting.sh                     # Dependency installation script
+|-- scripts/                       # Utility scripts
+|   |-- setting.sh                 # Dependency installation script
 +-- additional_repos.repos         # External repository list (for vcs import)
 ```

@@ -251,7 +251,8 @@ antbot/
 ├── vanjee_lidar_sdk/              # Vanjee 3D LiDAR driver
 ├── vanjee_lidar_msg/              # Vanjee LiDAR message definitions
 ├── docs/                          # Documentation and images
-├── setting.sh                     # Dependency installation script
+├── scripts/                       # Utility scripts
+│   └── setting.sh                 # Dependency installation script
 └── additional_repos.repos         # External repository list for vcs import
 ```
 
@@ -266,7 +267,7 @@ antbot/
 > ```bash
 > mkdir -p ~/antbot_ws/src && cd ~/antbot_ws/src
 > git clone https://github.com/ROBOTIS-move/antbot.git
-> cd ~/antbot_ws/src/antbot && bash setting.sh
+> cd ~/antbot_ws/src/antbot && bash scripts/setting.sh
 > cd ~/antbot_ws && colcon build --symlink-install && source install/setup.bash
 > ros2 launch antbot_bringup bringup.launch.py
 > ```
@@ -290,7 +291,7 @@ git clone https://github.com/ROBOTIS-move/antbot.git
 
 ```bash
 cd ~/antbot_ws/src/antbot
-bash setting.sh
+bash scripts/setting.sh
 ```
 
 **3.** Build the workspace:
