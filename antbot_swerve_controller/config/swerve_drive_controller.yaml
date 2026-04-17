@@ -23,8 +23,8 @@ antbot_swerve_controller:
     module_x_offsets: [ 0.265,  0.265, -0.265, -0.265] # x-distance from base_link to steering joint [m]
     module_y_offsets: [ 0.256, -0.256,  0.256, -0.256] # y-distance from base_link to steering joint [m]
     module_angle_offsets: [ 0.0, 0.0, 0.0, 0.0] # angle offset between base_link and steering joint [rad]
-    module_steering_limit_lower: [ -1.047, -1.047, -1.047, -1.047 ] # minimum steering angle [rad]
-    module_steering_limit_upper: [  1.047,  1.047,  1.047,  1.047 ] # maximum steering angle [rad]
+    module_steering_limit_lower: [ -0.959, -0.959, -0.959, -0.959] # minimum steering angle [rad]
+    module_steering_limit_upper: [ 0.959, 0.959, 0.959,  0.959] # maximum steering angle [rad]
 
     # Non-coaxial swerve drive parameters
     steering_to_wheel_y_offsets: [ 0.0555, -0.0555, 0.0555, -0.0555 ] # Y-offset between steering axis and wheel contact [m]
