@@ -7,14 +7,14 @@ board_hw_interface:
 
     steering:
       gear_ratio: 2.43
-      front_left_min_degree: -56.175
-      front_left_max_degree: 56.175
-      front_right_min_degree: -56.175
-      front_right_max_degree: 56.175
-      rear_left_min_degree: -56.175
-      rear_left_max_degree: 56.175
-      rear_right_min_degree: -56.175
-      rear_right_max_degree: 56.175
+      front_left_min_degree: -55.0
+      front_left_max_degree: 55.0
+      front_right_min_degree: -55.0
+      front_right_max_degree: 55.0
+      rear_left_min_degree: -55.0
+      rear_left_max_degree: 55.0
+      rear_right_min_degree: -55.0
+      rear_right_max_degree: 55.0
 
     wheel:
       accel: 200  # rev/min^2

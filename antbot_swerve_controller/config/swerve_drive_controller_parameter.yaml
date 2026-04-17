@@ -298,13 +298,13 @@ antbot:
 
     module_steering_limit_lower: {
       type: double_array,
-      default_value: [-1.047, -1.047, -1.047, -1.047],
+      default_value: [-0.959, -0.959, -0.959, -0.959],
       description: "Minimum steering angle for each module in radians"
     }
 
     module_steering_limit_upper: {
       type: double_array,
-      default_value: [1.047, 1.047, 1.047, 1.047],
+      default_value: [0.959, 0.959, 0.959, 0.959],
       description: "Maximum steering angle for each module in radians"
     }
 
