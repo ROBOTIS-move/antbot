@@ -1,0 +1,186 @@
+<?xml version="1.0" ?>
+<!--
+  ANTBot core assembly (hardware-agnostic).
+  Defines the shared robot structure used by both the real platform (antbot.xacro)
+  and the Gazebo simulation (antbot_gazebo/urdf/antbot_sim.xacro).
+
+  Assembles:
+    - Base body (base_link + body_link)
+    - 4 swerve wheel modules
+    - All sensors (cameras, IMU, GNSS, magnetometer, LiDARs)
+    - Miscellaneous frames (charging coil)
+
+  ros2_control is NOT included here. The caller must add the appropriate
+  ros2_control macro (real hardware vs Gazebo) after calling AntbotCore.
+-->
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <!-- ============================================================
+       Include: ANTBot module files
+       ============================================================ -->
+  <xacro:include filename="$(find antbot_description)/urdf/base_body.xacro"/>
+  <xacro:include filename="$(find antbot_description)/urdf/drive/wheel_module.xacro"/>
+  <xacro:include filename="$(find antbot_description)/urdf/sensor/common.xacro"/>
+  <xacro:include filename="$(find antbot_description)/urdf/sensor/depth_camera.xacro"/>
+  <xacro:include filename="$(find antbot_description)/urdf/sensor/mono_camera.xacro"/>
+  <xacro:include filename="$(find antbot_description)/urdf/sensor/imu.xacro"/>
+  <xacro:include filename="$(find antbot_description)/urdf/sensor/lidar_2d.xacro"/>
+  <xacro:include filename="$(find antbot_description)/urdf/sensor/lidar_3d.xacro"/>
+
+  <!-- ============================================================
+       Calibration YAML loading
+       If calibration_yaml_path is passed, values loaded here are consumed
+       by CalibratedSensorFrame (see sensor/common.xacro).
+       ============================================================ -->
+  <xacro:arg name="calibration_yaml_path" default=""/>
+  <xacro:property name="calibration_yaml_path_val" value="$(arg calibration_yaml_path)"/>
+  <xacro:property name="calibration_config" value="${xacro.load_yaml(calibration_yaml_path_val) if calibration_yaml_path_val != '' else dict()}"/>
+
+  <!-- ============================================================
+       Robot dimension properties
+       ============================================================ -->
+  <xacro:property name="wheel_radius"     value="0.103"/>  <!-- Wheel radius [m] -->
+  <xacro:property name="base_link_height" value="0.103"/>  <!-- Height from base_link (ground) to body_link [m] (= wheel_radius) -->
+  <xacro:property name="wheelbase_length" value="0.530"/>  <!-- X-axis distance between front/rear wheels [m] -->
+  <xacro:property name="steering_width"   value="0.401"/>  <!-- Y-axis distance between left/right steering axes [m] -->
+  <xacro:property name="wheel_offset"     value="0.055"/>  <!-- Y-axis offset from steering axis to wheel center [m] -->
+
+  <!-- ============================================================
+       Material definitions (shared)
+       ============================================================ -->
+  <material name="white">
+    <color rgba="1.0 1.0 1.0 1.0"/>
+  </material>
+  <material name="black">
+    <color rgba="0.2 0.2 0.2 1.0"/>
+  </material>
+  <material name="gray">
+    <color rgba="0.5 0.5 0.5 1.0"/>
+  </material>
+
+  <!--
+    AntbotCore: Instantiates the complete ANTBot structure (base + wheels + sensors).
+    Call once from the top-level xacro (antbot.xacro or antbot_sim.xacro).
+    The caller is responsible for invoking a ros2_control macro separately.
+  -->
+  <xacro:macro name="AntbotCore">
+
+    <!-- ============================================================
+         1. Base body assembly (base_link ground frame + body_link chassis)
+         ============================================================ -->
+    <xacro:BaseBody/>
+
+    <!-- ============================================================
+         2. Swerve wheel system (4-wheel independent steering)
+         Placement: front-left, front-right, rear-left, rear-right
+         ============================================================ -->
+    <xacro:SwerveWheel position_name="front_left"
+      x_pos="${wheelbase_length / 2}" y_pos="${steering_width / 2}" side="1"/>
+
+    <xacro:SwerveWheel position_name="front_right"
+      x_pos="${wheelbase_length / 2}" y_pos="${-steering_width / 2}" side="-1"/>
+
+    <xacro:SwerveWheel position_name="rear_left"
+      x_pos="${-wheelbase_length / 2}" y_pos="${steering_width / 2}" side="1"/>
+
+    <xacro:SwerveWheel position_name="rear_right"
+      x_pos="${-wheelbase_length / 2}" y_pos="${-steering_width / 2}" side="-1"/>
+
+    <!-- ============================================================
+         3. Sensor placement
+         Each sensor is registered by calling the corresponding module macro.
+         Sensors use body_link (chassis frame) as their parent. The z
+         values below are heights above body_link, pre-computed as
+         (ground-referenced height) - base_link_height (0.103 m).
+         ============================================================ -->
+
+    <!-- === Stereo depth camera (front top) === -->
+    <!-- z = 0.629484 - 0.103 = 0.526484 -->
+    <xacro:DepthCamera name="camera_stereo_front" parent="body_link"
+      xyz="0.348162 0.0475 0.526484"
+      rpy="0.0 ${radians(30)} 0.0"/>
+
+    <!-- === 4 mono cameras === -->
+    <!-- Left: 90° left-facing -->
+    <!-- z = 0.5875 - 0.103 = 0.4845 -->
+    <xacro:MonoCamera name="camera_mono_left" parent="body_link"
+      xyz="0.260 0.25477 0.4845"
+      rpy="0.0 0.0 ${radians(90)}"
+      calibration_key="camera_left_extrinsic"/>
+
+    <!-- Front: forward-facing -->
+    <!-- z = 0.5875 - 0.103 = 0.4845 -->
+    <xacro:MonoCamera name="camera_mono_front" parent="body_link"
+      xyz="0.35807 0.0 0.4845"
+      rpy="0.0 0.0 0.0"
+      calibration_key="camera_front_extrinsic"/>
+
+    <!-- Right: 90° right-facing -->
+    <!-- z = 0.5875 - 0.103 = 0.4845 -->
+    <xacro:MonoCamera name="camera_mono_right" parent="body_link"
+      xyz="0.260 -0.25477 0.4845"
+      rpy="0.0 0.0 ${radians(-90)}"
+      calibration_key="camera_right_extrinsic"/>
+
+    <!-- Rear: 180° backward-facing (no calibration) -->
+    <!-- z = 0.299 - 0.103 = 0.196 -->
+    <xacro:MonoCamera name="camera_mono_back" parent="body_link"
+      xyz="-0.37669 0.0 0.196"
+      rpy="0.0 0.0 ${radians(180)}"/>
+
+    <!-- === Inertial/navigation sensors === -->
+    <!-- z = 0.3902 - 0.103 = 0.2872 -->
+    <xacro:Imu name="imu" parent="body_link"
+      xyz="0.240 0.00675 0.2872"
+      rpy="0.0 0.0 ${radians(180)}"/>
+
+    <!-- z = 0.660 - 0.103 = 0.557 -->
+    <xacro:Gnss name="gnss" parent="body_link"
+      xyz="0.2026 -0.128 0.557"
+      rpy="0.0 0.0 ${radians(180)}"/>
+
+    <!-- z = 0.3902 - 0.103 = 0.2872 -->
+    <xacro:Magnetometer name="magnetometer" parent="body_link"
+      xyz="0.240 -0.00425 0.2872"
+      rpy="0.0 0.0 0.0"/>
+
+    <!-- === 2D LiDAR (front/rear) === -->
+    <!-- z = 0.255 - 0.103 = 0.152 -->
+    <xacro:Lidar2d name="lidar_2d_front" parent="body_link"
+      xyz="0.325 0.0 0.152"
+      rpy="0.0 ${radians(180)} 0.0"
+      calibration_key="lidar_2d_front_extrinsic"/>
+
+    <!-- z = 0.255 - 0.103 = 0.152 -->
+    <xacro:Lidar2d name="lidar_2d_back" parent="body_link"
+      xyz="-0.325 0.0 0.152"
+      rpy="${radians(180)} 0.0 0.0"
+      calibration_key="lidar_2d_back_extrinsic"/>
+
+    <!-- === 3D LiDAR (top, 10° forward tilt) === -->
+    <!-- z = 0.724904 - 0.103 = 0.621904 -->
+    <xacro:Lidar3d name="lidar_3d" parent="body_link"
+      xyz="0.225332 0.0 0.621904"
+      rpy="0.0 ${radians(10)} 0.0"
+      calibration_key="lidar_3d_extrinsic"/>
+
+    <!-- ============================================================
+         4. Miscellaneous frames
+         ============================================================ -->
+    <!-- Charging coil: lower rear of robot, used for charging station alignment -->
+    <!-- z = 0.170631 - 0.103 = 0.067631 -->
+    <xacro:SensorFrame name="robot_charging_coil" parent="body_link"
+      xyz="-0.299119 0.0 0.067631"
+      rpy="0.0 0.0 0.0"/>
+
+    <!-- ============================================================
+         TODO: Accessories (cargo lid, flag pole) — attach to body_link
+         Add includes at file top:
+           <xacro:include filename="$(find antbot_description)/urdf/accessory/cargo_lid.xacro"/>
+           <xacro:include filename="$(find antbot_description)/urdf/accessory/flag_pole.xacro"/>
+         and the corresponding macro calls here.
+         ============================================================ -->
+
+  </xacro:macro>
+
+</robot>

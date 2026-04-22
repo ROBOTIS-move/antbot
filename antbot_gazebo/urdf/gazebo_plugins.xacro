@@ -7,25 +7,27 @@
     <mu2>0.2</mu2>
   </gazebo>
 
-  <!-- ── Wheel friction macro ── -->
-  <xacro:macro name="WheelFriction" params="prefix">
-    <gazebo reference="${prefix}_wheel_link">
+  <!-- ── Wheel friction macro ──
+       Link naming follows wheel_module.xacro: wheel_{position}_link / steering_{position}_link
+  -->
+  <xacro:macro name="WheelFriction" params="position">
+    <gazebo reference="wheel_${position}_link">
       <mu1>1.8</mu1>
       <mu2>1.8</mu2>
       <kp>1000000.0</kp>
       <kd>100.0</kd>
       <minDepth>0.001</minDepth>
     </gazebo>
-    <gazebo reference="${prefix}_steering_link">
+    <gazebo reference="steering_${position}_link">
       <mu1>0.0</mu1>
       <mu2>0.0</mu2>
     </gazebo>
   </xacro:macro>
 
-  <xacro:WheelFriction prefix="front_left"/>
-  <xacro:WheelFriction prefix="front_right"/>
-  <xacro:WheelFriction prefix="rear_left"/>
-  <xacro:WheelFriction prefix="rear_right"/>
+  <xacro:WheelFriction position="front_left"/>
+  <xacro:WheelFriction position="front_right"/>
+  <xacro:WheelFriction position="rear_left"/>
+  <xacro:WheelFriction position="rear_right"/>
 
   <!-- ── ign_ros2_control plugin ── -->
   <gazebo>

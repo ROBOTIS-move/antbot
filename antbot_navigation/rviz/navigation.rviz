@@ -26,6 +26,7 @@ Visualization Manager:
       Topic:
         Value: /map
         Reliability Policy: Reliable
+        Durability Policy: Transient Local
       Alpha: 0.7
       Color Scheme: map
     - Class: rviz_default_plugins/Map
@@ -34,6 +35,7 @@ Visualization Manager:
       Topic:
         Value: /global_costmap/costmap
         Reliability Policy: Reliable
+        Durability Policy: Transient Local
       Alpha: 0.5
       Color Scheme: costmap
     - Class: rviz_default_plugins/Map
@@ -42,6 +44,7 @@ Visualization Manager:
       Topic:
         Value: /local_costmap/costmap
         Reliability Policy: Reliable
+        Durability Policy: Transient Local
       Alpha: 0.5
       Color Scheme: costmap
     - Class: rviz_default_plugins/Path
