@@ -62,5 +62,5 @@
   <xacro:Sensors name="robot_charging_coil" xyz="-0.299119 0.0 0.170631" rpy="0.0 0.0 0.0"/>
 
   <!-- Gazebo ros2_control -->
-  <xacro:antbot_ros2_control_gazebo/>
+  <xacro:AntbotRos2ControlGazebo/>
 </robot>

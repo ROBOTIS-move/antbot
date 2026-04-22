@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+<!--
+  Stereo depth camera module.
+  Defines a reusable macro for a Depth + RGB sensor pair.
+  A single macro call generates the following 4 links:
+    - {name}_depth, {name}_depth_optical
+    - {name}_rgb,   {name}_rgb_optical
+  RGB is placed at a relative position (rgb_offset) from the Depth frame.
+-->
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <!--
+    DepthCamera: Creates a stereo depth + RGB camera pair.
+    @param name        Camera name (e.g., camera_stereo_front)
+                       Generated: {name}_depth_link, {name}_depth_optical_link,
+                                  {name}_rgb_link,   {name}_rgb_optical_link
+    @param parent      Exact parent link name (e.g., "base_link")
+    @param xyz         Depth sensor position relative to parent [m]
+    @param rpy         Depth sensor orientation relative to parent [rad]
+    @param rgb_offset  (optional) RGB sensor offset from depth frame [m].
+                       Default is the ANTBot stereo baseline (Y-axis -124mm).
+  -->
+  <xacro:macro name="DepthCamera" params="name parent xyz rpy rgb_offset:='0.0 -0.124 0.0'">
+    <!-- Depth sensor (reference frame) -->
+    <xacro:SensorFrame name="${name}_depth" parent="${parent}"
+      xyz="${xyz}" rpy="${rpy}"/>
+    <xacro:OpticalFrame name="${name}_depth_optical" parent="${name}_depth_link"/>
+
+    <!-- RGB sensor (relative position from Depth frame) -->
+    <xacro:SensorFrameRelative parent="${name}_depth_link" child="${name}_rgb"
+      xyz="${rgb_offset}" rpy="0.0 0.0 0.0"/>
+    <xacro:OpticalFrame name="${name}_rgb_optical" parent="${name}_rgb_link"/>
+  </xacro:macro>
+
+</robot>

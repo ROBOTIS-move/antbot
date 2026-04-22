@@ -1,0 +1,93 @@
+<?xml version="1.0" ?>
+<!--
+  Swerve wheel module.
+  Defines ANTBot's 4-wheel independent steering (swerve drive) wheel module.
+  Each module consists of 2 joints:
+    - steering joint (Z-axis revolute): Controls wheel steering direction
+    - wheel joint   (Y-axis continuous): Drives wheel rotation
+
+  Left/right wheel differences are handled by the side parameter (1=left, -1=right):
+    - Mesh mirroring (yaw 180° vs 0°)
+    - Collision body rotation direction (roll ±90°)
+    - Wheel Y-axis offset sign (±wheel_offset)
+-->
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <!--
+    SwerveWheel: Creates one swerve wheel module.
+    @param position_name  Position identifier (front_left, front_right, rear_left, rear_right)
+    @param x_pos          X position relative to body_link [m] (positive=front)
+    @param y_pos          Y position relative to body_link [m] (positive=left)
+    @param side           Left/right selector (1=left, -1=right)
+
+    Generated elements:
+      - steering_{position_name}_link  : Steering module link
+      - steering_{position_name}_joint : Steering revolute joint (Z-axis, ±0.959 rad)
+      - wheel_{position_name}_link     : Drive wheel link
+      - wheel_{position_name}_joint    : Drive continuous joint (Y-axis)
+  -->
+  <xacro:macro name="SwerveWheel" params="position_name x_pos y_pos side">
+    <!-- === Steering link === -->
+    <!-- Left wheel: mesh rotated 180° yaw, right wheel: no rotation -->
+    <link name="steering_${position_name}_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 ${(1 + side) * pi / 2}"/>
+        <geometry>
+          <mesh filename="package://antbot_description/meshes/steering_link_r.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="gray"/>
+      </visual>
+      <inertial>
+        <mass value="0.478"/>
+        <origin xyz="0.00001009 -0.00280 0.07442" rpy="0 0 ${(1 + side) * pi / 2}"/>
+        <inertia ixx="1.7663e-03" ixy="-1.2585e-07" ixz="3.5876e-07" iyy="1.6567e-03" iyz="-1.0274e-04" izz="2.2243e-04"/>
+      </inertial>
+    </link>
+
+    <!-- === Steering joint: Z-axis rotation, ±0.959 rad range === -->
+    <joint name="steering_${position_name}_joint" type="revolute">
+      <parent link="body_link"/>
+      <child link="steering_${position_name}_link"/>
+      <origin xyz="${x_pos} ${y_pos} 0" rpy="0 0 0"/>
+      <axis xyz="0 0 1"/>
+      <limit effort="1000" lower="-0.959" upper="0.959" velocity="6.5"/>
+      <dynamics damping="0.1" friction="0.01"/>
+    </joint>
+
+    <!-- === Drive wheel link === -->
+    <link name="wheel_${position_name}_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 ${(1 + side) * pi / 2}"/>
+        <geometry>
+          <mesh filename="package://antbot_description/meshes/wheel_link_r.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="black"/>
+      </visual>
+      <!-- Collision: cylinder approximation, left +90° roll, right -90° roll -->
+      <collision>
+        <origin xyz="0 0 0" rpy="${side * pi/2} 0 0"/>
+        <geometry>
+          <cylinder radius="${wheel_radius}" length="0.05"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="2.615"/>
+        <origin xyz=" -0.000001 0.000391 0.00000324" rpy="0 0 ${(1 + side) * pi / 2}"/>
+        <inertia ixx="5.1876e-03" ixy="0" ixz="0" iyy="8.6932e-03" iyz="-2.0536e-08" izz="5.1873e-03"/>
+      </inertial>
+    </link>
+
+    <!-- === Drive wheel joint: Y-axis continuous rotation === -->
+    <joint name="wheel_${position_name}_joint" type="continuous">
+      <parent link="steering_${position_name}_link"/>
+      <child link="wheel_${position_name}_link"/>
+      <!-- Wheel is mounted offset along Y-axis from steering link -->
+      <origin xyz="0 ${side * wheel_offset} 0" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+      <limit effort="200" velocity="50"/>
+      <dynamics damping="0.05" friction="0.02"/>
+    </joint>
+
+  </xacro:macro>
+
+</robot>

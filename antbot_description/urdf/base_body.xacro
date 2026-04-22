@@ -1,0 +1,46 @@
+<?xml version="1.0" ?>
+<!--
+  ANTBot base body definition.
+  Defines the robot's root frame and chassis link.
+    - base_link: Ground projection frame (navigation stack standard root, no mass)
+    - body_link: Robot chassis (mesh, inertia, mass). Located one wheel radius above base_link.
+  All wheels and sensors are mounted with body_link as their parent.
+-->
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <!--
+    BaseBody: Creates base_link (ground frame) + body_link (robot chassis).
+    References the base_link_height property defined in antbot.xacro.
+  -->
+  <xacro:macro name="BaseBody">
+
+    <!-- === base_link: Root frame (ground level, empty frame) === -->
+    <link name="base_link"/>
+
+    <!-- === body_link joint: Mounted at wheel radius height above base_link === -->
+    <joint name="body_link_joint" type="fixed">
+      <parent link="base_link"/>
+      <child link="body_link"/>
+      <origin xyz="0 0 ${base_link_height}" rpy="0 0 0"/>
+    </joint>
+
+    <!-- === body_link: Robot chassis (mesh + inertia) === -->
+    <link name="body_link">
+      <inertial>
+        <mass value="43.9018"/>
+        <origin xyz="0.01954 0.00289 0.19407"/>
+        <inertia ixx="1.93307" ixy="-0.01304" ixz="-0.36018"
+                 iyy="3.16353" iyz="-0.00477" izz="2.80561"/>
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://antbot_description/meshes/body_link.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="white"/>
+      </visual>
+    </link>
+
+  </xacro:macro>
+
+</robot>

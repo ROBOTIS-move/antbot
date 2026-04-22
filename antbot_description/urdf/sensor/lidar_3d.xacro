@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+<!--
+  3D LiDAR module.
+  Defines a reusable macro for a 3D point cloud LiDAR + built-in IMU pair.
+  A single macro call generates the following links:
+    - {name}_link     : LiDAR body
+    - {name}_imu_link : LiDAR built-in IMU (relative position from LiDAR frame)
+-->
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <!--
+    Lidar3d: Creates one 3D LiDAR + built-in IMU frame.
+    @param name             Sensor name (e.g., lidar_3d)
+                            Generated: {name}_link, {name}_imu_link
+    @param parent           Exact parent link name (e.g., "base_link")
+    @param xyz              Position relative to parent [m]
+    @param rpy              Orientation relative to parent [rad]
+    @param calibration_key  (optional) YAML calibration key. If empty, xyz/rpy are used.
+    @param imu_xyz          (optional) Built-in IMU position relative to LiDAR frame [m].
+                            Default is the spec value of the mounted LiDAR model.
+    @param imu_rpy          (optional) Built-in IMU orientation relative to LiDAR frame [rad].
+  -->
+  <xacro:macro name="Lidar3d" params="name parent xyz rpy calibration_key:='' imu_xyz:='0.00677 -0.02045 -0.02597' imu_rpy:='0.0 0.0 0.0'">
+    <!-- LiDAR body -->
+    <xacro:CalibratedSensorFrame name="${name}" parent="${parent}"
+      default_xyz="${xyz}" default_rpy="${rpy}"
+      calibration_key="${calibration_key}"/>
+
+    <!-- LiDAR built-in IMU (relative position from body frame) -->
+    <xacro:SensorFrameRelative parent="${name}_link" child="${name}_imu"
+      xyz="${imu_xyz}" rpy="${imu_rpy}"/>
+  </xacro:macro>
+
+</robot>

@@ -1,0 +1,43 @@
+<?xml version="1.0" ?>
+<!--
+  Inertial/navigation sensor module.
+  Defines reusable macros for IMU, GNSS, and magnetometer sensors.
+  All three sensors are essentially single fixed frames, but are exposed
+  as separate macros so the caller can explicitly select by semantics.
+-->
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <!--
+    Imu: Creates one IMU (Inertial Measurement Unit) frame.
+    @param name    Sensor name (e.g., imu)
+    @param parent  Exact parent link name (e.g., "base_link")
+    @param xyz     Position relative to parent [m]
+    @param rpy     Orientation relative to parent [rad]
+  -->
+  <xacro:macro name="Imu" params="name parent xyz rpy">
+    <xacro:SensorFrame name="${name}" parent="${parent}" xyz="${xyz}" rpy="${rpy}"/>
+  </xacro:macro>
+
+  <!--
+    Gnss: Creates one GNSS/GPS receiver frame.
+    @param name    Sensor name (e.g., gnss)
+    @param parent  Exact parent link name (e.g., "base_link")
+    @param xyz     Position relative to parent [m]
+    @param rpy     Orientation relative to parent [rad]
+  -->
+  <xacro:macro name="Gnss" params="name parent xyz rpy">
+    <xacro:SensorFrame name="${name}" parent="${parent}" xyz="${xyz}" rpy="${rpy}"/>
+  </xacro:macro>
+
+  <!--
+    Magnetometer: Creates one magnetometer sensor frame.
+    @param name    Sensor name (e.g., magnetometer)
+    @param parent  Exact parent link name (e.g., "base_link")
+    @param xyz     Position relative to parent [m]
+    @param rpy     Orientation relative to parent [rad]
+  -->
+  <xacro:macro name="Magnetometer" params="name parent xyz rpy">
+    <xacro:SensorFrame name="${name}" parent="${parent}" xyz="${xyz}" rpy="${rpy}"/>
+  </xacro:macro>
+
+</robot>

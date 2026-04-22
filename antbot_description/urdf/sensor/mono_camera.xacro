@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+<!--
+  Mono camera module.
+  Defines a reusable macro for a single mono camera.
+  A single macro call generates the camera link + ROS optical frame together.
+  Passing a calibration key enables YAML file-based position override.
+-->
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <!--
+    MonoCamera: Creates one mono camera.
+    @param name             Camera name (e.g., camera_mono_left)
+                            Generated: {name}_link, {name}_optical_link
+    @param parent           Exact parent link name (e.g., "base_link")
+    @param xyz              Position relative to parent [m]
+    @param rpy              Orientation relative to parent [rad]
+    @param calibration_key  (optional) YAML calibration key. If empty, xyz/rpy are used.
+  -->
+  <xacro:macro name="MonoCamera" params="name parent xyz rpy calibration_key:=''">
+    <xacro:CalibratedSensorFrame name="${name}" parent="${parent}"
+      default_xyz="${xyz}" default_rpy="${rpy}"
+      calibration_key="${calibration_key}"/>
+    <xacro:OpticalFrame name="${name}_optical" parent="${name}_link"/>
+  </xacro:macro>
+
+</robot>

@@ -1,0 +1,94 @@
+<?xml version="1.0" ?>
+<!--
+  Common sensor frame helper macro collection.
+  Defines utility macros shared by all sensor modules.
+  - SensorFrame:           Creates a fixed sensor frame
+  - SensorFrameRelative:   Creates a child sensor frame from an arbitrary parent (semantically identical to SensorFrame)
+  - OpticalFrame:          Applies ROS camera optical frame convention
+  - CalibratedSensorFrame: Supports dynamic positioning based on YAML calibration file
+
+  All four macros accept the parent link name via the `parent` parameter.
+  The parent link should be passed as the raw link name (e.g., "base_link", "body_link",
+  "camera_stereo_front_depth_link"). The macros do not append a _link suffix automatically,
+  so the caller must specify the exact link name.
+-->
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <!--
+    SensorFrame: Creates a sensor frame with a fixed joint from the specified parent link.
+    @param name    Sensor name (generated link: {name}_link, joint: {name}_joint)
+    @param parent  Exact parent link name (e.g., "base_link")
+    @param xyz     Position relative to parent [m]
+    @param rpy     Orientation relative to parent [rad]
+  -->
+  <xacro:macro name="SensorFrame" params="name parent xyz rpy">
+    <joint name="${name}_joint" type="fixed">
+      <parent link="${parent}"/>
+      <child link="${name}_link"/>
+      <origin xyz="${xyz}" rpy="${rpy}"/>
+    </joint>
+    <link name="${name}_link"/>
+  </xacro:macro>
+
+  <!--
+    SensorFrameRelative: Same as SensorFrame, but accepts the child link name as a separate parameter.
+    Used for relative placement between sensors, such as stereo camera RGB-Depth or 3D LiDAR internal IMU.
+    @param parent  Exact parent link name (e.g., "camera_stereo_front_depth_link")
+    @param child   Child sensor name (generated link: {child}_link)
+    @param xyz     Relative position from parent [m]
+    @param rpy     Relative orientation from parent [rad]
+  -->
+  <xacro:macro name="SensorFrameRelative" params="parent child xyz rpy">
+    <joint name="${child}_joint" type="fixed">
+      <parent link="${parent}"/>
+      <child link="${child}_link"/>
+      <origin xyz="${xyz}" rpy="${rpy}"/>
+    </joint>
+    <link name="${child}_link"/>
+  </xacro:macro>
+
+  <!--
+    OpticalFrame: Creates a camera optical frame.
+    Default rotation follows the ROS camera convention:
+      Z-axis (forward) → camera optical axis, X-axis (right), Y-axis (down)
+    @param name    Optical frame name (generated link: {name}_link)
+    @param parent  Exact parent camera link name (e.g., "camera_mono_left_link")
+    @param xyz     Offset from parent (default: 0 0 0)
+    @param rpy     Rotation from parent (default: ROS optical convention -90° roll, -90° yaw)
+  -->
+  <xacro:macro name="OpticalFrame" params="name parent xyz:='0 0 0' rpy:='${radians(-90)} 0 ${radians(-90)}'">
+    <joint name="${name}_joint" type="fixed">
+      <parent link="${parent}"/>
+      <child link="${name}_link"/>
+      <origin xyz="${xyz}" rpy="${rpy}"/>
+    </joint>
+    <link name="${name}_link"/>
+  </xacro:macro>
+
+  <!--
+    CalibratedSensorFrame: A sensor frame that can load position from a YAML calibration file.
+    If calibration_key exists in the calibration_config dictionary, uses YAML values (tx,ty,tz,rx,ry,rz);
+    otherwise falls back to default_xyz/default_rpy.
+    @param name            Sensor name
+    @param parent          Exact parent link name (e.g., "base_link")
+    @param default_xyz     Default position (used when calibration is not applied)
+    @param default_rpy     Default orientation (used when calibration is not applied)
+    @param calibration_key Key name in the YAML dictionary (empty string always falls back)
+  -->
+  <xacro:macro name="CalibratedSensorFrame" params="name parent default_xyz default_rpy calibration_key">
+    <xacro:property name="calib_data" value="${calibration_config.get(calibration_key) if calibration_key else None}"/>
+    <xacro:property name="_xyz" value="${
+      str(calib_data['tx']) + ' ' + str(calib_data['ty']) + ' ' + str(calib_data['tz'])
+      if calib_data else default_xyz}"/>
+    <xacro:property name="_rpy" value="${
+      str(calib_data['rx']) + ' ' + str(calib_data['ry']) + ' ' + str(calib_data['rz'])
+      if calib_data else default_rpy}"/>
+    <joint name="${name}_joint" type="fixed">
+      <parent link="${parent}"/>
+      <child link="${name}_link"/>
+      <origin xyz="${_xyz}" rpy="${_rpy}"/>
+    </joint>
+    <link name="${name}_link"/>
+  </xacro:macro>
+
+</robot>
