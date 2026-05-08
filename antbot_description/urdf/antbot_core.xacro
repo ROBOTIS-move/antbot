@@ -95,9 +95,8 @@
          ============================================================ -->
 
     <!-- === Stereo depth camera (front top) === -->
-    <!-- z = 0.629484 - 0.103 = 0.526484 -->
     <xacro:DepthCamera name="camera_stereo_front" parent="body_link"
-      xyz="0.348162 0.0475 0.526484"
+      xyz="0.348162 0.0475 0.423484"
       rpy="0.0 ${radians(30)} 0.0"/>
 
     <!-- === 4 mono cameras === -->
