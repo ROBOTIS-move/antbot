@@ -30,9 +30,38 @@ import xacro
 import yaml
 
 
+def _as_bool(value):
+    """Parse common launch boolean values."""
+    return value.lower() in ('1', 'true', 'yes', 'on')
+
+
+def _qt_platform_env(context, gui_enabled):
+    """Return Gazebo GUI Qt environment overrides."""
+    qt_platform = LaunchConfiguration('qt_platform').perform(context).strip()
+
+    if qt_platform.lower() in ('', 'inherit', 'none', 'off'):
+        return {}
+
+    if qt_platform.lower() != 'auto':
+        return {'QT_QPA_PLATFORM': qt_platform}
+
+    if os.environ.get('QT_QPA_PLATFORM'):
+        return {}
+
+    is_wayland = (
+        os.environ.get('XDG_SESSION_TYPE', '').lower() == 'wayland' or
+        bool(os.environ.get('WAYLAND_DISPLAY')))
+    if gui_enabled and is_wayland and os.environ.get('DISPLAY'):
+        return {'QT_QPA_PLATFORM': 'xcb'}
+
+    return {}
+
+
 def _resolve_world_path(context, *args, **kwargs):
     """Resolve a named world or direct SDF path, then launch Gazebo."""
     world_value = LaunchConfiguration('world').perform(context)
+    gui_enabled = _as_bool(LaunchConfiguration('gui').perform(context))
+    headless_rendering_value = LaunchConfiguration('headless_rendering').perform(context)
 
     if os.path.isfile(world_value):
         world_sdf = world_value
@@ -56,9 +85,26 @@ def _resolve_world_path(context, *args, **kwargs):
             raise FileNotFoundError(
                 f"World '{world_value}' not found. Looked for: {world_sdf}")
 
-    return [ExecuteProcess(
-        cmd=['ign', 'gazebo', '-r', world_sdf],
-        output='screen')]
+    cmd = ['ign', 'gazebo', '-r']
+    if not gui_enabled:
+        cmd.append('-s')
+
+    if headless_rendering_value.lower() == 'auto':
+        headless_rendering_enabled = not gui_enabled
+    else:
+        headless_rendering_enabled = _as_bool(headless_rendering_value)
+
+    if headless_rendering_enabled:
+        cmd.append('--headless-rendering')
+
+    cmd.append(world_sdf)
+
+    return [
+        ExecuteProcess(
+            cmd=cmd,
+            output='screen',
+            additional_env=_qt_platform_env(context, gui_enabled))
+    ]
 
 
 def generate_launch_description():
@@ -72,6 +118,21 @@ def generate_launch_description():
         'world',
         default_value='empty',
         description='World name (resolved via config/worlds.yaml) or full path to SDF file')
+
+    gui_arg = DeclareLaunchArgument(
+        'gui',
+        default_value='true',
+        description='Whether to launch the Gazebo GUI')
+
+    headless_rendering_arg = DeclareLaunchArgument(
+        'headless_rendering',
+        default_value='auto',
+        description='Use headless rendering: true, false, or auto (enabled when gui:=false)')
+
+    qt_platform_arg = DeclareLaunchArgument(
+        'qt_platform',
+        default_value='auto',
+        description='Qt platform for Gazebo GUI: auto, xcb, wayland, or inherit')
 
     resource_path = os.path.dirname(description_pkg)
     existing_resource = os.environ.get('IGN_GAZEBO_RESOURCE_PATH', '')
@@ -159,6 +220,9 @@ def generate_launch_description():
 
     return LaunchDescription([
         world_arg,
+        gui_arg,
+        headless_rendering_arg,
+        qt_platform_arg,
         set_resource_path,
         set_plugin_path,
         ign_gazebo,

@@ -9,7 +9,6 @@
 
   <buildtool_depend>ament_cmake_ros</buildtool_depend>
   <build_depend>generate_parameter_library</build_depend>
-  <build_depend>ros2_control_cmake</build_depend>
   <build_depend>eigen</build_depend>
 
   <depend>rclcpp</depend>
