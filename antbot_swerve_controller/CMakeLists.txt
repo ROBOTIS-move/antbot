@@ -48,6 +48,7 @@ add_library(antbot_swerve_controller
   src/swerve_motion_control.cpp
   src/odometry.cpp
   src/speed_limiter.cpp
+  src/constrained_4wis_allocator.cpp
 )
 target_compile_features(antbot_swerve_controller PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 target_include_directories(antbot_swerve_controller PUBLIC
@@ -101,6 +102,16 @@ install(FILES antbot_swerve_controller.xml
 )
 
 if(BUILD_TESTING)
+  find_package(ament_cmake_gtest REQUIRED)
+  # Pure allocator unit test (no ROS deps); allocator source compiled in directly.
+  ament_add_gtest(test_constrained_4wis_allocator
+    test/test_constrained_4wis_allocator.cpp
+    src/constrained_4wis_allocator.cpp
+  )
+  target_include_directories(test_constrained_4wis_allocator PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/test
+  )
 endif()
 
 ament_export_include_directories(

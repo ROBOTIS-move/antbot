@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ANTBot constrained 4WIS-4WID 연속 3DOF 제어 개선 기획안</title>
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)']],
+      displayMath: [['$$', '$$']],
+      processEscapes: true
+    },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+  :root {
+    --ink:#111827;
+    --muted:#4b5563;
+    --line:#d1d5db;
+    --bg:#f8fafc;
+    --panel:#ffffff;
+    --blue:#1d4ed8;
+    --green:#047857;
+    --amber:#b45309;
+    --red:#b91c1c;
+    --slate:#334155;
+  }
+  * { box-sizing:border-box; }
+  body {
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",Arial,sans-serif;
+    font-size:16px;
+    line-height:1.68;
+  }
+  main {
+    width:min(1160px, calc(100% - 44px));
+    margin:0 auto;
+    padding:42px 0 72px;
+  }
+  header {
+    border-bottom:3px solid var(--ink);
+    padding-bottom:22px;
+    margin-bottom:32px;
+  }
+  h1 {
+    margin:0 0 10px;
+    font-size:31px;
+    line-height:1.25;
+    letter-spacing:0;
+  }
+  h2 {
+    margin:42px 0 14px;
+    padding-top:22px;
+    border-top:1px solid var(--line);
+    font-size:22px;
+    letter-spacing:0;
+  }
+  h3 {
+    margin:26px 0 9px;
+    font-size:18px;
+    letter-spacing:0;
+  }
+  p { margin:10px 0; }
+  code {
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:13.5px;
+    background:#eef2ff;
+    padding:1px 5px;
+    border-radius:4px;
+  }
+  pre {
+    overflow:auto;
+    background:#ffffff;
+    color:#111827;
+    padding:14px 16px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    font-size:13px;
+    line-height:1.55;
+  }
+  pre code { background:transparent; padding:0; border-radius:0; }
+  table {
+    width:100%;
+    border-collapse:collapse;
+    background:var(--panel);
+    margin:14px 0 20px;
+    font-size:14.5px;
+  }
+  th, td {
+    border:1px solid var(--line);
+    padding:9px 11px;
+    vertical-align:top;
+  }
+  th { background:#f3f4f6; text-align:left; }
+  ul, ol { padding-left:23px; }
+  li { margin:6px 0; }
+  a { color:var(--blue); }
+  .meta { color:var(--muted); font-size:13.5px; }
+  .lead { font-size:17px; color:#1f2937; }
+  .toc {
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:18px;
+  }
+  .toc a {
+    display:inline-block;
+    border:1px solid var(--line);
+    border-radius:999px;
+    background:#fff;
+    padding:4px 10px;
+    font-size:13px;
+    text-decoration:none;
+  }
+  .callout {
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-left:6px solid var(--blue);
+    border-radius:8px;
+    padding:14px 17px;
+    margin:16px 0;
+  }
+  .ok { border-left-color:var(--green); background:#ecfdf5; }
+  .warn { border-left-color:var(--amber); background:#fffbeb; }
+  .bad { border-left-color:var(--red); background:#fef2f2; }
+  .formula {
+    background:#ffffff;
+    border:1px solid #fdba74;
+    border-left:6px solid #f97316;
+    border-radius:8px;
+    padding:14px 16px;
+    margin:16px 0;
+  }
+  .formula-title {
+    color:#9a3412;
+    font-weight:800;
+    margin-bottom:7px;
+  }
+  .math { overflow-x:auto; padding:4px 2px; }
+  mjx-container { color:#111827; font-size:105%; }
+  .grid2 {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+    align-items:start;
+  }
+  .grid3 {
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:14px;
+    align-items:start;
+  }
+  .box {
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:13px 15px;
+  }
+  .box strong { display:block; margin-bottom:5px; }
+  .tag {
+    display:inline-block;
+    border-radius:999px;
+    padding:1px 8px;
+    font-size:12px;
+    font-weight:800;
+    white-space:nowrap;
+  }
+  .tag.g { background:#d1fae5; color:#065f46; }
+  .tag.o { background:#ffedd5; color:#9a3412; }
+  .tag.r { background:#fee2e2; color:#991b1b; }
+  .figure {
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:16px;
+    margin:18px 0;
+  }
+  .figure svg { width:100%; height:auto; display:block; }
+  .caption { color:var(--muted); font-size:13px; margin-top:8px; text-align:center; }
+  .small { color:var(--muted); font-size:13.5px; }
+  @media (max-width:860px) {
+    main { width:min(100% - 28px, 1160px); padding-top:30px; }
+    h1 { font-size:27px; }
+    .grid2, .grid3 { grid-template-columns:1fr; }
+    table { font-size:13.5px; }
+  }
+</style>
+</head>
+<body>
+<main>
+<header>
+  <div class="meta">작성일: 2026-07-09 · 대상 패키지: antbot_swerve_controller · 기준 모델: constrained 4WIS-4WID</div>
+  <h1>ANTBot constrained 4WIS-4WID 연속 3DOF 제어 개선 기획안</h1>
+  <p class="lead">
+    현재 컨트롤러의 모드 기반 stop-and-realign 구조를 없애고, G50/ANTBot의 실제 조향축 기하와 조향각 제한을
+    명시적으로 반영하는 constrained 4WIS-4WID 제어기로 바꾸기 위한 구현 계획이다.
+  </p>
+  <p class="meta">
+    검토 문서:
+    <code>/home/jwson/Desktop/swerve_drive/curr/g50_constrained_4wis_control_process_summary.html</code>,
+    <code>/home/jwson/Desktop/swerve_drive/curr/g50_constrained_4wis_visual_report.html</code>
+  </p>
+  <div class="toc">
+    <a href="#decision">0. 최종 방향</a>
+    <a href="#audit">1. 현재 코드 감사</a>
+    <a href="#code-diff">2. 기존 코드와 차이</a>
+    <a href="#geometry">3. 기하 정정</a>
+    <a href="#model">4. 제어 모델</a>
+    <a href="#architecture">5. 구현 구조</a>
+    <a href="#migration">6. 단계별 계획</a>
+    <a href="#validation">7. 검증 기준</a>
+  </div>
+</header>
+
+<section id="decision">
+<h2>0. 최종 방향</h2>
+<div class="callout ok">
+  <b>목표 모델은 constrained 4WIS-4WID다.</b>
+  네 모듈은 각각 독립 조향(4WIS)과 독립 구동(4WID)을 갖지만, 조향각 제한 때문에 매 tick 임의의
+  \([v_x, v_y, \omega]\)를 full holonomic swerve처럼 즉시 실행할 수는 없다.
+</div>
+<div class="formula">
+  <div class="formula-title">하위 제어 계약</div>
+  <div class="math">
+$$
+u_{\mathrm{ref}} =
+\begin{bmatrix}
+v_{x,\mathrm{ref}}\\
+v_{y,\mathrm{ref}}\\
+\omega_{\mathrm{ref}}
+\end{bmatrix}
+$$
+$$
+d_{\mathrm{raw},i}
+=
+\operatorname{atan2}
+\left(v_{y,\mathrm{ref}}+\omega_{\mathrm{ref}}x_i,\;
+v_{x,\mathrm{ref}}-\omega_{\mathrm{ref}}y_i\right)
+$$
+$$
+d^*_i =
+\operatorname{clamp}
+\left(d_{\mathrm{branch},i},\ d_{\min,i}+m,\ d_{\max,i}-m\right)
+$$
+  </div>
+</div>
+<p>
+  1차 구현은 alpha speed scaling을 쓰지 않는다. 목표 조향각은 primary/flip branch 중 현재 조향각에 가까운 쪽을 고르고,
+  그 결과가 조향 한계 밖이면 limit 안으로 clamp한다. 이 방식은 조향 한계 밖 reference에서도 로봇을 움직이게 만들 수 있지만,
+  실제 실행 방향이 <code>/cmd_vel</code>과 달라질 수 있으므로 clamp량과 tracking error를 반드시 publish한다.
+</p>
+<div class="grid3">
+  <div class="box">
+    <strong>유지할 것</strong>
+    <span class="tag g">유지</span>
+    <p>/cmd_vel, odom, tf, joint_commanders, direct joint debug, speed limiter, wheel/steering command interface.</p>
+  </div>
+  <div class="box">
+    <strong>흡수할 것</strong>
+    <span class="tag o">흡수</span>
+    <p>steering flip, steering limit clamp, wheel saturation, scrub 보정은 하나의 constrained 4WIS allocator 안으로 합친다.</p>
+  </div>
+  <div class="box">
+    <strong>제거할 것</strong>
+    <span class="tag r">제거</span>
+    <p>TargetDrivingType FSM, RE_ALIGNING, trajectory planner, alpha speed scaling.</p>
+  </div>
+</div>
+</section>
+
+<section id="audit">
+<h2>1. 현재 코드 감사</h2>
+<p>
+  현재 실제 패키지명은 <code>antbot_swerve_controller</code>이며, 사용자가 말한 문제는 코드에 그대로 존재한다.
+  핵심 파일은 <code>src/swerve_motion_control.cpp</code>와 <code>src/swerve_drive_controller.cpp</code>다.
+</p>
+<table>
+  <thead>
+    <tr>
+      <th>현재 구조</th>
+      <th>문제</th>
+      <th>constrained 4WIS-4WID에서의 처리</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>TargetDrivingType</code>: STOPPED, LINEAR, L/R_TURNING, DIAGONAL, SPINNING, RE_ALIGNING</td>
+      <td>명령 공간을 인위적 모드로 나누고, 큰 전환에서 휠 정지 후 재정렬을 수행한다.</td>
+      <td>모드는 없애고 매 tick 같은 수식으로 \(d_{\mathrm{branch}}\), \(d^*\), \(d_{cmd}\), \(\dot\phi\)를 계산한다.</td>
+    </tr>
+    <tr>
+      <td><code>needs_realignment_matrix_</code>, <code>generate_realignment_motion()</code></td>
+      <td>불연속적인 stop-and-realign이 발생하고 새 명령을 lock한다.</td>
+      <td>re-align trajectory를 만들지 않고, 현재 조향각에서 허용 가능한 다음 위치 명령으로 rate-limited clamp를 건다.</td>
+    </tr>
+    <tr>
+      <td><code>compute_inverse_kinematics()</code>의 clamp/projection fallback</td>
+      <td>primary/flip이 모두 한계 밖일 때 각도만 clamp하고 속도를 projection한다. 결과 twist가 상위 명령과 달라질 수 있다.</td>
+      <td>clamp 자체는 허용하되, 조향축 기준 \(v_A\)와 signed lateral offset 식으로 다시 계산하고 clamp error를 diagnostics로 낸다.</td>
+    </tr>
+    <tr>
+      <td><code>trajectory_delay_time</code>와 <code>JointTrajectory</code> 실행</td>
+      <td>제어 tick의 닫힌형 allocator가 아니라 계획-실행 2단계다. 지연과 상태 lock이 생긴다.</td>
+      <td>trajectory 생성 없이 현재 측정 조향각에서 다음 tick 명령을 직접 계산한다.</td>
+    </tr>
+    <tr>
+      <td><code>enable_steering_scrub_compensator</code></td>
+      <td>lateral offset 보정이 기구학식 밖에서 사후 보정으로 들어간다.</td>
+      <td>\(-c_i(\omega+\dot d_i)\) 항을 wheel velocity 명령식에 직접 포함한다.</td>
+    </tr>
+    <tr>
+      <td>현재 odometry 행 구성</td>
+      <td>권장 rolling/lateral 8x3 식과 다르고, 조향속도 \(\dot d_i\) 보정항이 없다.</td>
+      <td>모듈당 rolling 행과 lateral no-slip 행을 쌓는 8x3 SVD로 교체한다.</td>
+    </tr>
+  </tbody>
+</table>
+<div class="callout bad">
+  <b>핵심 위험:</b> 한계 밖 목표각을 clamp한 뒤 휠을 계속 굴리면 하위 컨트롤러가 상위 navigation의
+  reference 곡률을 몰래 바꾸거나 slip을 만든다. 새 구조에서는 이 동작을 금지한다.
+</div>
+</section>
+
+<section id="code-diff">
+<h2>2. 기존 swerve drive controller와 달라지는 점</h2>
+<p>
+  기존 구현은 <code>/cmd_vel</code>을 먼저 driving mode로 분류하고, 모드 전환이 크면
+  <code>DISCONTINUOUS_RE_ALIGNMENT</code> trajectory를 만들어 휠을 세운 뒤 조향을 맞춘다.
+  새 구현은 mode 전이를 판단하지 않고, 같은 입력에서 목표 조향각을 계산한 뒤 조향 한계로 clamp해 바로 명령을 만든다.
+</p>
+
+<div class="figure">
+<svg viewBox="0 0 1120 430" role="img" aria-label="Legacy controller flow versus constrained 4WIS-4WID allocator">
+  <defs>
+    <marker id="cmpArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#334155"/>
+    </marker>
+    <marker id="cmpRed" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#b91c1c"/>
+    </marker>
+    <marker id="cmpGreen" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#047857"/>
+    </marker>
+  </defs>
+
+  <rect x="24" y="24" width="510" height="360" rx="8" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="279" y="58" text-anchor="middle" font-size="18" font-weight="800" fill="#9a3412">현재 코드 흐름</text>
+  <text x="279" y="82" text-anchor="middle" font-size="13" fill="#334155">SwerveMotionControl + JointTrajectory</text>
+
+  <g font-size="13" fill="#111827">
+    <rect x="70" y="112" width="170" height="54" rx="8" fill="#ffffff" stroke="#d1d5db"/>
+    <text x="155" y="135" text-anchor="middle" font-weight="800">determine_target_mode()</text>
+    <text x="155" y="154" text-anchor="middle" fill="#4b5563">LINEAR / SPIN / TURN</text>
+    <line x1="240" y1="139" x2="296" y2="139" stroke="#334155" stroke-width="2" marker-end="url(#cmpArrow)"/>
+
+    <rect x="296" y="112" width="170" height="54" rx="8" fill="#ffffff" stroke="#d1d5db"/>
+    <text x="381" y="135" text-anchor="middle" font-weight="800">IK + flip + clamp</text>
+    <text x="381" y="154" text-anchor="middle" fill="#4b5563">한계 밖이면 projection</text>
+
+    <line x1="381" y1="166" x2="381" y2="206" stroke="#334155" stroke-width="2" marker-end="url(#cmpArrow)"/>
+    <rect x="296" y="206" width="170" height="58" rx="8" fill="#fef2f2" stroke="#fca5a5"/>
+    <text x="381" y="230" text-anchor="middle" font-weight="800" fill="#991b1b">mode transition?</text>
+    <text x="381" y="249" text-anchor="middle" fill="#4b5563">RE_ALIGNING 가능</text>
+
+    <line x1="296" y1="235" x2="240" y2="235" stroke="#b91c1c" stroke-width="2" marker-end="url(#cmpRed)"/>
+    <rect x="70" y="206" width="170" height="58" rx="8" fill="#fef2f2" stroke="#fca5a5"/>
+    <text x="155" y="230" text-anchor="middle" font-weight="800" fill="#991b1b">zero drive</text>
+    <text x="155" y="249" text-anchor="middle" fill="#4b5563">steering realign</text>
+
+    <line x1="381" y1="264" x2="381" y2="306" stroke="#334155" stroke-width="2" marker-end="url(#cmpArrow)"/>
+    <rect x="270" y="306" width="222" height="50" rx="8" fill="#ffffff" stroke="#d1d5db"/>
+    <text x="381" y="327" text-anchor="middle" font-weight="800">trajectory interpolation</text>
+    <text x="381" y="346" text-anchor="middle" fill="#4b5563">trajectory_delay_time 포함</text>
+  </g>
+
+  <rect x="586" y="24" width="510" height="360" rx="8" fill="#ecfdf5" stroke="#86efac"/>
+  <text x="841" y="58" text-anchor="middle" font-size="18" font-weight="800" fill="#047857">변경 후 흐름</text>
+  <text x="841" y="82" text-anchor="middle" font-size="13" fill="#334155">Constrained4WisAllocator, 매 tick 동일 수식</text>
+
+  <g font-size="13" fill="#111827">
+    <rect x="632" y="112" width="170" height="54" rx="8" fill="#ffffff" stroke="#d1d5db"/>
+    <text x="717" y="135" text-anchor="middle" font-weight="800">v_A decomposition</text>
+    <text x="717" y="154" text-anchor="middle" fill="#4b5563">module steering-axis velocity</text>
+    <line x1="802" y1="139" x2="858" y2="139" stroke="#334155" stroke-width="2" marker-end="url(#cmpArrow)"/>
+
+    <rect x="858" y="112" width="170" height="54" rx="8" fill="#ffffff" stroke="#d1d5db"/>
+    <text x="943" y="135" text-anchor="middle" font-weight="800">primary / flip</text>
+    <text x="943" y="154" text-anchor="middle" fill="#4b5563">limit 안 후보만 선택</text>
+
+    <line x1="943" y1="166" x2="943" y2="206" stroke="#334155" stroke-width="2" marker-end="url(#cmpArrow)"/>
+    <rect x="858" y="206" width="170" height="58" rx="8" fill="#ffffff" stroke="#d1d5db"/>
+    <text x="943" y="230" text-anchor="middle" font-weight="800">limit clamp</text>
+    <text x="943" y="249" text-anchor="middle" fill="#4b5563">steering soft bounds</text>
+
+    <line x1="858" y1="235" x2="802" y2="235" stroke="#047857" stroke-width="2" marker-end="url(#cmpGreen)"/>
+    <rect x="632" y="206" width="170" height="58" rx="8" fill="#ffffff" stroke="#d1d5db"/>
+    <text x="717" y="230" text-anchor="middle" font-weight="800">best-effort motion</text>
+    <text x="717" y="249" text-anchor="middle" fill="#4b5563">clamp error publish</text>
+
+    <line x1="841" y1="264" x2="841" y2="306" stroke="#334155" stroke-width="2" marker-end="url(#cmpArrow)"/>
+    <rect x="730" y="306" width="222" height="50" rx="8" fill="#ffffff" stroke="#d1d5db"/>
+    <text x="841" y="327" text-anchor="middle" font-weight="800">direct joint command</text>
+    <text x="841" y="346" text-anchor="middle" fill="#4b5563">d_cmd, phi_dot 즉시 산출</text>
+  </g>
+</svg>
+<div class="caption">그림 1.5. 기존 코드는 mode/trajectory 중심이고, 변경 후는 alpha 없이 조향 clamp 중심의 per-tick allocator다.</div>
+</div>
+
+<div class="grid2">
+  <div class="formula">
+    <div class="formula-title">현재 코드의 위험한 fallback</div>
+    <div class="math">
+$$
+d_{\mathrm{raw}} \notin [d_{\min}, d_{\max}]
+\quad\Rightarrow\quad
+d_{\mathrm{cmd}}=\operatorname{clamp}(d_{\mathrm{raw}})
+$$
+$$
+\dot{\phi}_{\mathrm{cmd}}
+\approx
+\frac{\|v_{\mathrm{contact}}\|\cos(d_{\mathrm{raw}}-d_{\mathrm{cmd}})}{r}
+$$
+    </div>
+  </div>
+  <div class="formula">
+    <div class="formula-title">변경 후 clamp-only constrained 4WIS-4WID 처리</div>
+    <div class="math">
+$$
+d^*_i =
+\operatorname{clamp}
+\left(d_{\mathrm{branch},i},\ d_{\min,i}+m,\ d_{\max,i}-m\right)
+$$
+$$
+\dot\phi_i =
+\frac{u(d^*_i)^T v_{A,i}^{ref}-c_i(\omega_{ref}+\nu_i)}{r}
+$$
+    </div>
+  </div>
+</div>
+<p>
+  차이는 기존의 mode 전환과 trajectory 실행을 없애고, 조향축 기준 기하와 lateral offset 보정을 한 식 안에 넣는 데 있다.
+  단, alpha를 쓰지 않는 clamp-only 방식은 조향 한계 밖 reference에서도 움직이는 대신 원래 <code>/cmd_vel</code> 방향을 보존하지 못할 수 있다.
+  따라서 <code>clamp_error</code>, <code>target_branch</code>, <code>cmd_vel_executed</code>를 함께 publish해야 한다.
+</p>
+</section>
+
+<section id="geometry">
+<h2>3. 기하 정정</h2>
+<p>
+  검토 문서와 현재 URDF는 조향축 기준 constrained 4WIS-4WID 모델을 지지한다. 반면 현재 controller YAML은
+  <code>module_y_offsets</code>에 휠 중심 폭을 넣고 있어, lateral offset을 별도 파라미터로 쓰는 조향축 컨벤션과 충돌한다.
+</p>
+<table>
+  <thead>
+    <tr>
+      <th>항목</th>
+      <th>URDF/문서 기준</th>
+      <th>현재 controller YAML</th>
+      <th>계획안 결정</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>조향축 x</td>
+      <td>\(\pm0.265\) m</td>
+      <td>\(\pm0.265\) m</td>
+      <td>유지</td>
+    </tr>
+    <tr>
+      <td>조향축 y</td>
+      <td>\(\pm0.2005\) m, <code>steering_width=0.401</code></td>
+      <td>\(\pm0.256\) m, 휠 중심 폭</td>
+      <td><b>\(\pm0.2005\) m로 정정</b></td>
+    </tr>
+    <tr>
+      <td>lateral offset \(c_i\)</td>
+      <td>\(\pm0.0555\) m, 좌 + / 우 -</td>
+      <td>\(\pm0.0555\) m</td>
+      <td>signed offset으로 유지</td>
+    </tr>
+    <tr>
+      <td>wheel radius</td>
+      <td>0.103 m</td>
+      <td>0.103 m</td>
+      <td>유지</td>
+    </tr>
+    <tr>
+      <td>steering limit</td>
+      <td>실기 한계 확인 필요. 현재 real config는 약 \(\pm0.959\) rad.</td>
+      <td>real: \(\pm0.959\), sim: \(\pm1.047\)</td>
+      <td>실기 안전값을 우선하고 soft margin을 둔다.</td>
+    </tr>
+  </tbody>
+</table>
+<div class="figure">
+<svg viewBox="0 0 920 360" role="img" aria-label="Constrained 4WIS-4WID geometry">
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#334155"/>
+    </marker>
+    <marker id="bluearr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#1d4ed8"/>
+    </marker>
+  </defs>
+  <rect x="24" y="24" width="872" height="300" rx="8" fill="#fff" stroke="#d1d5db"/>
+  <g transform="translate(250 176)">
+    <rect x="-145" y="-120" width="290" height="240" rx="24" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+    <line x1="0" y1="0" x2="0" y2="-150" stroke="#334155" stroke-width="2.5" marker-end="url(#arr)"/>
+    <line x1="0" y1="0" x2="-175" y2="0" stroke="#334155" stroke-width="2.5" marker-end="url(#arr)"/>
+    <text x="10" y="-145" font-size="11" fill="#334155" font-weight="800">+X</text>
+    <text x="-186" y="4" font-size="11" fill="#334155" font-weight="800">+Y</text>
+    <circle cx="-92" cy="-92" r="7" fill="#b91c1c"/>
+    <circle cx="92" cy="-92" r="7" fill="#b91c1c"/>
+    <circle cx="-92" cy="92" r="7" fill="#b91c1c"/>
+    <circle cx="92" cy="92" r="7" fill="#b91c1c"/>
+    <circle cx="-118" cy="-92" r="8" fill="#111827"/>
+    <circle cx="118" cy="-92" r="8" fill="#111827"/>
+    <circle cx="-118" cy="92" r="8" fill="#111827"/>
+    <circle cx="118" cy="92" r="8" fill="#111827"/>
+    <text x="-132" y="-109" font-size="10" fill="#b91c1c" font-weight="800">A steering axis</text>
+    <text x="48" y="130" font-size="10" fill="#111827" font-weight="800">P wheel center</text>
+  </g>
+  <g transform="translate(610 176)">
+    <rect x="-210" y="-118" width="360" height="236" rx="8" fill="#f8fafc" stroke="#d1d5db"/>
+    <circle cx="-60" cy="0" r="8" fill="#b91c1c"/>
+    <circle cx="16" cy="0" r="8" fill="#111827"/>
+    <line x1="-60" y1="0" x2="16" y2="0" stroke="#1d4ed8" stroke-width="4" marker-end="url(#bluearr)"/>
+    <path d="M-60 0 L58 -68" stroke="#047857" stroke-width="5" marker-end="url(#bluearr)"/>
+    <path d="M-60 0 L16 0" stroke="#111827" stroke-width="3"/>
+    <text x="-82" y="-18" font-size="11" fill="#b91c1c" font-weight="800">A_i</text>
+    <text x="24" y="-18" font-size="11" fill="#111827" font-weight="800">P_i</text>
+    <text x="-30" y="30" font-size="11" fill="#1d4ed8" font-weight="800">c_i n_i</text>
+    <text x="62" y="-76" font-size="11" fill="#047857" font-weight="800">rolling u_i</text>
+    <text x="-182" y="82" font-size="11" fill="#334155">steering-axis position a_i</text>
+    <text x="-182" y="100" font-size="11" fill="#334155">signed lateral offset c_i</text>
+    <text x="-182" y="118" font-size="11" fill="#334155">are modeled separately.</text>
+  </g>
+</svg>
+<div class="caption">그림 1. constrained 4WIS-4WID에서는 a_i는 조향축, c_i는 조향축에서 휠 중심까지의 signed lateral offset이다.</div>
+</div>
+</section>
+
+<section id="model">
+<h2>4. 제어 모델</h2>
+<h3>4.1 조향축 속도와 목표 조향각</h3>
+<div class="formula">
+  <div class="formula-title">body twist가 모듈 조향축에 만드는 속도</div>
+  <div class="math">
+$$
+v_{A,i}^{ref} =
+\begin{bmatrix}
+v_{x,ref} - \omega_{ref}y_i\\
+v_{y,ref} + \omega_{ref}x_i
+\end{bmatrix}
+$$
+$$
+\beta_i =
+\operatorname{atan2}
+\left(v_{y,ref}+\omega_{ref}x_i,\; v_{x,ref}-\omega_{ref}y_i\right)
+$$
+$$
+\beta_i^{(0)} = \operatorname{wrap}_{\pi}(\beta_i),
+\qquad
+\beta_i^{(1)} = \operatorname{wrap}_{\pi}(\beta_i+\pi)
+$$
+  </div>
+</div>
+<p>
+  \(\beta_i+\pi\)는 같은 rolling line의 반대 방향이다. 이 branch를 선택하면 wheel velocity는 자연스럽게
+  음수가 되므로, 별도의 drive sign을 중복 적용하지 않는다.
+</p>
+
+<h3>4.2 branch 선택과 조향 clamp</h3>
+<div class="formula">
+  <div class="formula-title">primary/flip branch 선택</div>
+  <div class="math">
+$$
+d_{\mathrm{branch},i}
+=
+\underset{\varphi\in\{\beta_i,\operatorname{wrap}_{\pi}(\beta_i+\pi)\}}
+{\arg\min}
+\left|
+\operatorname{wrap}_{\pi}(\varphi-d_i)
+\right|
+$$
+$$
+d^*_i =
+\operatorname{clamp}
+\left(
+d_{\mathrm{branch},i},\ d_{\min,i}+m,\ d_{\max,i}-m
+\right)
+$$
+  </div>
+</div>
+<p>
+  1차 구현에서는 primary/flip 후보가 limit 밖이어도 정지하지 않고, 선택된 branch를 soft limit 안으로 clamp한다.
+  이 선택은 실기에서 "일단 움직이는" 동작을 만들지만, clamp가 큰 경우에는 상위 명령과 다른 body twist가 생긴다.
+</p>
+
+<h3>4.3 clamp diagnostics와 wheel saturation</h3>
+<div class="formula">
+  <div class="formula-title">clamp량과 정렬 오차</div>
+  <div class="math">
+$$
+\Delta d_{\mathrm{clamp},i}
+=
+\operatorname{wrap}_{\pi}(d^*_i-d_{\mathrm{branch},i})
+$$
+$$
+e_i =
+\operatorname{wrap}_{\pi}(d^*_i-d_i)
+$$
+$$
+\mathrm{clamp\_active}
+=
+\max_i |\Delta d_{\mathrm{clamp},i}| > \epsilon
+$$
+$$
+\dot\phi_i =
+\operatorname{clamp}
+\left(\dot\phi_{i,\mathrm{raw}},\ \dot\phi_{\min,i},\ \dot\phi_{\max,i}\right)
+$$
+  </div>
+</div>
+<p>
+  alpha를 제거하므로 wheel speed도 1차 구현에서는 개별 clamp를 건다. 이 역시 네 바퀴가 서로 다른 body twist를 요구할 수 있는
+  근사 처리이므로, wheel clamp 활성 여부와 최대 clamp량을 diagnostics로 남긴다. 안정화 후 필요하면 common scaling 또는 planner 제약으로 되돌릴 수 있다.
+</p>
+
+<h3>4.4 steering command와 drive command</h3>
+<div class="formula">
+  <div class="formula-title">조향 위치 명령</div>
+  <div class="math">
+$$
+\nu_i =
+\operatorname{sat}_{[-\nu_{\max},\nu_{\max}]}
+\left(k_d \operatorname{wrap}_{\pi}(d_i^* - d_i)\right)
+$$
+$$
+d_{\mathrm{cmd},i} =
+\operatorname{clamp}(d_i+\nu_i\Delta t,\ d_{\min,i}+m,\ d_{\max,i}-m)
+$$
+  </div>
+</div>
+<div class="formula">
+  <div class="formula-title">lateral offset을 포함한 wheel velocity</div>
+  <div class="math">
+$$
+v_{A,i}^{ref} =
+\begin{bmatrix}
+v_{x,ref} - \omega_{ref}y_i\\
+v_{y,ref} + \omega_{ref}x_i
+\end{bmatrix}
+$$
+$$
+\dot{\phi}_i =
+\frac{
+u(d_{\mathrm{cmd},i})^T v_{A,i}^{ref}
+- c_i(\omega_{ref}+\nu_i)
+}{r}
+$$
+  </div>
+</div>
+<p>
+  \(-c_i(\omega+\nu_i)\)는 G50/ANTBot lateral offset으로 인한 rolling 방향 보정이다.
+  이 항이 들어가면 기존 scrub compensator는 별도 사후 보정이 아니라 allocator의 기본 기구학식이 된다.
+</p>
+
+<h3>4.5 odometry</h3>
+<div class="formula">
+  <div class="formula-title">권장 8x3 SVD 행 구성</div>
+  <div class="math">
+$$
+[\cos d_i,\ \sin d_i,\ x_i\sin d_i-y_i\cos d_i-c_i]
+\begin{bmatrix}v_x\\v_y\\\omega\end{bmatrix}
+=
+r\dot\phi_i+c_i\dot d_i
+$$
+$$
+[-\sin d_i,\ \cos d_i,\ x_i\cos d_i+y_i\sin d_i]
+\begin{bmatrix}v_x\\v_y\\\omega\end{bmatrix}
+=
+0
+$$
+  </div>
+</div>
+<p>
+  rolling 행은 encoder wheel speed와 steering velocity를 반영하고, lateral 행은 no-slip 제약이다.
+  조향 velocity state가 없으면 measured steering position의 finite difference를 저역 필터링해 \(\dot d_i\)를 만든다.
+</p>
+</section>
+
+<section id="architecture">
+<h2>5. 구현 구조</h2>
+<div class="figure">
+<svg viewBox="0 0 1080 320" role="img" aria-label="Implementation architecture">
+  <defs>
+    <marker id="arch" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#334155"/>
+    </marker>
+  </defs>
+  <rect x="26" y="68" width="170" height="72" rx="8" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="111" y="98" text-anchor="middle" font-size="15" font-weight="800" fill="#1d4ed8">/cmd_vel</text>
+  <text x="111" y="122" text-anchor="middle" font-size="13" fill="#334155">vx, vy, wz</text>
+  <line x1="196" y1="104" x2="260" y2="104" stroke="#334155" stroke-width="2.5" marker-end="url(#arch)"/>
+
+  <rect x="260" y="44" width="250" height="120" rx="8" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="385" y="76" text-anchor="middle" font-size="15" font-weight="800" fill="#9a3412">Constrained4WisAllocator</text>
+  <text x="385" y="102" text-anchor="middle" font-size="13" fill="#334155">branch, clamp, d*, nu</text>
+  <text x="385" y="126" text-anchor="middle" font-size="13" fill="#334155">d_cmd, phi_cmd</text>
+  <line x1="510" y1="104" x2="574" y2="104" stroke="#334155" stroke-width="2.5" marker-end="url(#arch)"/>
+
+  <rect x="574" y="68" width="190" height="72" rx="8" fill="#ecfdf5" stroke="#86efac"/>
+  <text x="669" y="98" text-anchor="middle" font-size="15" font-weight="800" fill="#047857">ros2_control HW</text>
+  <text x="669" y="122" text-anchor="middle" font-size="13" fill="#334155">steer / drive</text>
+  <line x1="764" y1="104" x2="830" y2="104" stroke="#334155" stroke-width="2.5" marker-end="url(#arch)"/>
+
+  <rect x="830" y="68" width="210" height="72" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="935" y="98" text-anchor="middle" font-size="15" font-weight="800" fill="#334155">Feedback Odometry</text>
+  <text x="935" y="122" text-anchor="middle" font-size="13" fill="#334155">8x3 SVD</text>
+
+  <path d="M935 148 C880 244 455 244 385 172" fill="none" stroke="#1d4ed8" stroke-width="2.5" marker-end="url(#arch)"/>
+  <text x="640" y="260" text-anchor="middle" font-size="14" fill="#1d4ed8" font-weight="800">diagnostics: clamp error, margin, commanded twist estimate</text>
+</svg>
+<div class="caption">그림 2. motion planner/FSM 대신 per-tick constrained allocator를 둔다.</div>
+</div>
+
+<h3>5.1 새 내부 타입</h3>
+<pre><code>struct ModuleGeometry {
+  double x;
+  double y;       // steering axis y, not wheel center y
+  double c;       // signed lateral offset
+  double angle_offset;
+  double steering_min;
+  double steering_max;
+  double wheel_min;
+  double wheel_max;
+};
+
+struct AllocatorCommand {
+  std::vector&lt;double&gt; steering_position;
+  std::vector&lt;double&gt; steering_velocity;
+  std::vector&lt;double&gt; wheel_velocity;
+  geometry_msgs::msg::Twist u_ref;
+  std::vector&lt;double&gt; unclamped_steering_target;
+  std::vector&lt;double&gt; clamp_error;
+  bool clamp_active;
+};</code></pre>
+<p>
+  권장 파일은 <code>include/antbot_swerve_controller/constrained_4wis_allocator.hpp</code>와
+  <code>src/constrained_4wis_allocator.cpp</code>다. 기존 <code>SwerveMotionControl</code>은 즉시 삭제하지 않고
+  feature flag로 병행 검증한 뒤 제거한다.
+</p>
+
+<h3>5.2 update loop 변경</h3>
+<pre><code>for each control tick:
+  process cmd_vel timeout, NaN, speed limiter
+  read steering positions d[i]
+  read wheel velocities phi_dot_meas[i]
+  estimate steering velocities d_dot[i]
+
+  result = allocator.compute(u_ref, d, dt)
+
+  send result.steering_position
+  send result.steering_velocity if interface exists
+  send result.wheel_velocity
+
+  odom.update_8x3(d, d_dot, phi_dot_meas, dt)
+  publish odom, joint_commanders, clamp_error, steering_margin</code></pre>
+</section>
+
+<section id="migration">
+<h2>6. 단계별 구현 계획</h2>
+<table>
+  <thead>
+    <tr>
+      <th>단계</th>
+      <th>작업</th>
+      <th>산출물</th>
+      <th>완료 조건</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>P0</td>
+      <td>기하 파라미터 정정. <code>module_y_offsets</code>를 조향축 기준 \(\pm0.2005\)로 변경하고 sim/real 값을 분리 검토한다.</td>
+      <td>YAML 수정 PR, 기하 검증 메모</td>
+      <td>URDF, config, controller 내부 모델이 모두 조향축 컨벤션을 쓴다.</td>
+    </tr>
+    <tr>
+      <td>P1</td>
+      <td><code>Constrained4WisAllocator</code> 추가. branch selection, steering clamp, steering command, wheel command를 unit-test 가능한 순수 C++ 로직으로 만든다.</td>
+      <td>allocator header/source, unit tests</td>
+      <td>전진, 후진 flip, 제자리 회전 flip, pure lateral clamp 테스트 통과.</td>
+    </tr>
+    <tr>
+      <td>P2</td>
+      <td><code>SwerveDriveController::update()</code>에 allocator 경로를 feature flag로 연결한다.</td>
+      <td><code>control_model: constrained_4wis_4wid</code> 파라미터</td>
+      <td>기존 controller plugin과 토픽 인터페이스를 유지한 채 새 경로로 구동 가능.</td>
+    </tr>
+    <tr>
+      <td>P3</td>
+      <td>odometry를 권장 8x3 rolling/lateral 행으로 교체하고 steering velocity finite difference 필터를 추가한다.</td>
+      <td>odometry update 수정, odom regression tests</td>
+      <td>직진, 후진, 제자리 회전, 대각 이동에서 odom twist가 명령/시뮬레이션과 일치.</td>
+    </tr>
+    <tr>
+      <td>P4</td>
+      <td>diagnostics publish. <code>steering_clamp_error</code>, <code>steering_margin</code>, <code>wheel_clamp_active</code>를 낸다.</td>
+      <td>표준 메시지 우선 사용. 필요 시 custom msg는 후속.</td>
+      <td>planner/teleop가 하위 제약 상태와 명령 왜곡 가능성을 볼 수 있다.</td>
+    </tr>
+    <tr>
+      <td>P5</td>
+      <td>기존 FSM/trajectory 경로 제거. <code>SwerveMotionControl</code>, <code>RE_ALIGNING</code>, <code>planned_trajectory</code> 발행을 정리한다.</td>
+      <td>코드 삭제 PR</td>
+      <td>정상 주행 중 stop-and-realign 상태가 더 이상 존재하지 않는다.</td>
+    </tr>
+    <tr>
+      <td>P6</td>
+      <td>Nav2/local planner 연동. clamp error가 큰 reference를 상위에서 줄이도록 feedback 기반 smoother를 붙인다.</td>
+      <td>planner tuning 문서, launch/config 업데이트</td>
+      <td>pose-level 3DOF 목표를 과도한 clamp 없이 추종한다.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>6.1 파라미터 변경안</h3>
+<table>
+  <thead>
+    <tr>
+      <th>파라미터</th>
+      <th>처리</th>
+      <th>비고</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>module_y_offsets</code></td>
+      <td>정정</td>
+      <td>조향축 기준 \([0.2005,-0.2005,0.2005,-0.2005]\)</td>
+    </tr>
+    <tr>
+      <td><code>steering_to_wheel_y_offsets</code></td>
+      <td>유지</td>
+      <td>signed \(c_i\), 좌 + / 우 -</td>
+    </tr>
+    <tr>
+      <td><code>non_coaxial_ik_iterations</code></td>
+      <td>deprecate</td>
+      <td>목표각은 \(v_A\) 방향으로 닫힌형 계산한다.</td>
+    </tr>
+    <tr>
+      <td><code>realigning_angle_threshold</code>, <code>discontinuous_motion_steering_tolerance</code>, <code>trajectory_delay_time</code></td>
+      <td>deprecate</td>
+      <td>RE_ALIGNING과 trajectory planner 제거 후 불필요.</td>
+    </tr>
+    <tr>
+      <td><code>enable_steering_scrub_compensator</code></td>
+      <td>deprecate</td>
+      <td>wheel velocity 식의 \(-c_i(\omega+\nu_i)\)로 흡수.</td>
+    </tr>
+    <tr>
+      <td><code>control_model</code></td>
+      <td>추가</td>
+      <td><code>"legacy"</code>와 <code>"constrained_4wis_4wid"</code> 병행 검증용.</td>
+    </tr>
+    <tr>
+      <td><code>steering.low_speed_threshold</code>, <code>steering.kp</code>, <code>steering.soft_margin</code></td>
+      <td>추가</td>
+      <td>0속도 atan2 채터링 방지, rate command, limit margin.</td>
+    </tr>
+    <tr>
+      <td><code>steering.clamp_policy</code></td>
+      <td>추가</td>
+      <td>1차 구현 기본값은 <code>"best_effort"</code>. 후보가 limit 밖이어도 clamp 후 구동한다.</td>
+    </tr>
+    <tr>
+      <td><code>diagnostics.publish_clamp_error</code></td>
+      <td>추가</td>
+      <td>조향 clamp량, wheel clamp 여부, steering margin을 publish한다.</td>
+    </tr>
+  </tbody>
+</table>
+</section>
+
+<section id="validation">
+<h2>7. 검증 기준</h2>
+<h3>7.1 단위 테스트 시나리오</h3>
+<table>
+  <thead>
+    <tr>
+      <th>시나리오</th>
+      <th>기대 결과</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>전진 \(v_x>0, v_y=0, \omega=0\)</td>
+      <td>모든 \(d^*\approx0\), clamp error 0, 네 휠 속도 동일.</td>
+    </tr>
+    <tr>
+      <td>후진 \(v_x<0\)</td>
+      <td>flip branch 선택으로 조향을 180도 돌리지 않고 wheel velocity가 음수.</td>
+    </tr>
+    <tr>
+      <td>순수 lateral \(v_y\ne0, v_x=\omega=0\)</td>
+      <td>목표각 90도가 조향 한계 밖이면 \(d^*\)가 soft limit으로 clamp되고, clamp error가 publish된다. 로봇은 best-effort 방향으로 움직인다.</td>
+    </tr>
+    <tr>
+      <td>작은 대각 이동</td>
+      <td>목표각이 limit 안이면 clamp error 0으로 crab 주행.</td>
+    </tr>
+    <tr>
+      <td>제자리 회전</td>
+      <td>primary는 약 \(\pm127.1^\circ\), flip은 약 \(\mp52.9^\circ\). 실기 limit margin 안이면 실행.</td>
+    </tr>
+    <tr>
+      <td>wheel saturation</td>
+      <td>1차 구현에서는 wheel velocity를 개별 limit으로 clamp하고, wheel clamp 활성 여부를 publish.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>7.2 통합 검증</h3>
+<ul>
+  <li>Gazebo와 실기에서 <code>control_model=legacy</code>와 <code>constrained_4wis_4wid</code>를 같은 launch에서 교체 가능해야 한다.</li>
+  <li>정상 명령 변화 중 <code>DISCONTINUOUS_RE_ALIGNMENT</code> 또는 wheel stop-and-restart가 없어야 한다.</li>
+  <li>조향 목표가 limit 밖이어도 정지하지 않고 soft limit으로 clamp해 구동해야 한다.</li>
+  <li>pure lateral처럼 clamp가 큰 명령에서는 실제 motion이 <code>/cmd_vel</code>과 달라질 수 있음을 diagnostics로 확인할 수 있어야 한다.</li>
+  <li>odom은 직진, 후진, 제자리 회전, 대각 이동에서 encoder feedback과 시뮬레이션 ground truth 사이 오차가 legacy보다 커지지 않아야 한다.</li>
+  <li>steering command는 항상 soft limit 안에 있어야 하며, limit violation recovery는 정상 제어 중 발생하지 않아야 한다.</li>
+</ul>
+
+<h3>7.3 남은 리스크</h3>
+<div class="grid2">
+  <div class="callout warn">
+    <b>planner 정합</b>
+    하위 컨트롤러만 바꿔도 instantaneous twist-level full holonomic이 되지는 않는다.
+    pose-level 3DOF를 안정적으로 만들려면 local planner가 clamp error와 steering margin feedback을 알아야 한다.
+  </div>
+  <div class="callout warn">
+    <b>실기 한계값</b>
+    URDF 조향 limit은 시뮬레이션 편의값일 수 있다. 실기 안전 limit과 zero calibration을 먼저 확인해야 한다.
+  </div>
+  <div class="callout warn">
+    <b>steering velocity 추정</b>
+    hardware state가 position only이면 \(\dot d_i\) finite difference 필터 품질이 odometry와 wheel 보정에 직접 영향을 준다.
+  </div>
+  <div class="callout warn">
+    <b>기하 컨벤션 혼용</b>
+    조향축 좌표 \(a_i\)와 휠 중심 좌표 \(p_i\)를 섞으면 \(c_i\) 보정이 누락되거나 이중계상된다.
+  </div>
+</div>
+</section>
+
+<section>
+<h2>최종 요약</h2>
+<ol>
+  <li>ANTBot/G50은 조향각 제한이 있는 constrained 4WIS-4WID로 모델링한다.</li>
+  <li>현재 YAML의 <code>module_y_offsets=±0.256</code>은 조향축 기준 모델과 맞지 않으므로 <code>±0.2005</code>로 정정한다.</li>
+  <li>모드/FSM/trajectory/re-align을 제거하고, 매 tick branch 선택과 조향 clamp 기반 allocator를 실행한다.</li>
+  <li>목표 조향각은 조향축 속도 \(v_A\) 방향에서 primary/flip 후보를 만들고, 조향 한계 밖이면 soft limit으로 clamp한다.</li>
+  <li>drive command와 odometry에는 signed lateral offset \(c_i\)와 steering velocity \(\dot d_i\)를 명시적으로 포함한다.</li>
+  <li>alpha를 제거한 1차 구현은 조향 한계 밖 reference에서도 움직이지만, 원 명령과 실제 motion이 달라질 수 있다. 이 차이는 clamp diagnostics로 상위에 되돌린다.</li>
+</ol>
+</section>
+
+</main>
+</body>
+</html>

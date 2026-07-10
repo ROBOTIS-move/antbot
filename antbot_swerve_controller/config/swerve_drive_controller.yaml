@@ -12,6 +12,12 @@ controller_manager:
 
 antbot_swerve_controller:
   ros__parameters:
+    # Low-level control model:
+    #   "legacy"               -> mode-based FSM + stop-and-realign (original)
+    #   "constrained_4wis_4wid" -> continuous per-tick allocator (no realignment)
+    # Default legacy for hardware safety; switch to test the new continuous model.
+    control_model: "legacy"
+
     # ======================================================================
     # Robot-specific parameters (MUST be configured per robot)
     # ======================================================================

@@ -133,6 +133,41 @@ antbot:
       default_value: false,
     }
 
+    # Select the low-level control model.
+    control_model: {
+      type: string,
+      default_value: "legacy",
+      description: "Control model: 'legacy' (mode-based FSM) or 'constrained_4wis_4wid' (continuous per-tick allocator)."
+    }
+
+    # Constrained 4WIS-4WID continuous allocator tuning (used when control_model = constrained_4wis_4wid).
+    constrained:
+      steering_kp: {
+        type: double,
+        default_value: 4.0,
+        description: "P gain from steering-angle error to steering velocity [1/s]."
+      }
+      steering_rate_limit: {
+        type: double,
+        default_value: 3.0,
+        description: "Max steering velocity magnitude [rad/s]."
+      }
+      steering_soft_margin: {
+        type: double,
+        default_value: 0.0,
+        description: "Soft feasibility/command margin subtracted from each steering limit [rad]."
+      }
+      low_speed_threshold: {
+        type: double,
+        default_value: 0.001,
+        description: "|v_A| below which a module holds its current angle (avoids atan2 chatter) [m/s]."
+      }
+      wheel_speed_limit: {
+        type: double,
+        default_value: 20.0,
+        description: "Per-wheel |phi_dot| clamp for the constrained model [rad/s]."
+      }
+
     steering:
       use_velocity_command: {
         type: bool,

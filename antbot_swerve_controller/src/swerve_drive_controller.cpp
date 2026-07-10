@@ -784,6 +784,57 @@ CallbackReturn SwerveDriveController::on_configure(
 
   wheel_saturation_scale_factor_ = 1.0;
 
+  // --- Constrained 4WIS-4WID allocator (control_model = constrained_4wis_4wid) ---
+  {
+    const std::string & cm = params_.antbot_swerve_controller.control_model;
+    control_model_ = (cm == "constrained_4wis_4wid") ?
+      ControlModel::CONSTRAINED_4WIS_4WID : ControlModel::LEGACY;
+    constrained_allocator_ready_ = false;
+
+    if (control_model_ == ControlModel::CONSTRAINED_4WIS_4WID) {
+      if (num_modules_ != 4 ||
+        module_x_offsets_.size() != 4 || module_y_offsets_.size() != 4 ||
+        steering_to_wheel_y_offsets_.size() != 4 ||
+        module_steering_limit_lower_.size() != 4 || module_steering_limit_upper_.size() != 4)
+      {
+        RCLCPP_ERROR(
+          logger,
+          "control_model=constrained_4wis_4wid requires exactly 4 fully-specified modules; "
+          "falling back to legacy.");
+        control_model_ = ControlModel::LEGACY;
+      } else {
+        std::array<::antbot_swerve_controller::ModuleGeometry, 4> mods;
+        for (size_t i = 0; i < 4; ++i) {
+          mods[i].x = module_x_offsets_[i];
+          // Steering-AXIS y = wheel-contact y (module_y_offsets) minus the lateral kingpin
+          // offset (steering_to_wheel_y_offsets). For antbot: 0.256 - 0.0555 = 0.2005.
+          mods[i].y = module_y_offsets_[i] - steering_to_wheel_y_offsets_[i];
+          mods[i].c = steering_to_wheel_y_offsets_[i];
+        }
+        ::antbot_swerve_controller::AllocatorConfig acfg;
+        acfg.steer_min = module_steering_limit_lower_[0];
+        acfg.steer_max = module_steering_limit_upper_[0];
+        acfg.soft_margin = params_.antbot_swerve_controller.constrained.steering_soft_margin;
+        acfg.steer_gain = params_.antbot_swerve_controller.constrained.steering_kp;
+        acfg.steer_rate_limit = params_.antbot_swerve_controller.constrained.steering_rate_limit;
+        acfg.wheel_speed_limit = params_.antbot_swerve_controller.constrained.wheel_speed_limit;
+        acfg.wheel_radius = wheel_radius_;
+        acfg.low_speed_eps = params_.antbot_swerve_controller.constrained.low_speed_threshold;
+        constrained_allocator_ =
+          ::antbot_swerve_controller::Constrained4WisAllocator(mods, acfg);
+        constrained_allocator_ready_ = true;
+        RCLCPP_INFO(
+          logger,
+          "Constrained 4WIS-4WID allocator ACTIVE: steering-axis y=%.4f m, c=%.4f m, "
+          "steer limit [%.4f, %.4f] rad, kp=%.2f, rate=%.2f, wheel_limit=%.1f rad/s.",
+          mods[0].y, mods[0].c, acfg.steer_min, acfg.steer_max,
+          acfg.steer_gain, acfg.steer_rate_limit, acfg.wheel_speed_limit);
+      }
+    } else {
+      RCLCPP_INFO(logger, "control_model = legacy (mode-based FSM).");
+    }
+  }
+
   RCLCPP_DEBUG(logger, "Configuration successful");
   return CallbackReturn::SUCCESS;
 }
@@ -1252,6 +1303,11 @@ controller_interface::return_type SwerveDriveController::update(
     final_wheel_velocity_commands.resize(num_modules_, 0.0);
     command_steerings_and_wheels(final_steering_commands, final_wheel_velocity_commands);
 
+  } else if (control_model_ == ControlModel::CONSTRAINED_4WIS_4WID && constrained_allocator_ready_) {
+    // Continuous constrained 4WIS-4WID per-tick allocator (no FSM / no realignment).
+    run_constrained_allocator(
+      time, period, current_steering_positions,
+      final_steering_commands, final_wheel_velocity_commands);
   } else {
     // Use synchronized motion profile for swerve control
     run_synchronized_motion_profile(
@@ -1276,6 +1332,47 @@ controller_interface::return_type SwerveDriveController::update(
   }
 
   return controller_interface::return_type::OK;
+}
+
+void SwerveDriveController::run_constrained_allocator(
+  const rclcpp::Time & /*time*/,
+  const rclcpp::Duration & period,
+  const std::vector<double> & current_steering_positions,
+  std::vector<double> & final_steering_commands,
+  std::vector<double> & final_wheel_velocity_commands)
+{
+  const double dt = period.seconds();
+
+  std::array<double, 4> steering{};
+  for (size_t i = 0; i < 4; ++i) {
+    steering[i] = current_steering_positions[i];
+  }
+
+  const auto res = constrained_allocator_.update(
+    steering, target_vx_, target_vy_, target_wz_, dt);
+
+  for (size_t i = 0; i < 4; ++i) {
+    final_steering_commands[i] = res.steer_position[i];
+    final_wheel_velocity_commands[i] = res.wheel_velocity[i];
+  }
+
+  // Write steering position + wheel velocity (steering profile velocity/accel use defaults).
+  command_steerings_and_wheels(final_steering_commands, final_wheel_velocity_commands);
+
+  // Keep the hold-branch baseline in sync so a following stop holds these angles.
+  previous_steering_commands_ = final_steering_commands;
+
+  if (!res.feasible) {
+    double max_ce = 0.0;
+    for (size_t i = 0; i < 4; ++i) {
+      max_ce = std::max(max_ce, std::abs(res.clamp_error[i]));
+    }
+    RCLCPP_WARN_THROTTLE(
+      get_node()->get_logger(), *get_node()->get_clock(), 2000,
+      "constrained allocator: cmd_vel (%.3f, %.3f, %.3f) steering-infeasible; "
+      "best-effort clamp (max clamp_error %.3f rad).",
+      target_vx_, target_vy_, target_wz_, max_ce);
+  }
 }
 
 void SwerveDriveController::calculate_odometry(

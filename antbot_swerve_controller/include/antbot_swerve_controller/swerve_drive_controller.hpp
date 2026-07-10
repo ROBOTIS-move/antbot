@@ -52,6 +52,7 @@
 #include "antbot_swerve_controller/odometry.hpp"
 #include "antbot_swerve_controller/speed_limiter.hpp"
 #include "antbot_swerve_controller/swerve_motion_control.hpp"
+#include "antbot_swerve_controller/constrained_4wis_allocator.hpp"
 #include <antbot_swerve_controller/swerve_drive_controller_parameter.hpp>
 
 namespace antbot
@@ -245,6 +246,18 @@ protected:
     const geometry_msgs::msg::Twist & desired_setpoint,
     const std::vector<double> & current_steering_angles,
     double dt);
+
+  // Constrained 4WIS-4WID continuous allocator (control_model = constrained_4wis_4wid)
+  enum class ControlModel { LEGACY, CONSTRAINED_4WIS_4WID };
+  ControlModel control_model_{ControlModel::LEGACY};
+  ::antbot_swerve_controller::Constrained4WisAllocator constrained_allocator_;
+  bool constrained_allocator_ready_{false};
+  void run_constrained_allocator(
+    const rclcpp::Time & time,
+    const rclcpp::Duration & period,
+    const std::vector<double> & current_steering_positions,
+    std::vector<double> & final_steering_commands,
+    std::vector<double> & final_wheel_velocity_commands);
 
   // motion planning
   SwerveMotionControl motion_planner_;
