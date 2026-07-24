@@ -58,4 +58,5 @@ while IFS= read -r line || [ -n "$line" ]; do
 done < "$repos_file"
 
 rosdep update
-rosdep install --from-paths "$src_path" --ignore-src -r -y
+rosdep install --from-paths "$src_path" --ignore-src -r -y \
+    --skip-keys "ros_gz_sim ros_gz_bridge ign_ros2_control ignition-fortress"
