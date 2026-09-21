@@ -39,10 +39,19 @@ bringup.launch.py
 
 | File | Description |
 |------|-------------|
+| `~/ANTBOT/calibration.yaml` | Per-robot sensor extrinsic calibration data measured during production |
 | `config/lidar_3d.yaml` | 3D LiDAR settings (UDP, 192.168.6.x subnet) |
 | `rviz/antbot.rviz` | RViz2 visualization settings for `view.launch.py` |
 
 Sensor-specific parameters (board, IMU, swerve controller) are loaded from their respective packages.
+
+### Sensor Calibration
+
+`robot_state_publisher.launch.py` automatically reads `~/ANTBOT/calibration.yaml` from the launching user's home directory and passes it to `antbot_description`. This also applies during full system bringup.
+
+The file defines sensor positions (`tx`, `ty`, `tz`, in meters) and orientations (`rx`, `ry`, `rz`, as roll, pitch, yaw in radians) relative to `base_link`. These values replace the URDF defaults. If the file or a sensor entry is absent, the corresponding default coordinates are used. Each provided sensor entry requires all six fields.
+
+See the wiki for the file format and production data examples: [English](../docs/wiki/src/content/docs/en/hardware/sensor-coordinates.mdx#sensor-calibration) / [한국어](../docs/wiki/src/content/docs/hardware/sensor-coordinates.mdx#센서-캘리브레이션).
 
 ## Dependencies
 

@@ -34,7 +34,24 @@ The model defines TF frames for the following sensors:
 | `urdf/ros2_control.xacro` | ros2_control hardware interface definition |
 | `urdf/sensors.xacro` | Sensor frame mounting macros |
 
+## Sensor Calibration
+
+`~/ANTBOT/calibration.yaml` stores per-robot sensor extrinsic calibration data measured during production. `antbot_bringup` passes this file to `antbot.xacro` through the `calibration_yaml_path` xacro argument when it exists.
+
+| Fields | Meaning | Unit |
+|--------|---------|------|
+| `tx`, `ty`, `tz` | Sensor X, Y, Z position relative to `base_link` | meters |
+| `rx`, `ry`, `rz` | Sensor roll, pitch, yaw relative to `base_link` | radians |
+
+The `CalibratedSensors` macro replaces the default joint origin with these values. If no file is supplied or a sensor entry is absent, the corresponding URDF defaults are used. Each provided entry must contain all six fields.
+
+Production calibration entries are `camera_front_extrinsic`, `camera_left_extrinsic`, `camera_right_extrinsic`, `lidar_2d_front_extrinsic`, and `lidar_2d_back_extrinsic`. Camera keys refer to the mono camera mounting frames; optical frame transforms are applied separately.
+
+See the wiki for production data examples: [English](../docs/wiki/src/content/docs/en/hardware/sensor-coordinates.mdx#sensor-calibration) / [한국어](../docs/wiki/src/content/docs/hardware/sensor-coordinates.mdx#센서-캘리브레이션).
+
 ## Visualization
+
+> **Note:** `description.launch.py` previews the default model and does not automatically load `~/ANTBOT/calibration.yaml`. Calibration is loaded by `antbot_bringup/robot_state_publisher.launch.py` during robot bringup.
 
 ```bash
 # View in RViz with interactive joint sliders

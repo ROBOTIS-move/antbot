@@ -349,6 +349,8 @@ For the RGB-D camera (launched via `orbbec_camera`), topics appear under the `/s
 
 RGB-D camera depth images use `16UC1` encoding (depth in millimeters).
 
+> **Note:** `CameraInfo` contains camera intrinsic calibration and distortion parameters. Per-robot sensor extrinsic calibration measured during production is stored separately in `~/ANTBOT/calibration.yaml` and applied to sensor TFs by `antbot_bringup` and `antbot_description`. See the wiki: [English](../docs/wiki/src/content/docs/en/hardware/sensor-coordinates.mdx#sensor-calibration) / [한국어](../docs/wiki/src/content/docs/hardware/sensor-coordinates.mdx#센서-캘리브레이션).
+
 ### QoS Profile
 
 All publishers use `SensorDataQoS`:

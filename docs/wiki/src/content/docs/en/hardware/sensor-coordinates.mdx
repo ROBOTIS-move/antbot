@@ -5,8 +5,6 @@ sidebar:
   order: 5
 ---
 
-List of key sensors installed on AntBot and their coordinates relative to `base_link`.
-
 ## Key Sensor Configuration
 
 | Sensor | Qty | Connection | Notes |
@@ -21,6 +19,10 @@ List of key sensors installed on AntBot and their coordinates relative to `base_
 ---
 
 ## Sensor Coordinates
+
+Positions and orientations of AntBot’s key sensors relative to `base_link`.<br />
+The tables show URDF defaults; see Sensor Calibration for per-robot measurements.
+
 - Position: `mm`
 - Angle: `degree`
 
@@ -52,5 +54,73 @@ List of key sensors installed on AntBot and their coordinates relative to `base_
 | GNSS | 202.600 | -128.000 | 660.000 | 0 | 0 | 180 |
 
 :::note
-To check these coordinates in the URDF, refer to [`antbot_description/urdf/antbot.xacro`](https://github.com/ROBOTIS-move/antbot/blob/main/antbot_description/urdf/antbot.xacro). For ROS topics published by each sensor, see [Key ROS Topics/Services](/antbot/en/development-guide/ros-topics/).
+To check these coordinates in the URDF, refer to [`antbot_description/urdf/antbot.xacro`](https://github.com/ROBOTIS-move/antbot/blob/main/antbot_description/urdf/antbot.xacro).<br />
+For ROS topics published by each sensor, see [Key ROS Topics/Services](/antbot/en/development-guide/ros-topics/).
 :::
+
+---
+
+## Sensor Calibration
+
+### How Calibration Is Applied
+
+Sensor extrinsic calibration data is measured for each robot during production.<br />
+If the file or a sensor entry is absent, the affected sensors use URDF defaults.
+
+- **File**: `~/ANTBOT/calibration.yaml`
+- **Reference**: Sensor position and orientation relative to `base_link`
+- **Application**: `antbot_bringup` replaces the URDF default coordinates with calibration values for sensor TFs
+
+| Field | Meaning | Unit |
+| :--- | :--- | :--- |
+| `tx`, `ty`, `tz` | X, Y, Z position | Meters (`m`) |
+| `rx`, `ry`, `rz` | Roll, Pitch, Yaw | Radians (`rad`) |
+
+### Example File
+
+| Key | Sensor | TF Frame |
+| :--- | :--- | :--- |
+| `camera_front_extrinsic` | Front mono camera | `camera_mono_front_link` |
+| `camera_left_extrinsic` | Left mono camera | `camera_mono_left_link` |
+| `camera_right_extrinsic` | Right mono camera | `camera_mono_right_link` |
+| `lidar_2d_back_extrinsic` | Rear 2D LiDAR | `lidar_2d_back_link` |
+| `lidar_2d_front_extrinsic` | Front 2D LiDAR | `lidar_2d_front_link` |
+
+```yaml
+camera_front_extrinsic:
+  rx: 0.0004841534918956223
+  ry: -0.022696397032526777
+  rz: -0.024963586218731022
+  tx: 0.3713665035809988
+  ty: -0.0012114368184327506
+  tz: 0.5819776834826769
+camera_left_extrinsic:
+  rx: -8.26610835375321e-05
+  ry: 0.010437505309254372
+  rz: 1.5477847272499485
+  tx: 0.264771522661827
+  ty: 0.2624195508373959
+  tz: 0.5786230512170198
+camera_right_extrinsic:
+  rx: 0.005940643853633356
+  ry: 0.017139707082721167
+  rz: -1.5984502045959927
+  tx: 0.26360728011109097
+  ty: -0.2633683883510877
+  tz: 0.5732517098202605
+
+lidar_2d_back_extrinsic:
+  rx: 3.141592653589793
+  ry: 0.0
+  rz: -0.018807469931779952
+  tx: -0.325
+  ty: 0.0
+  tz: 0.255
+lidar_2d_front_extrinsic:
+  rx: 0.0
+  ry: 3.141592653589793
+  rz: -0.15944110598522698
+  tx: 0.325
+  ty: 0.0
+  tz: 0.255
+```
