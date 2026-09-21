@@ -317,6 +317,8 @@ ros2_control, swerve controller, IMU, LiDAR, GPS, 카메라를 포함한 전체 
 ros2 launch antbot_bringup bringup.launch.py
 ```
 
+> **참고:** 로봇 생산 시 측정한 로봇별 센서 외부 파라미터 캘리브레이션 데이터는 `~/ANTBOT/calibration.yaml`에 저장됩니다. Bringup은 이 값을 센서 TF에 적용하며, 파일이나 센서 항목이 없으면 URDF 기본값을 사용합니다. 파일 형식과 단위는 [센서 캘리브레이션](docs/wiki/src/content/docs/hardware/sensor-coordinates.mdx#센서-캘리브레이션)을 참고하세요.
+
 ### 시각화
 
 **RViz로 모든 센서 모니터링** (별도 PC에서 실행):
@@ -330,6 +332,8 @@ ros2 launch antbot_bringup view.launch.py
 ```bash
 ros2 launch antbot_description description.launch.py
 ```
+
+> **참고:** 이 모델 미리보기는 URDF 기본값을 사용하며 `~/ANTBOT/calibration.yaml`을 자동으로 읽지 않습니다.
 
 ### 원격 조종
 

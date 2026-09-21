@@ -324,6 +324,8 @@ Launch the complete system — ros2_control, swerve controller, IMU, LiDAR, GPS,
 ros2 launch antbot_bringup bringup.launch.py
 ```
 
+> **Note:** During production, per-robot sensor extrinsic calibration data is stored in `~/ANTBOT/calibration.yaml`. Bringup applies these values to sensor TFs; missing files or sensor entries use URDF defaults. See [Sensor Calibration](docs/wiki/src/content/docs/en/hardware/sensor-coordinates.mdx#sensor-calibration) for the format and units.
+
 ### Visualization
 
 **Monitor all sensors with RViz** (run on a separate PC):
@@ -337,6 +339,8 @@ ros2 launch antbot_bringup view.launch.py
 ```bash
 ros2 launch antbot_description description.launch.py
 ```
+
+> **Note:** This model preview uses URDF defaults and does not automatically load `~/ANTBOT/calibration.yaml`.
 
 ### Teleoperation
 
